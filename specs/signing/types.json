@@ -1,0 +1,108 @@
+{
+  "EIP712Domain": [
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "version",
+      "type": "string"
+    },
+    {
+      "name": "chainId",
+      "type": "uint256"
+    },
+    {
+      "name": "verifyingContract",
+      "type": "address"
+    }
+  ],
+  "BidPermit": [
+    {
+      "name": "taskId",
+      "type": "uint64"
+    },
+    {
+      "name": "identityRegistry",
+      "type": "address"
+    },
+    {
+      "name": "agentId",
+      "type": "uint256"
+    },
+    {
+      "name": "owner",
+      "type": "address"
+    },
+    {
+      "name": "executionSigner",
+      "type": "address"
+    },
+    {
+      "name": "payout",
+      "type": "address"
+    },
+    {
+      "name": "bidAtoms",
+      "type": "uint96"
+    },
+    {
+      "name": "profileDigest",
+      "type": "bytes32"
+    },
+    {
+      "name": "nonce",
+      "type": "uint256"
+    },
+    {
+      "name": "expiry",
+      "type": "uint64"
+    }
+  ],
+  "ValidationVerdict": [
+    {
+      "name": "taskId",
+      "type": "uint64"
+    },
+    {
+      "name": "identityRegistry",
+      "type": "address"
+    },
+    {
+      "name": "agentId",
+      "type": "uint256"
+    },
+    {
+      "name": "awardId",
+      "type": "uint8"
+    },
+    {
+      "name": "resultDigest",
+      "type": "bytes32"
+    },
+    {
+      "name": "validationPolicyDigest",
+      "type": "bytes32"
+    },
+    {
+      "name": "verdict",
+      "type": "uint8"
+    },
+    {
+      "name": "evidenceDigest",
+      "type": "bytes32"
+    },
+    {
+      "name": "validator",
+      "type": "address"
+    },
+    {
+      "name": "nonce",
+      "type": "uint256"
+    },
+    {
+      "name": "expiry",
+      "type": "uint64"
+    }
+  ]
+}

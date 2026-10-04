@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "testPrivateKeys": [
+    "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "0x0000000000000000000000000000000000000000000000000000000000000002"
+  ],
+  "positive": [
+    {
+      "id": "BidPermit",
+      "typedData": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "BidPermit": [
+            {
+              "name": "taskId",
+              "type": "uint64"
+            },
+            {
+              "name": "identityRegistry",
+              "type": "address"
+            },
+            {
+              "name": "agentId",
+              "type": "uint256"
+            },
+            {
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "name": "executionSigner",
+              "type": "address"
+            },
+            {
+              "name": "payout",
+              "type": "address"
+            },
+            {
+              "name": "bidAtoms",
+              "type": "uint96"
+            },
+            {
+              "name": "profileDigest",
+              "type": "bytes32"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "expiry",
+              "type": "uint64"
+            }
+          ]
+        },
+        "primaryType": "BidPermit",
+        "domain": {
+          "name": "AgentLance",
+          "version": "1",
+          "chainId": "31337",
+          "verifyingContract": "0x0000000000000000000000000000000000000064"
+        },
+        "message": {
+          "taskId": "1",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7",
+          "owner": "0x7e5f4552091a69125d5dfcb7b8c2659029395bdf",
+          "executionSigner": "0x00000000000000000000000000000000000000c9",
+          "payout": "0x00000000000000000000000000000000000000ca",
+          "bidAtoms": "20",
+          "profileDigest": "0x0000000000000000000000000000000000000000000000000000000000000032",
+          "nonce": "3",
+          "expiry": "1900"
+        }
+      },
+      "typeHash": "0xc70dffa834be1af5403286e949cad5202bc1ae99d512685a88ea7bec6a3abaf1",
+      "domainSeparator": "0x546155b6def77389e420bfbded40cf47c9e46ad1ec8d0ecf9e2d7ee11dcbc724",
+      "structHash": "0x32fbb5746775533c9bbb2af457525307f71c38dcc2a3ae92c64029b3d1467050",
+      "digest": "0x3099d17a6985341d45f2684f428683037e83a5e2f1628c261c286a69892d62cb",
+      "signature": "0xdcc0a3f3088e2419ec71a676db974e938e33d850a3b8825a6b46b8d1a0983f400aa86c92f58af438e5275ae3125cfa1e81db4afe6acb89ebb48bda689e3045c21b",
+      "recoveredSigner": "0x7e5f4552091a69125d5dfcb7b8c2659029395bdf"
+    },
+    {
+      "id": "ValidationVerdict",
+      "typedData": {
+        "types": {
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ],
+          "ValidationVerdict": [
+            {
+              "name": "taskId",
+              "type": "uint64"
+            },
+            {
+              "name": "identityRegistry",
+              "type": "address"
+            },
+            {
+              "name": "agentId",
+              "type": "uint256"
+            },
+            {
+              "name": "awardId",
+              "type": "uint8"
+            },
+            {
+              "name": "resultDigest",
+              "type": "bytes32"
+            },
+            {
+              "name": "validationPolicyDigest",
+              "type": "bytes32"
+            },
+            {
+              "name": "verdict",
+              "type": "uint8"
+            },
+            {
+              "name": "evidenceDigest",
+              "type": "bytes32"
+            },
+            {
+              "name": "validator",
+              "type": "address"
+            },
+            {
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "name": "expiry",
+              "type": "uint64"
+            }
+          ]
+        },
+        "primaryType": "ValidationVerdict",
+        "domain": {
+          "name": "AgentLance",
+          "version": "1",
+          "chainId": "31337",
+          "verifyingContract": "0x0000000000000000000000000000000000000064"
+        },
+        "message": {
+          "taskId": "1",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7",
+          "awardId": 1,
+          "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+          "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+          "verdict": 1,
+          "evidenceDigest": "0x0000000000000000000000000000000000000000000000000000000000000035",
+          "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+          "nonce": "4",
+          "expiry": "2900"
+        }
+      },
+      "typeHash": "0x56c63b1eebfa303cd72efa566479104ea078bce2aaf581e26a4350916832bcc2",
+      "domainSeparator": "0x546155b6def77389e420bfbded40cf47c9e46ad1ec8d0ecf9e2d7ee11dcbc724",
+      "structHash": "0x7754b1fa147e3bc3f9f9a0de725f957405b7022110226ae91574ca11c505b2fc",
+      "digest": "0x20afe43b554094360d00baf44410252663d5be6b0702f70370eaec5d7fecb437",
+      "signature": "0xb5aa3280b440858a0fb0d8ecb638c7dbad107c5ccadfddf08cfcb604ca9094855b16e7ec126dabf7161f47f5e547cdd3befef624ac339180fbee4793efab21c31c",
+      "recoveredSigner": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf"
+    }
+  ],
+  "negative": [
+    {
+      "id": "wrong-chain",
+      "base": "BidPermit",
+      "mutation": {
+        "section": "domain",
+        "field": "chainId",
+        "value": "31338"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "wrong-market",
+      "base": "BidPermit",
+      "mutation": {
+        "section": "domain",
+        "field": "verifyingContract",
+        "value": "0x0000000000000000000000000000000000000066"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "wrong-task",
+      "base": "BidPermit",
+      "mutation": {
+        "section": "message",
+        "field": "taskId",
+        "value": "2"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "wrong-agent",
+      "base": "BidPermit",
+      "mutation": {
+        "section": "message",
+        "field": "agentId",
+        "value": "8"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "wrong-result",
+      "base": "ValidationVerdict",
+      "mutation": {
+        "section": "message",
+        "field": "resultDigest",
+        "value": "0x0000000000000000000000000000000000000000000000000000000000000063"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "wrong-policy",
+      "base": "ValidationVerdict",
+      "mutation": {
+        "section": "message",
+        "field": "validationPolicyDigest",
+        "value": "0x0000000000000000000000000000000000000000000000000000000000000063"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "wrong-nonce",
+      "base": "BidPermit",
+      "mutation": {
+        "section": "message",
+        "field": "nonce",
+        "value": "4"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "wrong-expiry",
+      "base": "BidPermit",
+      "mutation": {
+        "section": "message",
+        "field": "expiry",
+        "value": "1901"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "wrong-primary-type",
+      "base": "BidPermit",
+      "mutation": {
+        "section": "primaryType",
+        "field": "name",
+        "value": "OtherPermit"
+      },
+      "context": null,
+      "expectedError": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "used-nonce",
+      "base": "BidPermit",
+      "mutation": null,
+      "context": {
+        "usedNonce": true
+      },
+      "expectedError": "NONCE_USED"
+    },
+    {
+      "id": "expiry-equality",
+      "base": "BidPermit",
+      "mutation": null,
+      "context": {
+        "now": "1900"
+      },
+      "expectedError": "SIGNATURE_EXPIRED"
+    },
+    {
+      "id": "transferred-owner",
+      "base": "BidPermit",
+      "mutation": null,
+      "context": {
+        "currentOwner": "0x000000000000000000000000000000000000012c"
+      },
+      "expectedError": "OWNER_CHANGED"
+    }
+  ],
+  "contentHashes": [
+    {
+      "id": "empty",
+      "bytesHex": "0x",
+      "keccak256": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+    },
+    {
+      "id": "json-original",
+      "bytesHex": "0x7b2261223a312c2262223a327d0a",
+      "keccak256": "0x96686705bbfadf30e6236feaf10bf64944560a71c2f8d6f96280728f56f4e7a7"
+    },
+    {
+      "id": "json-reordered",
+      "bytesHex": "0x7b2262223a322c2261223a317d0a",
+      "keccak256": "0x4873c6fbb45d5905deb35daf619e42557e8339eb0780b5c627495ed67ae2b01f"
+    }
+  ]
+}
