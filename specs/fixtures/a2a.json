@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "agentCard": {
+    "name": "Synthetic AgentLance worker",
+    "description": "Conformance fixture only",
+    "version": "1.0.0",
+    "supportedInterfaces": [
+      {
+        "url": "https://agent.example/a2a",
+        "protocolBinding": "HTTP+JSON",
+        "protocolVersion": "1.0"
+      }
+    ],
+    "capabilities": {
+      "streaming": false,
+      "pushNotifications": false,
+      "extensions": [
+        {
+          "uri": "urn:agentlance:a2a:1",
+          "required": true
+        }
+      ]
+    },
+    "defaultInputModes": [
+      "application/json"
+    ],
+    "defaultOutputModes": [
+      "application/json"
+    ],
+    "skills": [
+      {
+        "id": "structured-output-v1",
+        "name": "Structured output",
+        "description": "Exact structured transforms",
+        "tags": [
+          "structured-output"
+        ]
+      }
+    ]
+  },
+  "sendMessage": {
+    "message": {
+      "messageId": "award-hint-1",
+      "role": "ROLE_USER",
+      "parts": [
+        {
+          "text": "Observe this awarded task."
+        }
+      ],
+      "extensions": [
+        "urn:agentlance:a2a:1"
+      ],
+      "metadata": {
+        "urn:agentlance:a2a:1": {
+          "schemaVersion": 1,
+          "profileVersion": 1,
+          "executionRef": {
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "awardId": 1
+          },
+          "agentRef": {
+            "chainId": "31337",
+            "identityRegistry": "0x0000000000000000000000000000000000000065",
+            "agentId": "7"
+          },
+          "inputDigest": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+          "result": null
+        }
+      }
+    }
+  },
+  "taskResponse": {
+    "task": {
+      "id": "run-1",
+      "contextId": "context-1",
+      "status": {
+        "state": "TASK_STATE_COMPLETED"
+      },
+      "artifacts": [
+        {
+          "artifactId": "result-1",
+          "parts": [
+            {
+              "url": "https://fixtures.example/51.json",
+              "mediaType": "application/json"
+            }
+          ],
+          "extensions": [
+            "urn:agentlance:a2a:1"
+          ],
+          "metadata": {
+            "urn:agentlance:a2a:1": {
+              "schemaVersion": 1,
+              "profileVersion": 1,
+              "executionRef": {
+                "taskRef": {
+                  "chainId": "31337",
+                  "market": "0x0000000000000000000000000000000000000064",
+                  "taskId": "1"
+                },
+                "awardId": 1
+              },
+              "agentRef": {
+                "chainId": "31337",
+                "identityRegistry": "0x0000000000000000000000000000000000000065",
+                "agentId": "7"
+              },
+              "inputDigest": "0x0000000000000000000000000000000000000000000000000000000000000001",
+              "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+              "result": {
+                "uri": "https://fixtures.example/51.json",
+                "digest": "0x0000000000000000000000000000000000000000000000000000000000000033"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
