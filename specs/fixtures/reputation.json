@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "domain": "reputation",
+  "cases": [
+    {
+      "id": "fresh",
+      "initial": {
+        "successes": "0",
+        "failures": "0"
+      },
+      "action": {
+        "operation": "probability"
+      },
+      "expected": {
+        "p": 500000
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "one-success",
+      "initial": {
+        "successes": "1",
+        "failures": "0"
+      },
+      "action": {
+        "operation": "probability"
+      },
+      "expected": {
+        "p": 666666
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "one-failure",
+      "initial": {
+        "successes": "0",
+        "failures": "1"
+      },
+      "action": {
+        "operation": "probability"
+      },
+      "expected": {
+        "p": 333333
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "three-success-one-failure",
+      "initial": {
+        "successes": "3",
+        "failures": "1"
+      },
+      "action": {
+        "operation": "probability"
+      },
+      "expected": {
+        "p": 666666
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "balanced",
+      "initial": {
+        "successes": "4",
+        "failures": "4"
+      },
+      "action": {
+        "operation": "probability"
+      },
+      "expected": {
+        "p": 500000
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "counter-bound",
+      "initial": {
+        "successes": "18446744073709551615",
+        "failures": "0"
+      },
+      "action": {
+        "operation": "probability"
+      },
+      "expected": {
+        "p": 999999
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "settle-success",
+      "initial": {
+        "successes": "3",
+        "failures": "1",
+        "receiptSeen": false
+      },
+      "action": {
+        "operation": "observe",
+        "reason": "SUCCESS",
+        "taskId": "1"
+      },
+      "expected": {
+        "successes": "4",
+        "failures": "1",
+        "observationAdded": true
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "settle-failure",
+      "initial": {
+        "successes": "3",
+        "failures": "1",
+        "receiptSeen": false
+      },
+      "action": {
+        "operation": "observe",
+        "reason": "VALIDATION_FAILED",
+        "taskId": "1"
+      },
+      "expected": {
+        "successes": "3",
+        "failures": "2",
+        "observationAdded": true
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "unknown-correctness",
+      "initial": {
+        "successes": "3",
+        "failures": "1",
+        "receiptSeen": false
+      },
+      "action": {
+        "operation": "observe",
+        "reason": "VALIDATOR_TIMEOUT",
+        "taskId": "1"
+      },
+      "expected": {
+        "successes": "3",
+        "failures": "1",
+        "observationAdded": false
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "duplicate-receipt",
+      "initial": {
+        "successes": "3",
+        "failures": "1",
+        "receiptSeen": true
+      },
+      "action": {
+        "operation": "observe",
+        "reason": "SUCCESS",
+        "taskId": "1"
+      },
+      "expected": {
+        "successes": "3",
+        "failures": "1",
+        "observationAdded": false
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "family-separation",
+      "initial": {
+        "families": [
+          {
+            "family": "structured-output-v1",
+            "successes": "3",
+            "failures": "1"
+          },
+          {
+            "family": "synthetic-other-family",
+            "successes": "9",
+            "failures": "0"
+          }
+        ]
+      },
+      "action": {
+        "operation": "snapshot",
+        "family": "structured-output-v1"
+      },
+      "expected": {
+        "successes": "3",
+        "failures": "1",
+        "p": 666666
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "same-block-snapshot",
+      "initial": {
+        "checkpoints": [
+          {
+            "block": "9",
+            "successes": "1",
+            "failures": "1"
+          },
+          {
+            "block": "10",
+            "successes": "2",
+            "failures": "1"
+          },
+          {
+            "block": "10",
+            "successes": "3",
+            "failures": "1"
+          }
+        ]
+      },
+      "action": {
+        "operation": "snapshot",
+        "creationBlock": "10"
+      },
+      "expected": {
+        "snapshotBlock": "9",
+        "successes": "1",
+        "failures": "1",
+        "p": 500000
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "next-block-snapshot",
+      "initial": {
+        "checkpoints": [
+          {
+            "block": "9",
+            "successes": "1",
+            "failures": "1"
+          },
+          {
+            "block": "10",
+            "successes": "3",
+            "failures": "1"
+          }
+        ]
+      },
+      "action": {
+        "operation": "snapshot",
+        "creationBlock": "11"
+      },
+      "expected": {
+        "snapshotBlock": "10",
+        "successes": "3",
+        "failures": "1",
+        "p": 666666
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "transfer-keeps-counters",
+      "initial": {
+        "successes": "3",
+        "failures": "1",
+        "owner": "OLD"
+      },
+      "action": {
+        "operation": "transfer",
+        "owner": "NEW"
+      },
+      "expected": {
+        "successes": "3",
+        "failures": "1",
+        "owner": "NEW",
+        "p": 666666
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "creation-namespace-exhausted",
+      "initial": {
+        "taskCount": "18446744073709551615"
+      },
+      "action": {
+        "operation": "createTask"
+      },
+      "expected": {
+        "taskCount": "18446744073709551615"
+      },
+      "events": [],
+      "error": "TASK_LIMIT"
+    }
+  ]
+}

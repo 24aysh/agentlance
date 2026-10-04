@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "synthetic": {
+      "const": true
+    },
+    "domain": {
+      "enum": [
+        "lifecycle",
+        "reputation",
+        "delegation",
+        "replay",
+        "validation"
+      ]
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]+$"
+          },
+          "initial": {
+            "type": "object",
+            "minProperties": 1
+          },
+          "action": {
+            "type": "object",
+            "minProperties": 1
+          },
+          "expected": {
+            "type": "object",
+            "minProperties": 1
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "TaskCreated",
+                "BidAccepted",
+                "TaskAwarded",
+                "AwardAccepted",
+                "ResultSubmitted",
+                "TaskSettled",
+                "CreditWithdrawn"
+              ]
+            }
+          },
+          "error": {
+            "anyOf": [
+              {
+                "enum": [
+                  "INVALID_ENCODING",
+                  "INVALID_RANGE",
+                  "UNKNOWN_TASK",
+                  "ALREADY_SETTLED",
+                  "WRONG_STATE",
+                  "UNAUTHORIZED",
+                  "INVALID_TERMS",
+                  "UNSUPPORTED_POLICY",
+                  "INVALID_ASSET",
+                  "INVALID_BUDGET",
+                  "INVALID_ALPHA",
+                  "INVALID_DEADLINES",
+                  "WRONG_VALUE",
+                  "IDENTITY_UNAVAILABLE",
+                  "OWNER_CHANGED",
+                  "WALLET_UNSET",
+                  "WALLET_MISMATCH",
+                  "VALIDATOR_CONFLICT",
+                  "INVALID_SIGNATURE",
+                  "NONCE_USED",
+                  "SIGNATURE_EXPIRED",
+                  "DUPLICATE_AGENT",
+                  "BID_OVER_BUDGET",
+                  "TOO_EARLY",
+                  "DEADLINE_PASSED",
+                  "INVALID_RESERVE",
+                  "INVALID_PARENT",
+                  "DEPTH_LIMIT",
+                  "CHILD_LIMIT",
+                  "ENVELOPE_EXCEEDED",
+                  "CHILD_DEADLINE",
+                  "INVALID_RETRY",
+                  "CHILDREN_ACTIVE",
+                  "RESULT_MISMATCH",
+                  "POLICY_MISMATCH",
+                  "INSUFFICIENT_CREDIT",
+                  "TRANSFER_FAILED",
+                  "REENTRANCY",
+                  "TASK_LIMIT",
+                  "PROFILE_AWARD_MISMATCH",
+                  "PROFILE_CONFLICT",
+                  "PROFILE_EXPIRED",
+                  "PROFILE_VERSION"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "initial",
+          "action",
+          "expected",
+          "events",
+          "error"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "domain",
+    "cases"
+  ],
+  "additionalProperties": false
+}

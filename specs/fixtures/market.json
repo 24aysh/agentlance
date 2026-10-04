@@ -1,0 +1,574 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "normal",
+      "description": "Six-decimal illustrative asset; alpha is 2 per whole unit, hence 1/500000 per atom.",
+      "input": {
+        "budgetAtoms": "300000",
+        "alphaNum": "1",
+        "alphaDen": "500000",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 900000,
+            "bidAtoms": "200000"
+          },
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "2"
+            },
+            "p": 700000,
+            "bidAtoms": "150000"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x1111111111111111111111111111111111111111",
+          "agentId": "1"
+        },
+        "winningScore": "250000000000",
+        "secondScore": "200000000000",
+        "criticalAtoms": "250000",
+        "reservedAtoms": "250000"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "single-bidder",
+      "description": "Outside option sets runner-up to zero; payment exceeds submitted bid.",
+      "input": {
+        "budgetAtoms": "500000",
+        "alphaNum": "1",
+        "alphaDen": "500000",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 800000,
+            "bidAtoms": "50000"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x1111111111111111111111111111111111111111",
+          "agentId": "1"
+        },
+        "winningScore": "350000000000",
+        "secondScore": "0",
+        "criticalAtoms": "400000",
+        "reservedAtoms": "400000"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "budget-cap",
+      "description": "Same critical price as single-bidder, explicitly capped by advertised budget.",
+      "input": {
+        "budgetAtoms": "100000",
+        "alphaNum": "1",
+        "alphaDen": "500000",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 800000,
+            "bidAtoms": "50000"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x1111111111111111111111111111111111111111",
+          "agentId": "1"
+        },
+        "winningScore": "350000000000",
+        "secondScore": "0",
+        "criticalAtoms": "400000",
+        "reservedAtoms": "100000"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "no-bids",
+      "description": "Empty market refunds without reputation evidence.",
+      "input": {
+        "budgetAtoms": "300000",
+        "alphaNum": "1",
+        "alphaDen": "500000",
+        "bids": []
+      },
+      "expected": {
+        "outcome": "UNALLOCATED",
+        "winner": null,
+        "reservedAtoms": "0"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "negative-score",
+      "description": "Bid is within budget but its score is below the outside option.",
+      "input": {
+        "budgetAtoms": "300000",
+        "alphaNum": "1",
+        "alphaDen": "500000",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 200000,
+            "bidAtoms": "200000"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "UNALLOCATED",
+        "winner": null,
+        "reservedAtoms": "0"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "zero-score",
+      "description": "Equality with the outside option must not award.",
+      "input": {
+        "budgetAtoms": "300000",
+        "alphaNum": "1",
+        "alphaDen": "500000",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 400000,
+            "bidAtoms": "200000"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "UNALLOCATED",
+        "winner": null,
+        "reservedAtoms": "0"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "exact-tie",
+      "description": "Runner-up retains tied score; lower canonical identity wins.",
+      "input": {
+        "budgetAtoms": "300000",
+        "alphaNum": "1",
+        "alphaDen": "500000",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "2"
+            },
+            "p": 800000,
+            "bidAtoms": "150000"
+          },
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 900000,
+            "bidAtoms": "200000"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x1111111111111111111111111111111111111111",
+          "agentId": "1"
+        },
+        "winningScore": "250000000000",
+        "secondScore": "250000000000",
+        "criticalAtoms": "200000",
+        "reservedAtoms": "200000"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "numeric-id-order",
+      "description": "ID 2 precedes ID 10 in fixed-width bytes despite reversed arrival/textual order.",
+      "input": {
+        "budgetAtoms": "300000",
+        "alphaNum": "1",
+        "alphaDen": "500000",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "10"
+            },
+            "p": 900000,
+            "bidAtoms": "200000"
+          },
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "2"
+            },
+            "p": 900000,
+            "bidAtoms": "200000"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x1111111111111111111111111111111111111111",
+          "agentId": "2"
+        },
+        "winningScore": "250000000000",
+        "secondScore": "250000000000",
+        "criticalAtoms": "200000",
+        "reservedAtoms": "200000"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "fractional-price-floor",
+      "description": "Critical price 5/3 atoms floors to 1 and still covers the bid.",
+      "input": {
+        "budgetAtoms": "10",
+        "alphaNum": "3",
+        "alphaDen": "10",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 500000,
+            "bidAtoms": "1"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x1111111111111111111111111111111111111111",
+          "agentId": "1"
+        },
+        "winningScore": "2000000",
+        "secondScore": "0",
+        "criticalAtoms": "1",
+        "reservedAtoms": "1"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "positive-score-zero-price",
+      "description": "A positive score with a zero bid may floor to a zero reserved price.",
+      "input": {
+        "budgetAtoms": "1",
+        "alphaNum": "1",
+        "alphaDen": "1",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 1,
+            "bidAtoms": "0"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x1111111111111111111111111111111111111111",
+          "agentId": "1"
+        },
+        "winningScore": "1",
+        "secondScore": "0",
+        "criticalAtoms": "0",
+        "reservedAtoms": "0"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "maximum-denominator",
+      "description": "Largest allowed denominator and budget with zero bid; exact maximum critical price.",
+      "input": {
+        "budgetAtoms": "79228162514264337593543950335",
+        "alphaNum": "1",
+        "alphaDen": "79228162514264337593543950335",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 1000000,
+            "bidAtoms": "0"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x1111111111111111111111111111111111111111",
+          "agentId": "1"
+        },
+        "winningScore": "79228162514264337593543950335000000",
+        "secondScore": "0",
+        "criticalAtoms": "79228162514264337593543950335",
+        "reservedAtoms": "79228162514264337593543950335"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "maximum-negative-product",
+      "description": "Maximum numerator and bid exercise the negative signed-score bound.",
+      "input": {
+        "budgetAtoms": "79228162514264337593543950335",
+        "alphaNum": "79228162514264337593543950335",
+        "alphaDen": "1",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 1000000,
+            "bidAtoms": "79228162514264337593543950335"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "UNALLOCATED",
+        "winner": null,
+        "reservedAtoms": "0"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "zero-alpha-numerator",
+      "description": "No alpha-zero auction exists.",
+      "input": {
+        "budgetAtoms": "1",
+        "alphaNum": "0",
+        "alphaDen": "1",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 500000,
+            "bidAtoms": "0"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "REJECTED",
+        "reason": "INVALID_ALPHA"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "zero-alpha-denominator",
+      "description": "Denominator zero must fail before scoring.",
+      "input": {
+        "budgetAtoms": "1",
+        "alphaNum": "1",
+        "alphaDen": "0",
+        "bids": []
+      },
+      "expected": {
+        "outcome": "REJECTED",
+        "reason": "INVALID_ALPHA"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "unreduced-alpha",
+      "description": "Equivalent rationals must be normalized before admission.",
+      "input": {
+        "budgetAtoms": "1",
+        "alphaNum": "2",
+        "alphaDen": "2",
+        "bids": []
+      },
+      "expected": {
+        "outcome": "REJECTED",
+        "reason": "INVALID_ALPHA"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "over-budget",
+      "description": "Over-budget input is invalid, not silently removed before pricing.",
+      "input": {
+        "budgetAtoms": "10",
+        "alphaNum": "1",
+        "alphaDen": "100",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 500000,
+            "bidAtoms": "11"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "REJECTED",
+        "reason": "BID_OVER_BUDGET"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "duplicate-agent",
+      "description": "A repeated identity is rejected rather than treated as its own runner-up.",
+      "input": {
+        "budgetAtoms": "10",
+        "alphaNum": "1",
+        "alphaDen": "100",
+        "bids": [
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 500000,
+            "bidAtoms": "1"
+          },
+          {
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x1111111111111111111111111111111111111111",
+              "agentId": "1"
+            },
+            "p": 500000,
+            "bidAtoms": "2"
+          }
+        ]
+      },
+      "expected": {
+        "outcome": "REJECTED",
+        "reason": "DUPLICATE_AGENT"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    },
+    {
+      "id": "zero-budget",
+      "description": "Funding must be positive even though zero bids are allowed.",
+      "input": {
+        "budgetAtoms": "0",
+        "alphaNum": "1",
+        "alphaDen": "1",
+        "bids": []
+      },
+      "expected": {
+        "outcome": "REJECTED",
+        "reason": "INVALID_BUDGET"
+      },
+      "action": {
+        "operation": "evaluateAuction"
+      },
+      "events": []
+    }
+  ]
+}

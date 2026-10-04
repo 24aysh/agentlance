@@ -1,0 +1,438 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "domain": "replay",
+  "cases": [
+    {
+      "id": "duplicate-event",
+      "initial": {
+        "seen": [
+          "blockA:0"
+        ],
+        "effects": 1
+      },
+      "action": {
+        "operation": "ingest",
+        "log": "blockA:0"
+      },
+      "expected": {
+        "seen": [
+          "blockA:0"
+        ],
+        "effects": 1
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "restart-overlap",
+      "initial": {
+        "seen": [
+          "blockA:0"
+        ],
+        "effects": 1,
+        "cursorBlock": "100"
+      },
+      "action": {
+        "operation": "resume",
+        "logs": [
+          "blockA:0",
+          "blockB:0"
+        ]
+      },
+      "expected": {
+        "seen": [
+          "blockA:0",
+          "blockB:0"
+        ],
+        "effects": 2,
+        "cursorBlock": "101"
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "reorg-unconfirmed",
+      "initial": {
+        "seen": [
+          "blockA:0",
+          "orphan:0"
+        ],
+        "effects": 2,
+        "cursorBlock": "101"
+      },
+      "action": {
+        "operation": "reorg",
+        "commonBlock": "100",
+        "removed": [
+          "orphan:0"
+        ],
+        "added": [
+          "canonical:0"
+        ]
+      },
+      "expected": {
+        "seen": [
+          "blockA:0",
+          "canonical:0"
+        ],
+        "effects": 2,
+        "cursorBlock": "101"
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "finalized-history-conflict",
+      "initial": {
+        "finalizedBlock": "100",
+        "halted": false
+      },
+      "action": {
+        "operation": "reorg",
+        "commonBlock": "99"
+      },
+      "expected": {
+        "finalizedBlock": "100",
+        "halted": true
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "duplicate-a2a",
+      "initial": {
+        "executionKey": "task1:1",
+        "a2aTaskId": "run1",
+        "starts": 1
+      },
+      "action": {
+        "operation": "notify",
+        "executionKey": "task1:1",
+        "messageId": "second"
+      },
+      "expected": {
+        "executionKey": "task1:1",
+        "a2aTaskId": "run1",
+        "starts": 1
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "a2a-out-of-order",
+      "initial": {
+        "transport": "completed",
+        "chain": "SUBMITTED",
+        "starts": 1
+      },
+      "action": {
+        "operation": "progress",
+        "status": "working"
+      },
+      "expected": {
+        "transport": "completed",
+        "chain": "SUBMITTED",
+        "starts": 1
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "a2a-failure-no-refund",
+      "initial": {
+        "transport": "working",
+        "chain": "RUNNING",
+        "refund": "0"
+      },
+      "action": {
+        "operation": "progress",
+        "status": "failed"
+      },
+      "expected": {
+        "transport": "failed",
+        "chain": "RUNNING",
+        "refund": "0"
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "duplicate-export",
+      "initial": {
+        "receiptPublished": true,
+        "feedbackCalls": 1
+      },
+      "action": {
+        "operation": "publishReceipt"
+      },
+      "expected": {
+        "receiptPublished": true,
+        "feedbackCalls": 1
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "export-reverts",
+      "initial": {
+        "receiptPublished": false,
+        "feedbackCalls": 0,
+        "settled": true
+      },
+      "action": {
+        "operation": "publishReceipt",
+        "registryRejects": true
+      },
+      "expected": {
+        "receiptPublished": false,
+        "feedbackCalls": 0,
+        "settled": true
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "export-ambiguous-response",
+      "initial": {
+        "receiptPublished": true,
+        "localStatus": "SENT",
+        "feedbackCalls": 1
+      },
+      "action": {
+        "operation": "reconcileThenRetry"
+      },
+      "expected": {
+        "receiptPublished": true,
+        "localStatus": "CONFIRMED",
+        "feedbackCalls": 1
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "transfer-after-bid",
+      "initial": {
+        "owner": "OLD",
+        "frozenSigner": "OLD_SIGNER",
+        "frozenPayout": "OLD_PAYOUT",
+        "wallet": "OLD_PAYOUT"
+      },
+      "action": {
+        "operation": "transfer",
+        "owner": "NEW"
+      },
+      "expected": {
+        "owner": "NEW",
+        "frozenSigner": "OLD_SIGNER",
+        "frozenPayout": "OLD_PAYOUT",
+        "wallet": null
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "transferred-new-bid-unset-wallet",
+      "initial": {
+        "owner": "NEW",
+        "wallet": null
+      },
+      "action": {
+        "operation": "submitBid",
+        "caller": "NEW"
+      },
+      "expected": {
+        "owner": "NEW",
+        "wallet": null
+      },
+      "events": [],
+      "error": "WALLET_UNSET"
+    },
+    {
+      "id": "contract-owner-valid-magic",
+      "initial": {
+        "ownerKind": "CONTRACT",
+        "nonceUsed": false
+      },
+      "action": {
+        "operation": "checkPermit",
+        "returnData": "0x1626ba7e"
+      },
+      "expected": {
+        "valid": true
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "contract-owner-wrong-magic",
+      "initial": {
+        "ownerKind": "CONTRACT",
+        "nonceUsed": false
+      },
+      "action": {
+        "operation": "checkPermit",
+        "returnData": "0xffffffff"
+      },
+      "expected": {
+        "valid": false
+      },
+      "events": [],
+      "error": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "unfinalized-award-hint",
+      "initial": {
+        "starts": 0,
+        "chain": "AWARDED",
+        "finalized": false
+      },
+      "action": {
+        "operation": "notify"
+      },
+      "expected": {
+        "starts": 0,
+        "chain": "AWARDED",
+        "finalized": false
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "forged-a2a-hint",
+      "initial": {
+        "starts": 0,
+        "chain": "OPEN"
+      },
+      "action": {
+        "operation": "notify"
+      },
+      "expected": {
+        "starts": 0,
+        "chain": "OPEN"
+      },
+      "events": [],
+      "error": "PROFILE_AWARD_MISMATCH"
+    },
+    {
+      "id": "profile-conflicting-digest",
+      "initial": {
+        "executionKey": "task1:1",
+        "inputDigest": "A",
+        "starts": 1
+      },
+      "action": {
+        "operation": "notify",
+        "inputDigest": "B"
+      },
+      "expected": {
+        "executionKey": "task1:1",
+        "inputDigest": "A",
+        "starts": 1
+      },
+      "events": [],
+      "error": "PROFILE_CONFLICT"
+    },
+    {
+      "id": "contract-owner-reverts",
+      "initial": {
+        "ownerKind": "CONTRACT",
+        "nonceUsed": false
+      },
+      "action": {
+        "operation": "checkPermit",
+        "callReverts": true
+      },
+      "expected": {
+        "valid": false
+      },
+      "events": [],
+      "error": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "contract-owner-short-return",
+      "initial": {
+        "ownerKind": "CONTRACT",
+        "nonceUsed": false
+      },
+      "action": {
+        "operation": "checkPermit",
+        "rawReturn": "0x1626ba7e"
+      },
+      "expected": {
+        "valid": false
+      },
+      "events": [],
+      "error": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "validator-role-conflict",
+      "initial": {
+        "bidCount": 0
+      },
+      "action": {
+        "operation": "submitBid",
+        "executionSignerEqualsValidator": true
+      },
+      "expected": {
+        "bidCount": 0
+      },
+      "events": [],
+      "error": "VALIDATOR_CONFLICT"
+    },
+    {
+      "id": "approved-operator-cannot-bid",
+      "initial": {
+        "bidCount": 0
+      },
+      "action": {
+        "operation": "submitBid",
+        "callerIsApprovedButNotOwner": true
+      },
+      "expected": {
+        "bidCount": 0
+      },
+      "events": [],
+      "error": "UNAUTHORIZED"
+    },
+    {
+      "id": "finality-rpc-unavailable",
+      "initial": {
+        "starts": 0,
+        "chain": "AWARDED"
+      },
+      "action": {
+        "operation": "confirm",
+        "rpcSupported": false
+      },
+      "expected": {
+        "starts": 0,
+        "chain": "AWARDED"
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "restored-wallet-new-owner-bid",
+      "initial": {
+        "owner": "NEW",
+        "wallet": "NEW_PAYOUT",
+        "bidCount": 0
+      },
+      "action": {
+        "operation": "submitBid",
+        "caller": "NEW",
+        "payout": "NEW_PAYOUT"
+      },
+      "expected": {
+        "owner": "NEW",
+        "wallet": "NEW_PAYOUT",
+        "bidCount": 1
+      },
+      "events": [
+        "BidAccepted"
+      ],
+      "error": null
+    }
+  ]
+}

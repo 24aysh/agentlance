@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentLance synthetic market conformance vectors v1",
+  "$comment": "Fixture grammar, not bid admission. Zero alpha/budget, non-reduced alpha, duplicate identities and over-budget bids are representable for rejection vectors. uint96/uint256/int256 are custom asserted formats in scripts/check_specs.py.",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "synthetic": {
+      "const": true
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]+$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "input": {
+            "$ref": "#/$defs/input"
+          },
+          "expected": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/awarded"
+              },
+              {
+                "$ref": "#/$defs/unallocated"
+              },
+              {
+                "$ref": "#/$defs/rejected"
+              }
+            ]
+          },
+          "action": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "const": "evaluateAuction"
+              }
+            },
+            "required": [
+              "operation"
+            ],
+            "additionalProperties": false
+          },
+          "events": {
+            "const": []
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "input",
+          "expected",
+          "action",
+          "events"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "synthetic",
+    "cases"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "uint96": {
+      "type": "string",
+      "format": "uint96"
+    },
+    "uint256": {
+      "type": "string",
+      "format": "uint256"
+    },
+    "int256": {
+      "type": "string",
+      "format": "int256"
+    },
+    "agentRef": {
+      "type": "object",
+      "properties": {
+        "chainId": {
+          "$ref": "#/$defs/uint256"
+        },
+        "identityRegistry": {
+          "type": "string",
+          "minLength": 42,
+          "maxLength": 42,
+          "pattern": "^0x[0-9a-f]{40}$"
+        },
+        "agentId": {
+          "$ref": "#/$defs/uint256"
+        }
+      },
+      "required": [
+        "chainId",
+        "identityRegistry",
+        "agentId"
+      ],
+      "additionalProperties": false
+    },
+    "bid": {
+      "type": "object",
+      "properties": {
+        "agentRef": {
+          "$ref": "#/$defs/agentRef"
+        },
+        "p": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "bidAtoms": {
+          "$ref": "#/$defs/uint96"
+        }
+      },
+      "required": [
+        "agentRef",
+        "p",
+        "bidAtoms"
+      ],
+      "additionalProperties": false
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "budgetAtoms": {
+          "$ref": "#/$defs/uint96"
+        },
+        "alphaNum": {
+          "$ref": "#/$defs/uint96"
+        },
+        "alphaDen": {
+          "$ref": "#/$defs/uint96"
+        },
+        "bids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bid"
+          }
+        }
+      },
+      "required": [
+        "budgetAtoms",
+        "alphaNum",
+        "alphaDen",
+        "bids"
+      ],
+      "additionalProperties": false
+    },
+    "awarded": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "AWARDED"
+        },
+        "winner": {
+          "$ref": "#/$defs/agentRef"
+        },
+        "winningScore": {
+          "$ref": "#/$defs/int256"
+        },
+        "secondScore": {
+          "$ref": "#/$defs/int256"
+        },
+        "criticalAtoms": {
+          "$ref": "#/$defs/uint96"
+        },
+        "reservedAtoms": {
+          "$ref": "#/$defs/uint96"
+        }
+      },
+      "required": [
+        "outcome",
+        "winner",
+        "winningScore",
+        "secondScore",
+        "criticalAtoms",
+        "reservedAtoms"
+      ],
+      "additionalProperties": false
+    },
+    "unallocated": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "UNALLOCATED"
+        },
+        "winner": {
+          "type": "null"
+        },
+        "reservedAtoms": {
+          "const": "0"
+        }
+      },
+      "required": [
+        "outcome",
+        "winner",
+        "reservedAtoms"
+      ],
+      "additionalProperties": false
+    },
+    "rejected": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "REJECTED"
+        },
+        "reason": {
+          "enum": [
+            "INVALID_ALPHA",
+            "BID_OVER_BUDGET",
+            "DUPLICATE_AGENT",
+            "INVALID_BUDGET"
+          ]
+        }
+      },
+      "required": [
+        "outcome",
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
