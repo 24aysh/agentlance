@@ -1,0 +1,2469 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentlance:protocol:1",
+  "$defs": {
+    "Uint64": {
+      "type": "string",
+      "format": "uint64"
+    },
+    "Uint96": {
+      "type": "string",
+      "format": "uint96"
+    },
+    "Uint256": {
+      "type": "string",
+      "format": "uint256"
+    },
+    "Int256": {
+      "type": "string",
+      "format": "int256"
+    },
+    "Address": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{40}$",
+      "minLength": 42,
+      "maxLength": 42,
+      "not": {
+        "const": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$",
+      "minLength": 66,
+      "maxLength": 66
+    },
+    "Uri": {
+      "type": "string",
+      "format": "content-uri",
+      "maxLength": 2048
+    },
+    "Signature": {
+      "type": "string",
+      "pattern": "^0x([0-9a-f]{2})+$",
+      "maxLength": 8194
+    },
+    "AgentRef": {
+      "type": "object",
+      "properties": {
+        "chainId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Uint256"
+            },
+            {
+              "not": {
+                "const": "0"
+              }
+            }
+          ]
+        },
+        "identityRegistry": {
+          "$ref": "#/$defs/Address"
+        },
+        "agentId": {
+          "$ref": "#/$defs/Uint256"
+        }
+      },
+      "required": [
+        "chainId",
+        "identityRegistry",
+        "agentId"
+      ],
+      "additionalProperties": false
+    },
+    "TaskRef": {
+      "type": "object",
+      "properties": {
+        "chainId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Uint256"
+            },
+            {
+              "not": {
+                "const": "0"
+              }
+            }
+          ]
+        },
+        "market": {
+          "$ref": "#/$defs/Address"
+        },
+        "taskId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Uint64"
+            },
+            {
+              "not": {
+                "const": "0"
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "chainId",
+        "market",
+        "taskId"
+      ],
+      "additionalProperties": false
+    },
+    "ContentRef": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "$ref": "#/$defs/Uri"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "uri",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionRef": {
+      "type": "object",
+      "properties": {
+        "taskRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "awardId": {
+          "const": 1
+        }
+      },
+      "required": [
+        "taskRef",
+        "awardId"
+      ],
+      "additionalProperties": false
+    },
+    "Asset": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "NATIVE"
+        },
+        "symbol": {
+          "const": "MON"
+        },
+        "decimals": {
+          "const": 18
+        }
+      },
+      "required": [
+        "kind",
+        "symbol",
+        "decimals"
+      ],
+      "additionalProperties": false
+    },
+    "AgentProfile": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "agentRef": {
+          "$ref": "#/$defs/AgentRef"
+        },
+        "registration": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "agentCard": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "maxItems": 32
+        },
+        "a2aVersion": {
+          "const": "1.0"
+        },
+        "binding": {
+          "const": "HTTP+JSON"
+        },
+        "profileVersion": {
+          "const": 1
+        },
+        "extensionUri": {
+          "const": "urn:agentlance:a2a:1"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "agentRef",
+        "registration",
+        "agentCard",
+        "capabilities",
+        "a2aVersion",
+        "binding",
+        "profileVersion",
+        "extensionUri"
+      ],
+      "additionalProperties": false
+    },
+    "DelegationLimits": {
+      "type": "object",
+      "properties": {
+        "maxDepth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "maxChildren": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        }
+      },
+      "required": [
+        "maxDepth",
+        "maxChildren"
+      ],
+      "additionalProperties": false
+    },
+    "TaskTerms": {
+      "type": "object",
+      "properties": {
+        "policyVersion": {
+          "const": 1
+        },
+        "refundAddress": {
+          "$ref": "#/$defs/Address"
+        },
+        "asset": {
+          "$ref": "#/$defs/Asset"
+        },
+        "budgetAtoms": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Uint96"
+            },
+            {
+              "not": {
+                "const": "0"
+              }
+            }
+          ]
+        },
+        "input": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "outputSchema": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "taskFamily": {
+          "const": "structured-output-v1"
+        },
+        "alphaNum": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Uint96"
+            },
+            {
+              "not": {
+                "const": "0"
+              }
+            }
+          ]
+        },
+        "alphaDen": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Uint96"
+            },
+            {
+              "not": {
+                "const": "0"
+              }
+            }
+          ]
+        },
+        "biddingClose": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "allocationBy": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "acceptBy": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "resultBy": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "validationBy": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "validator": {
+          "$ref": "#/$defs/Address"
+        },
+        "validationPolicy": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "delegation": {
+          "$ref": "#/$defs/DelegationLimits"
+        },
+        "retryOf": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TaskRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "policyVersion",
+        "refundAddress",
+        "asset",
+        "budgetAtoms",
+        "input",
+        "outputSchema",
+        "taskFamily",
+        "alphaNum",
+        "alphaDen",
+        "biddingClose",
+        "allocationBy",
+        "acceptBy",
+        "resultBy",
+        "validationBy",
+        "validator",
+        "validationPolicy",
+        "delegation",
+        "retryOf"
+      ],
+      "additionalProperties": false
+    },
+    "TaskSpec": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "taskRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "requester": {
+          "$ref": "#/$defs/Address"
+        },
+        "terms": {
+          "$ref": "#/$defs/TaskTerms"
+        },
+        "parentRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TaskRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rootRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "createdAt": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "createdBlock": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "reputationSnapshotBlock": {
+          "$ref": "#/$defs/Uint64"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "taskRef",
+        "requester",
+        "terms",
+        "parentRef",
+        "rootRef",
+        "depth",
+        "createdAt",
+        "createdBlock",
+        "reputationSnapshotBlock"
+      ],
+      "additionalProperties": false
+    },
+    "Counters": {
+      "type": "object",
+      "properties": {
+        "successes": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "failures": {
+          "$ref": "#/$defs/Uint64"
+        }
+      },
+      "required": [
+        "successes",
+        "failures"
+      ],
+      "additionalProperties": false
+    },
+    "BidOffer": {
+      "type": "object",
+      "properties": {
+        "taskRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "agentRef": {
+          "$ref": "#/$defs/AgentRef"
+        },
+        "bidAtoms": {
+          "$ref": "#/$defs/Uint96"
+        },
+        "executionSigner": {
+          "$ref": "#/$defs/Address"
+        },
+        "payout": {
+          "$ref": "#/$defs/Address"
+        },
+        "profileDigest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "taskRef",
+        "agentRef",
+        "bidAtoms",
+        "executionSigner",
+        "payout",
+        "profileDigest"
+      ],
+      "additionalProperties": false
+    },
+    "Bid": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "offer": {
+          "$ref": "#/$defs/BidOffer"
+        },
+        "ownerAtBid": {
+          "$ref": "#/$defs/Address"
+        },
+        "snapshotBlock": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "counters": {
+          "$ref": "#/$defs/Counters"
+        },
+        "p": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "score": {
+          "$ref": "#/$defs/Int256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "offer",
+        "ownerAtBid",
+        "snapshotBlock",
+        "counters",
+        "p",
+        "score"
+      ],
+      "additionalProperties": false
+    },
+    "Allocation": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "taskRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "mechanismVersion": {
+          "const": 1
+        },
+        "outcome": {
+          "enum": [
+            "AWARDED",
+            "UNALLOCATED"
+          ]
+        },
+        "winner": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AgentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "awardId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "winningScore": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Int256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "secondScore": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Int256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "criticalAtoms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Uint96"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reservedAtoms": {
+          "$ref": "#/$defs/Uint96"
+        },
+        "allocatedAt": {
+          "$ref": "#/$defs/Uint64"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "taskRef",
+        "mechanismVersion",
+        "outcome",
+        "winner",
+        "awardId",
+        "winningScore",
+        "secondScore",
+        "criticalAtoms",
+        "reservedAtoms",
+        "allocatedAt"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "AWARDED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "winner": {
+                "$ref": "#/$defs/AgentRef"
+              },
+              "awardId": {
+                "const": 1
+              },
+              "winningScore": {
+                "$ref": "#/$defs/Int256"
+              },
+              "secondScore": {
+                "$ref": "#/$defs/Int256"
+              },
+              "criticalAtoms": {
+                "$ref": "#/$defs/Uint96"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "winner": {
+                "type": "null"
+              },
+              "awardId": {
+                "const": 0
+              },
+              "winningScore": {
+                "type": "null"
+              },
+              "secondScore": {
+                "type": "null"
+              },
+              "criticalAtoms": {
+                "type": "null"
+              },
+              "reservedAtoms": {
+                "const": "0"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ResultCommitment": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "executionRef": {
+          "$ref": "#/$defs/ExecutionRef"
+        },
+        "artifact": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "submittedAt": {
+          "$ref": "#/$defs/Uint64"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "executionRef",
+        "artifact",
+        "submittedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ValidationRecord": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "executionRef": {
+          "$ref": "#/$defs/ExecutionRef"
+        },
+        "agentRef": {
+          "$ref": "#/$defs/AgentRef"
+        },
+        "resultDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "validationPolicyDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "verdict": {
+          "enum": [
+            "FAIL",
+            "PASS"
+          ]
+        },
+        "evidence": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "validator": {
+          "$ref": "#/$defs/Address"
+        },
+        "nonce": {
+          "$ref": "#/$defs/Uint256"
+        },
+        "expiry": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "signature": {
+          "$ref": "#/$defs/Signature"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "executionRef",
+        "agentRef",
+        "resultDigest",
+        "validationPolicyDigest",
+        "verdict",
+        "evidence",
+        "validator",
+        "nonce",
+        "expiry",
+        "signature"
+      ],
+      "additionalProperties": false
+    },
+    "TerminalReason": {
+      "enum": [
+        "SUCCESS",
+        "VALIDATION_FAILED",
+        "NO_SHOW",
+        "EXECUTION_TIMEOUT",
+        "VALIDATOR_TIMEOUT",
+        "UNALLOCATED",
+        "ALLOCATION_EXPIRED",
+        "CANCELLED"
+      ]
+    },
+    "SettlementReceipt": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "taskRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "reason": {
+          "$ref": "#/$defs/TerminalReason"
+        },
+        "winner": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AgentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payout": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Address"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "refundAddress": {
+          "$ref": "#/$defs/Address"
+        },
+        "budgetAtoms": {
+          "$ref": "#/$defs/Uint96"
+        },
+        "reservedAtoms": {
+          "$ref": "#/$defs/Uint96"
+        },
+        "paidAtoms": {
+          "$ref": "#/$defs/Uint96"
+        },
+        "refundAtoms": {
+          "$ref": "#/$defs/Uint96"
+        },
+        "resultDigest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ValidationRecord"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "counterEffect": {
+          "enum": [
+            "SUCCESS",
+            "FAILURE",
+            "NONE"
+          ]
+        },
+        "settledAt": {
+          "$ref": "#/$defs/Uint64"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "taskRef",
+        "reason",
+        "winner",
+        "payout",
+        "refundAddress",
+        "budgetAtoms",
+        "reservedAtoms",
+        "paidAtoms",
+        "refundAtoms",
+        "resultDigest",
+        "validation",
+        "counterEffect",
+        "settledAt"
+      ],
+      "additionalProperties": false
+    },
+    "ReputationEvidence": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "receiptRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "agentRef": {
+          "$ref": "#/$defs/AgentRef"
+        },
+        "taskFamily": {
+          "const": "structured-output-v1"
+        },
+        "outcome": {
+          "enum": [
+            "SUCCESS",
+            "FAILURE"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/TerminalReason"
+        },
+        "validationPolicyDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "resultDigest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidenceDigest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "receiptRef",
+        "agentRef",
+        "taskFamily",
+        "outcome",
+        "reason",
+        "validationPolicyDigest",
+        "resultDigest",
+        "evidenceDigest"
+      ],
+      "additionalProperties": false
+    },
+    "MoneyUnit": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "enum": [
+            "MON",
+            "USD"
+          ]
+        },
+        "decimals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18
+        }
+      },
+      "required": [
+        "currency",
+        "decimals"
+      ],
+      "additionalProperties": false
+    },
+    "Rational": {
+      "type": "object",
+      "properties": {
+        "numerator": {
+          "$ref": "#/$defs/Uint256"
+        },
+        "denominator": {
+          "$ref": "#/$defs/Uint256"
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator"
+      ],
+      "additionalProperties": false
+    },
+    "CostScenario": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "probabilityPpm": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "costAtoms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "probabilityPpm",
+        "costAtoms"
+      ],
+      "additionalProperties": false
+    },
+    "CostEstimate": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "estimateId": {
+          "$ref": "#/$defs/Digest"
+        },
+        "taskRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "inputDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "runtimeDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "pricingDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "estimatorVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "createdAt": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "unit": {
+          "$ref": "#/$defs/MoneyUnit"
+        },
+        "scenarios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CostScenario"
+          },
+          "maxItems": 64
+        },
+        "meanAtoms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "p50Atoms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "p80Atoms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "p95Atoms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sampleCount": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "fallback": {
+          "enum": [
+            "MIXTURE",
+            "HISTORY",
+            "JEV",
+            "BOUNDS",
+            "ABSTAIN"
+          ]
+        },
+        "tail": {
+          "enum": [
+            "BOUNDED",
+            "UNBOUNDED",
+            "UNKNOWN"
+          ]
+        },
+        "coverage": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "estimateId",
+        "taskRef",
+        "inputDigest",
+        "runtimeDigest",
+        "pricingDigest",
+        "estimatorVersion",
+        "createdAt",
+        "expiresAt",
+        "unit",
+        "scenarios",
+        "meanAtoms",
+        "p50Atoms",
+        "p80Atoms",
+        "p95Atoms",
+        "sampleCount",
+        "fallback",
+        "tail",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "CostItem": {
+      "type": "object",
+      "properties": {
+        "expenseId": {
+          "$ref": "#/$defs/Digest"
+        },
+        "category": {
+          "enum": [
+            "EXECUTION",
+            "FORECAST",
+            "VALIDATION",
+            "GAS",
+            "CHILD_PAYMENT"
+          ]
+        },
+        "resource": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Rational"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "quantityUnit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "costAtoms": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit": {
+          "$ref": "#/$defs/MoneyUnit"
+        },
+        "provenance": {
+          "enum": [
+            "PROVIDER_ATTESTED",
+            "OPERATOR_REPORTED",
+            "INCOMPLETE"
+          ]
+        },
+        "providerRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Uri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "expenseId",
+        "category",
+        "resource",
+        "quantity",
+        "quantityUnit",
+        "costAtoms",
+        "unit",
+        "provenance",
+        "providerRef"
+      ],
+      "additionalProperties": false
+    },
+    "CostReport": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "reportId": {
+          "$ref": "#/$defs/Digest"
+        },
+        "executionRef": {
+          "$ref": "#/$defs/ExecutionRef"
+        },
+        "estimateId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "completeness": {
+          "enum": [
+            "COMPLETE",
+            "INCOMPLETE",
+            "CENSORED"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CostItem"
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "reportId",
+        "executionRef",
+        "estimateId",
+        "observedAt",
+        "completeness",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "OutputShape": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "string"
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4096
+            }
+          },
+          "required": [
+            "type",
+            "maxLength"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "integer"
+            },
+            "minimum": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "type",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "boolean"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "array"
+            },
+            "maxItems": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 64
+            },
+            "items": {
+              "$ref": "#/$defs/OutputShape"
+            }
+          },
+          "required": [
+            "type",
+            "maxItems",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "object"
+            },
+            "properties": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$"
+              },
+              "maxProperties": 32,
+              "additionalProperties": {
+                "$ref": "#/$defs/OutputShape"
+              }
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "uniqueItems": true,
+              "maxItems": 32
+            },
+            "additionalProperties": {
+              "const": false
+            }
+          },
+          "required": [
+            "type",
+            "properties",
+            "required",
+            "additionalProperties"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Predicate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "equalsInput"
+            },
+            "outputPointer": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "inputPointer": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          "required": [
+            "op",
+            "outputPointer",
+            "inputPointer"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "equalsLiteral"
+            },
+            "outputPointer": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "literal": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 4096
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              ]
+            }
+          },
+          "required": [
+            "op",
+            "outputPointer",
+            "literal"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ValidationPolicy": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "template": {
+          "const": "structured-output-v1"
+        },
+        "evaluatorVersion": {
+          "const": 1
+        },
+        "outputSchemaDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "predicates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Predicate"
+          },
+          "maxItems": 32,
+          "minItems": 1
+        },
+        "maxInputBytes": {
+          "const": 1048576
+        },
+        "maxResultBytes": {
+          "const": 1048576
+        },
+        "maxDepth": {
+          "const": 16
+        },
+        "maxNodes": {
+          "const": 10000
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "template",
+        "evaluatorVersion",
+        "outputSchemaDigest",
+        "predicates",
+        "maxInputBytes",
+        "maxResultBytes",
+        "maxDepth",
+        "maxNodes"
+      ],
+      "additionalProperties": false
+    },
+    "EvaluationEvidence": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "executionRef": {
+          "$ref": "#/$defs/ExecutionRef"
+        },
+        "inputDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "resultDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "validationPolicyDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "outputSchemaDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "evaluatorVersion": {
+          "const": 1
+        },
+        "verdict": {
+          "enum": [
+            "FAIL",
+            "PASS"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "PASS",
+            "RESULT_INVALID_JSON",
+            "RESULT_LIMIT",
+            "SCHEMA_MISMATCH",
+            "PREDICATE_FAILED"
+          ]
+        },
+        "failedPredicate": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 31
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "executionRef",
+        "inputDigest",
+        "resultDigest",
+        "validationPolicyDigest",
+        "outputSchemaDigest",
+        "evaluatorVersion",
+        "verdict",
+        "reason",
+        "failedPredicate"
+      ],
+      "additionalProperties": false
+    },
+    "A2AExtension": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "profileVersion": {
+          "const": 1
+        },
+        "executionRef": {
+          "$ref": "#/$defs/ExecutionRef"
+        },
+        "agentRef": {
+          "$ref": "#/$defs/AgentRef"
+        },
+        "inputDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "validationPolicyDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "profileVersion",
+        "executionRef",
+        "agentRef",
+        "inputDigest",
+        "validationPolicyDigest",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "A2ACorrelation": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "executionRef": {
+          "$ref": "#/$defs/ExecutionRef"
+        },
+        "a2aTaskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "a2aContextId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "executionRef",
+        "a2aTaskId",
+        "a2aContextId"
+      ],
+      "additionalProperties": false
+    },
+    "DeploymentManifest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "policyVersion": {
+          "const": 1
+        },
+        "network": {
+          "const": "monad-testnet"
+        },
+        "chainId": {
+          "$ref": "#/$defs/Uint256"
+        },
+        "market": {
+          "$ref": "#/$defs/Address"
+        },
+        "marketCodeHash": {
+          "$ref": "#/$defs/Digest"
+        },
+        "deploymentBlock": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "deploymentBlockHash": {
+          "$ref": "#/$defs/Digest"
+        },
+        "identityRegistry": {
+          "$ref": "#/$defs/Address"
+        },
+        "identityCodeHash": {
+          "$ref": "#/$defs/Digest"
+        },
+        "identityVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "reputationRegistry": {
+          "$ref": "#/$defs/Address"
+        },
+        "reputationCodeHash": {
+          "$ref": "#/$defs/Digest"
+        },
+        "reputationVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "feedbackPublisher": {
+          "$ref": "#/$defs/Address"
+        },
+        "publisherCodeHash": {
+          "$ref": "#/$defs/Digest"
+        },
+        "validator": {
+          "$ref": "#/$defs/Address"
+        },
+        "asset": {
+          "$ref": "#/$defs/Asset"
+        },
+        "rpcUrls": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "https-url"
+          },
+          "maxItems": 4
+        },
+        "confirmation": {
+          "const": "FINALIZED"
+        },
+        "rpcVerification": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "registryVerification": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "validatorVerification": {
+          "$ref": "#/$defs/ContentRef"
+        },
+        "minimumAcceptanceWindow": {
+          "const": "120"
+        },
+        "synthesisSlack": {
+          "const": "120"
+        },
+        "maxDepth": {
+          "const": 2
+        },
+        "maxChildren": {
+          "const": 4
+        },
+        "profileUri": {
+          "const": "urn:agentlance:a2a:1"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "policyVersion",
+        "network",
+        "chainId",
+        "market",
+        "marketCodeHash",
+        "deploymentBlock",
+        "deploymentBlockHash",
+        "identityRegistry",
+        "identityCodeHash",
+        "identityVersion",
+        "reputationRegistry",
+        "reputationCodeHash",
+        "reputationVersion",
+        "feedbackPublisher",
+        "publisherCodeHash",
+        "validator",
+        "asset",
+        "rpcUrls",
+        "confirmation",
+        "rpcVerification",
+        "registryVerification",
+        "validatorVerification",
+        "minimumAcceptanceWindow",
+        "synthesisSlack",
+        "maxDepth",
+        "maxChildren",
+        "profileUri"
+      ],
+      "additionalProperties": false
+    },
+    "BidPermit": {
+      "type": "object",
+      "properties": {
+        "taskRef": {
+          "$ref": "#/$defs/TaskRef"
+        },
+        "agentRef": {
+          "$ref": "#/$defs/AgentRef"
+        },
+        "owner": {
+          "$ref": "#/$defs/Address"
+        },
+        "executionSigner": {
+          "$ref": "#/$defs/Address"
+        },
+        "payout": {
+          "$ref": "#/$defs/Address"
+        },
+        "bidAtoms": {
+          "$ref": "#/$defs/Uint96"
+        },
+        "profileDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "nonce": {
+          "$ref": "#/$defs/Uint256"
+        },
+        "expiry": {
+          "$ref": "#/$defs/Uint64"
+        }
+      },
+      "required": [
+        "taskRef",
+        "agentRef",
+        "owner",
+        "executionSigner",
+        "payout",
+        "bidAtoms",
+        "profileDigest",
+        "nonce",
+        "expiry"
+      ],
+      "additionalProperties": false
+    },
+    "Command": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "createTask"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "terms": {
+                  "$ref": "#/$defs/TaskTerms"
+                }
+              },
+              "required": [
+                "terms"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "submitBid"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "offer": {
+                  "$ref": "#/$defs/BidOffer"
+                },
+                "permit": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/BidPermit"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "signature": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/Signature"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "offer",
+                "permit",
+                "signature"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "allocateTask"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "taskRef": {
+                  "$ref": "#/$defs/TaskRef"
+                }
+              },
+              "required": [
+                "taskRef"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "acceptAward"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "executionRef": {
+                  "$ref": "#/$defs/ExecutionRef"
+                },
+                "ownWorkReserveAtoms": {
+                  "$ref": "#/$defs/Uint96"
+                }
+              },
+              "required": [
+                "executionRef",
+                "ownWorkReserveAtoms"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "createChildTask"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "parentRef": {
+                  "$ref": "#/$defs/TaskRef"
+                },
+                "terms": {
+                  "$ref": "#/$defs/TaskTerms"
+                }
+              },
+              "required": [
+                "parentRef",
+                "terms"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "submitResult"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "executionRef": {
+                  "$ref": "#/$defs/ExecutionRef"
+                },
+                "artifact": {
+                  "$ref": "#/$defs/ContentRef"
+                }
+              },
+              "required": [
+                "executionRef",
+                "artifact"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "settleVerdict"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "record": {
+                  "$ref": "#/$defs/ValidationRecord"
+                }
+              },
+              "required": [
+                "record"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "expireTask"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "taskRef": {
+                  "$ref": "#/$defs/TaskRef"
+                }
+              },
+              "required": [
+                "taskRef"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "cancelTask"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "taskRef": {
+                  "$ref": "#/$defs/TaskRef"
+                }
+              },
+              "required": [
+                "taskRef"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "command": {
+              "const": "withdrawCredit"
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "receiver": {
+                  "$ref": "#/$defs/Address"
+                },
+                "amountAtoms": {
+                  "$ref": "#/$defs/Uint256"
+                }
+              },
+              "required": [
+                "receiver",
+                "amountAtoms"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "command",
+            "input"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Event": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "policyVersion": {
+              "const": 1
+            },
+            "name": {
+              "const": "TaskCreated"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "task": {
+                  "$ref": "#/$defs/TaskSpec"
+                }
+              },
+              "required": [
+                "task"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "policyVersion",
+            "name",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "policyVersion": {
+              "const": 1
+            },
+            "name": {
+              "const": "BidAccepted"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "bid": {
+                  "$ref": "#/$defs/Bid"
+                },
+                "permitNonce": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/Uint256"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "bid",
+                "permitNonce"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "policyVersion",
+            "name",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "policyVersion": {
+              "const": 1
+            },
+            "name": {
+              "const": "TaskAwarded"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "allocation": {
+                  "$ref": "#/$defs/Allocation"
+                }
+              },
+              "required": [
+                "allocation"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "policyVersion",
+            "name",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "policyVersion": {
+              "const": 1
+            },
+            "name": {
+              "const": "AwardAccepted"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "executionRef": {
+                  "$ref": "#/$defs/ExecutionRef"
+                },
+                "ownWorkReserveAtoms": {
+                  "$ref": "#/$defs/Uint96"
+                },
+                "acceptedAt": {
+                  "$ref": "#/$defs/Uint64"
+                }
+              },
+              "required": [
+                "executionRef",
+                "ownWorkReserveAtoms",
+                "acceptedAt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "policyVersion",
+            "name",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "policyVersion": {
+              "const": 1
+            },
+            "name": {
+              "const": "ResultSubmitted"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/$defs/ResultCommitment"
+                }
+              },
+              "required": [
+                "result"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "policyVersion",
+            "name",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "policyVersion": {
+              "const": 1
+            },
+            "name": {
+              "const": "TaskSettled"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "receipt": {
+                  "$ref": "#/$defs/SettlementReceipt"
+                }
+              },
+              "required": [
+                "receipt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "policyVersion",
+            "name",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "policyVersion": {
+              "const": 1
+            },
+            "name": {
+              "const": "CreditWithdrawn"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "owner": {
+                  "$ref": "#/$defs/Address"
+                },
+                "receiver": {
+                  "$ref": "#/$defs/Address"
+                },
+                "amountAtoms": {
+                  "$ref": "#/$defs/Uint256"
+                }
+              },
+              "required": [
+                "owner",
+                "receiver",
+                "amountAtoms"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "policyVersion",
+            "name",
+            "payload"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "EventEnvelope": {
+      "type": "object",
+      "properties": {
+        "chainId": {
+          "$ref": "#/$defs/Uint256"
+        },
+        "market": {
+          "$ref": "#/$defs/Address"
+        },
+        "blockNumber": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "blockHash": {
+          "$ref": "#/$defs/Digest"
+        },
+        "transactionHash": {
+          "$ref": "#/$defs/Digest"
+        },
+        "logIndex": {
+          "$ref": "#/$defs/Uint64"
+        },
+        "event": {
+          "$ref": "#/$defs/Event"
+        }
+      },
+      "required": [
+        "chainId",
+        "market",
+        "blockNumber",
+        "blockHash",
+        "transactionHash",
+        "logIndex",
+        "event"
+      ],
+      "additionalProperties": false
+    },
+    "Error": {
+      "enum": [
+        "INVALID_ENCODING",
+        "INVALID_RANGE",
+        "UNKNOWN_TASK",
+        "ALREADY_SETTLED",
+        "WRONG_STATE",
+        "UNAUTHORIZED",
+        "INVALID_TERMS",
+        "UNSUPPORTED_POLICY",
+        "INVALID_ASSET",
+        "INVALID_BUDGET",
+        "INVALID_ALPHA",
+        "INVALID_DEADLINES",
+        "WRONG_VALUE",
+        "IDENTITY_UNAVAILABLE",
+        "OWNER_CHANGED",
+        "WALLET_UNSET",
+        "WALLET_MISMATCH",
+        "VALIDATOR_CONFLICT",
+        "INVALID_SIGNATURE",
+        "NONCE_USED",
+        "SIGNATURE_EXPIRED",
+        "DUPLICATE_AGENT",
+        "BID_OVER_BUDGET",
+        "TOO_EARLY",
+        "DEADLINE_PASSED",
+        "INVALID_RESERVE",
+        "INVALID_PARENT",
+        "DEPTH_LIMIT",
+        "CHILD_LIMIT",
+        "ENVELOPE_EXCEEDED",
+        "CHILD_DEADLINE",
+        "INVALID_RETRY",
+        "CHILDREN_ACTIVE",
+        "RESULT_MISMATCH",
+        "POLICY_MISMATCH",
+        "INSUFFICIENT_CREDIT",
+        "TRANSFER_FAILED",
+        "REENTRANCY",
+        "TASK_LIMIT"
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/AgentRef"
+    },
+    {
+      "$ref": "#/$defs/TaskRef"
+    },
+    {
+      "$ref": "#/$defs/AgentProfile"
+    },
+    {
+      "$ref": "#/$defs/TaskSpec"
+    },
+    {
+      "$ref": "#/$defs/Bid"
+    },
+    {
+      "$ref": "#/$defs/Allocation"
+    },
+    {
+      "$ref": "#/$defs/ExecutionRef"
+    },
+    {
+      "$ref": "#/$defs/ResultCommitment"
+    },
+    {
+      "$ref": "#/$defs/ValidationRecord"
+    },
+    {
+      "$ref": "#/$defs/SettlementReceipt"
+    },
+    {
+      "$ref": "#/$defs/ReputationEvidence"
+    },
+    {
+      "$ref": "#/$defs/CostEstimate"
+    },
+    {
+      "$ref": "#/$defs/CostReport"
+    },
+    {
+      "$ref": "#/$defs/Command"
+    },
+    {
+      "$ref": "#/$defs/Event"
+    },
+    {
+      "$ref": "#/$defs/DeploymentManifest"
+    }
+  ]
+}

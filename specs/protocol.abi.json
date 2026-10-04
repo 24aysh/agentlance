@@ -1,0 +1,1808 @@
+[
+  {
+    "type": "function",
+    "name": "createTask",
+    "stateMutability": "payable",
+    "inputs": [
+      {
+        "name": "terms",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "refundAddress",
+            "type": "address"
+          },
+          {
+            "name": "asset",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "kind",
+                "type": "string"
+              },
+              {
+                "name": "symbol",
+                "type": "string"
+              },
+              {
+                "name": "decimals",
+                "type": "uint8"
+              }
+            ]
+          },
+          {
+            "name": "budgetAtoms",
+            "type": "uint96"
+          },
+          {
+            "name": "input",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "uri",
+                "type": "string"
+              },
+              {
+                "name": "digest",
+                "type": "bytes32"
+              }
+            ]
+          },
+          {
+            "name": "outputSchema",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "uri",
+                "type": "string"
+              },
+              {
+                "name": "digest",
+                "type": "bytes32"
+              }
+            ]
+          },
+          {
+            "name": "taskFamily",
+            "type": "string"
+          },
+          {
+            "name": "alphaNum",
+            "type": "uint96"
+          },
+          {
+            "name": "alphaDen",
+            "type": "uint96"
+          },
+          {
+            "name": "biddingClose",
+            "type": "uint64"
+          },
+          {
+            "name": "allocationBy",
+            "type": "uint64"
+          },
+          {
+            "name": "acceptBy",
+            "type": "uint64"
+          },
+          {
+            "name": "resultBy",
+            "type": "uint64"
+          },
+          {
+            "name": "validationBy",
+            "type": "uint64"
+          },
+          {
+            "name": "validator",
+            "type": "address"
+          },
+          {
+            "name": "validationPolicy",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "uri",
+                "type": "string"
+              },
+              {
+                "name": "digest",
+                "type": "bytes32"
+              }
+            ]
+          },
+          {
+            "name": "delegation",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "maxDepth",
+                "type": "uint32"
+              },
+              {
+                "name": "maxChildren",
+                "type": "uint32"
+              }
+            ]
+          },
+          {
+            "name": "retryOf",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "present",
+                "type": "bool"
+              },
+              {
+                "name": "value",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "taskRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "submitBid",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "offer",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "taskRef",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "chainId",
+                "type": "uint256"
+              },
+              {
+                "name": "market",
+                "type": "address"
+              },
+              {
+                "name": "taskId",
+                "type": "uint64"
+              }
+            ]
+          },
+          {
+            "name": "agentRef",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "chainId",
+                "type": "uint256"
+              },
+              {
+                "name": "identityRegistry",
+                "type": "address"
+              },
+              {
+                "name": "agentId",
+                "type": "uint256"
+              }
+            ]
+          },
+          {
+            "name": "bidAtoms",
+            "type": "uint96"
+          },
+          {
+            "name": "executionSigner",
+            "type": "address"
+          },
+          {
+            "name": "payout",
+            "type": "address"
+          },
+          {
+            "name": "profileDigest",
+            "type": "bytes32"
+          }
+        ]
+      },
+      {
+        "name": "permit",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "present",
+            "type": "bool"
+          },
+          {
+            "name": "value",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "taskRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "agentRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "identityRegistry",
+                    "type": "address"
+                  },
+                  {
+                    "name": "agentId",
+                    "type": "uint256"
+                  }
+                ]
+              },
+              {
+                "name": "owner",
+                "type": "address"
+              },
+              {
+                "name": "executionSigner",
+                "type": "address"
+              },
+              {
+                "name": "payout",
+                "type": "address"
+              },
+              {
+                "name": "bidAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "profileDigest",
+                "type": "bytes32"
+              },
+              {
+                "name": "nonce",
+                "type": "uint256"
+              },
+              {
+                "name": "expiry",
+                "type": "uint64"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "signature",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "present",
+            "type": "bool"
+          },
+          {
+            "name": "value",
+            "type": "bytes"
+          }
+        ]
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "allocateTask",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "taskRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "acceptAward",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "executionRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "taskRef",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "chainId",
+                "type": "uint256"
+              },
+              {
+                "name": "market",
+                "type": "address"
+              },
+              {
+                "name": "taskId",
+                "type": "uint64"
+              }
+            ]
+          },
+          {
+            "name": "awardId",
+            "type": "uint8"
+          }
+        ]
+      },
+      {
+        "name": "ownWorkReserveAtoms",
+        "type": "uint96"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "createChildTask",
+    "stateMutability": "payable",
+    "inputs": [
+      {
+        "name": "parentRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      },
+      {
+        "name": "terms",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "refundAddress",
+            "type": "address"
+          },
+          {
+            "name": "asset",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "kind",
+                "type": "string"
+              },
+              {
+                "name": "symbol",
+                "type": "string"
+              },
+              {
+                "name": "decimals",
+                "type": "uint8"
+              }
+            ]
+          },
+          {
+            "name": "budgetAtoms",
+            "type": "uint96"
+          },
+          {
+            "name": "input",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "uri",
+                "type": "string"
+              },
+              {
+                "name": "digest",
+                "type": "bytes32"
+              }
+            ]
+          },
+          {
+            "name": "outputSchema",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "uri",
+                "type": "string"
+              },
+              {
+                "name": "digest",
+                "type": "bytes32"
+              }
+            ]
+          },
+          {
+            "name": "taskFamily",
+            "type": "string"
+          },
+          {
+            "name": "alphaNum",
+            "type": "uint96"
+          },
+          {
+            "name": "alphaDen",
+            "type": "uint96"
+          },
+          {
+            "name": "biddingClose",
+            "type": "uint64"
+          },
+          {
+            "name": "allocationBy",
+            "type": "uint64"
+          },
+          {
+            "name": "acceptBy",
+            "type": "uint64"
+          },
+          {
+            "name": "resultBy",
+            "type": "uint64"
+          },
+          {
+            "name": "validationBy",
+            "type": "uint64"
+          },
+          {
+            "name": "validator",
+            "type": "address"
+          },
+          {
+            "name": "validationPolicy",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "uri",
+                "type": "string"
+              },
+              {
+                "name": "digest",
+                "type": "bytes32"
+              }
+            ]
+          },
+          {
+            "name": "delegation",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "maxDepth",
+                "type": "uint32"
+              },
+              {
+                "name": "maxChildren",
+                "type": "uint32"
+              }
+            ]
+          },
+          {
+            "name": "retryOf",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "present",
+                "type": "bool"
+              },
+              {
+                "name": "value",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "taskRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "submitResult",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "executionRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "taskRef",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "chainId",
+                "type": "uint256"
+              },
+              {
+                "name": "market",
+                "type": "address"
+              },
+              {
+                "name": "taskId",
+                "type": "uint64"
+              }
+            ]
+          },
+          {
+            "name": "awardId",
+            "type": "uint8"
+          }
+        ]
+      },
+      {
+        "name": "artifact",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "digest",
+            "type": "bytes32"
+          }
+        ]
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "settleVerdict",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "record",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "schemaVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "executionRef",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "taskRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "awardId",
+                "type": "uint8"
+              }
+            ]
+          },
+          {
+            "name": "agentRef",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "chainId",
+                "type": "uint256"
+              },
+              {
+                "name": "identityRegistry",
+                "type": "address"
+              },
+              {
+                "name": "agentId",
+                "type": "uint256"
+              }
+            ]
+          },
+          {
+            "name": "resultDigest",
+            "type": "bytes32"
+          },
+          {
+            "name": "validationPolicyDigest",
+            "type": "bytes32"
+          },
+          {
+            "name": "verdict",
+            "type": "uint8"
+          },
+          {
+            "name": "evidence",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "uri",
+                "type": "string"
+              },
+              {
+                "name": "digest",
+                "type": "bytes32"
+              }
+            ]
+          },
+          {
+            "name": "validator",
+            "type": "address"
+          },
+          {
+            "name": "nonce",
+            "type": "uint256"
+          },
+          {
+            "name": "expiry",
+            "type": "uint64"
+          },
+          {
+            "name": "signature",
+            "type": "bytes"
+          }
+        ]
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "expireTask",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "taskRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "cancelTask",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "taskRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "withdrawCredit",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      {
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "name": "amountAtoms",
+        "type": "uint256"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "event",
+    "name": "TaskCreated",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "data",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "schemaVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "task",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "schemaVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "taskRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "requester",
+                "type": "address"
+              },
+              {
+                "name": "terms",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "policyVersion",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "refundAddress",
+                    "type": "address"
+                  },
+                  {
+                    "name": "asset",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "kind",
+                        "type": "string"
+                      },
+                      {
+                        "name": "symbol",
+                        "type": "string"
+                      },
+                      {
+                        "name": "decimals",
+                        "type": "uint8"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "budgetAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "input",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "uri",
+                        "type": "string"
+                      },
+                      {
+                        "name": "digest",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "outputSchema",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "uri",
+                        "type": "string"
+                      },
+                      {
+                        "name": "digest",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "taskFamily",
+                    "type": "string"
+                  },
+                  {
+                    "name": "alphaNum",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "alphaDen",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "biddingClose",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "allocationBy",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "acceptBy",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "resultBy",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "validationBy",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "validator",
+                    "type": "address"
+                  },
+                  {
+                    "name": "validationPolicy",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "uri",
+                        "type": "string"
+                      },
+                      {
+                        "name": "digest",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "delegation",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "maxDepth",
+                        "type": "uint32"
+                      },
+                      {
+                        "name": "maxChildren",
+                        "type": "uint32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "retryOf",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "market",
+                            "type": "address"
+                          },
+                          {
+                            "name": "taskId",
+                            "type": "uint64"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "parentRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "market",
+                        "type": "address"
+                      },
+                      {
+                        "name": "taskId",
+                        "type": "uint64"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "rootRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "depth",
+                "type": "uint32"
+              },
+              {
+                "name": "createdAt",
+                "type": "uint64"
+              },
+              {
+                "name": "createdBlock",
+                "type": "uint64"
+              },
+              {
+                "name": "reputationSnapshotBlock",
+                "type": "uint64"
+              }
+            ]
+          }
+        ],
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "BidAccepted",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "data",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "schemaVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "bid",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "schemaVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "offer",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "taskRef",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "market",
+                        "type": "address"
+                      },
+                      {
+                        "name": "taskId",
+                        "type": "uint64"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "agentRef",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "identityRegistry",
+                        "type": "address"
+                      },
+                      {
+                        "name": "agentId",
+                        "type": "uint256"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "bidAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "executionSigner",
+                    "type": "address"
+                  },
+                  {
+                    "name": "payout",
+                    "type": "address"
+                  },
+                  {
+                    "name": "profileDigest",
+                    "type": "bytes32"
+                  }
+                ]
+              },
+              {
+                "name": "ownerAtBid",
+                "type": "address"
+              },
+              {
+                "name": "snapshotBlock",
+                "type": "uint64"
+              },
+              {
+                "name": "counters",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "successes",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "failures",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "p",
+                "type": "uint32"
+              },
+              {
+                "name": "score",
+                "type": "int256"
+              }
+            ]
+          },
+          {
+            "name": "permitNonce",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "present",
+                "type": "bool"
+              },
+              {
+                "name": "value",
+                "type": "uint256"
+              }
+            ]
+          }
+        ],
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TaskAwarded",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "data",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "schemaVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "allocation",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "schemaVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "taskRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "mechanismVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "outcome",
+                "type": "uint8"
+              },
+              {
+                "name": "winner",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "identityRegistry",
+                        "type": "address"
+                      },
+                      {
+                        "name": "agentId",
+                        "type": "uint256"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "awardId",
+                "type": "uint32"
+              },
+              {
+                "name": "winningScore",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "int256"
+                  }
+                ]
+              },
+              {
+                "name": "secondScore",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "int256"
+                  }
+                ]
+              },
+              {
+                "name": "criticalAtoms",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "uint96"
+                  }
+                ]
+              },
+              {
+                "name": "reservedAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "allocatedAt",
+                "type": "uint64"
+              }
+            ]
+          }
+        ],
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "AwardAccepted",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "data",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "schemaVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "executionRef",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "taskRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "awardId",
+                "type": "uint8"
+              }
+            ]
+          },
+          {
+            "name": "ownWorkReserveAtoms",
+            "type": "uint96"
+          },
+          {
+            "name": "acceptedAt",
+            "type": "uint64"
+          }
+        ],
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "ResultSubmitted",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "data",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "schemaVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "result",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "schemaVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "executionRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "taskRef",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "market",
+                        "type": "address"
+                      },
+                      {
+                        "name": "taskId",
+                        "type": "uint64"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "awardId",
+                    "type": "uint8"
+                  }
+                ]
+              },
+              {
+                "name": "artifact",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "uri",
+                    "type": "string"
+                  },
+                  {
+                    "name": "digest",
+                    "type": "bytes32"
+                  }
+                ]
+              },
+              {
+                "name": "submittedAt",
+                "type": "uint64"
+              }
+            ]
+          }
+        ],
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TaskSettled",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "data",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "schemaVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "receipt",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "schemaVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "taskRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "reason",
+                "type": "uint8"
+              },
+              {
+                "name": "winner",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "identityRegistry",
+                        "type": "address"
+                      },
+                      {
+                        "name": "agentId",
+                        "type": "uint256"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "payout",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "address"
+                  }
+                ]
+              },
+              {
+                "name": "refundAddress",
+                "type": "address"
+              },
+              {
+                "name": "budgetAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "reservedAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "paidAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "refundAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "resultDigest",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "bytes32"
+                  }
+                ]
+              },
+              {
+                "name": "validation",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "schemaVersion",
+                        "type": "uint8"
+                      },
+                      {
+                        "name": "executionRef",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "taskRef",
+                            "type": "tuple",
+                            "components": [
+                              {
+                                "name": "chainId",
+                                "type": "uint256"
+                              },
+                              {
+                                "name": "market",
+                                "type": "address"
+                              },
+                              {
+                                "name": "taskId",
+                                "type": "uint64"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "awardId",
+                            "type": "uint8"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "agentRef",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "identityRegistry",
+                            "type": "address"
+                          },
+                          {
+                            "name": "agentId",
+                            "type": "uint256"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "resultDigest",
+                        "type": "bytes32"
+                      },
+                      {
+                        "name": "validationPolicyDigest",
+                        "type": "bytes32"
+                      },
+                      {
+                        "name": "verdict",
+                        "type": "uint8"
+                      },
+                      {
+                        "name": "evidence",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "uri",
+                            "type": "string"
+                          },
+                          {
+                            "name": "digest",
+                            "type": "bytes32"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "validator",
+                        "type": "address"
+                      },
+                      {
+                        "name": "nonce",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "expiry",
+                        "type": "uint64"
+                      },
+                      {
+                        "name": "signature",
+                        "type": "bytes"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "counterEffect",
+                "type": "uint8"
+              },
+              {
+                "name": "settledAt",
+                "type": "uint64"
+              }
+            ]
+          }
+        ],
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "CreditWithdrawn",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "data",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "schemaVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint8"
+          },
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "name": "amountAtoms",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ProtocolError",
+    "inputs": [
+      {
+        "name": "code",
+        "type": "uint16"
+      }
+    ]
+  }
+]

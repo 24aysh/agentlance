@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "states": {
+    "OPEN": 0,
+    "AWARDED": 1,
+    "RUNNING": 2,
+    "SUBMITTED": 3,
+    "SETTLED": 4
+  },
+  "terminalReasons": {
+    "SUCCESS": 1,
+    "VALIDATION_FAILED": 2,
+    "NO_SHOW": 3,
+    "EXECUTION_TIMEOUT": 4,
+    "VALIDATOR_TIMEOUT": 5,
+    "UNALLOCATED": 6,
+    "ALLOCATION_EXPIRED": 7,
+    "CANCELLED": 8
+  },
+  "verdicts": {
+    "FAIL": 0,
+    "PASS": 1
+  },
+  "counterEffects": {
+    "NONE": 0,
+    "SUCCESS": 1,
+    "FAILURE": 2
+  },
+  "errors": {
+    "INVALID_ENCODING": 1,
+    "INVALID_RANGE": 2,
+    "UNKNOWN_TASK": 3,
+    "ALREADY_SETTLED": 4,
+    "WRONG_STATE": 5,
+    "UNAUTHORIZED": 6,
+    "INVALID_TERMS": 7,
+    "UNSUPPORTED_POLICY": 8,
+    "INVALID_ASSET": 9,
+    "INVALID_BUDGET": 10,
+    "INVALID_ALPHA": 11,
+    "INVALID_DEADLINES": 12,
+    "WRONG_VALUE": 13,
+    "IDENTITY_UNAVAILABLE": 14,
+    "OWNER_CHANGED": 15,
+    "WALLET_UNSET": 16,
+    "WALLET_MISMATCH": 17,
+    "VALIDATOR_CONFLICT": 18,
+    "INVALID_SIGNATURE": 19,
+    "NONCE_USED": 20,
+    "SIGNATURE_EXPIRED": 21,
+    "DUPLICATE_AGENT": 22,
+    "BID_OVER_BUDGET": 23,
+    "TOO_EARLY": 24,
+    "DEADLINE_PASSED": 25,
+    "INVALID_RESERVE": 26,
+    "INVALID_PARENT": 27,
+    "DEPTH_LIMIT": 28,
+    "CHILD_LIMIT": 29,
+    "ENVELOPE_EXCEEDED": 30,
+    "CHILD_DEADLINE": 31,
+    "INVALID_RETRY": 32,
+    "CHILDREN_ACTIVE": 33,
+    "RESULT_MISMATCH": 34,
+    "POLICY_MISMATCH": 35,
+    "INSUFFICIENT_CREDIT": 36,
+    "TRANSFER_FAILED": 37,
+    "REENTRANCY": 38,
+    "TASK_LIMIT": 39
+  },
+  "commands": [
+    "createTask",
+    "submitBid",
+    "allocateTask",
+    "acceptAward",
+    "createChildTask",
+    "submitResult",
+    "settleVerdict",
+    "expireTask",
+    "cancelTask",
+    "withdrawCredit"
+  ],
+  "events": [
+    "TaskCreated",
+    "BidAccepted",
+    "TaskAwarded",
+    "AwardAccepted",
+    "ResultSubmitted",
+    "TaskSettled",
+    "CreditWithdrawn"
+  ],
+  "allocationOutcomes": {
+    "AWARDED": 0,
+    "UNALLOCATED": 1
+  }
+}

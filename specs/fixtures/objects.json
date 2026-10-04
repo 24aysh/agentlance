@@ -1,0 +1,1100 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "objects": [
+    {
+      "id": "AgentRef",
+      "type": "AgentRef",
+      "value": {
+        "chainId": "31337",
+        "identityRegistry": "0x0000000000000000000000000000000000000065",
+        "agentId": "7"
+      }
+    },
+    {
+      "id": "TaskRef",
+      "type": "TaskRef",
+      "value": {
+        "chainId": "31337",
+        "market": "0x0000000000000000000000000000000000000064",
+        "taskId": "1"
+      }
+    },
+    {
+      "id": "AgentProfile",
+      "type": "AgentProfile",
+      "value": {
+        "schemaVersion": 1,
+        "agentRef": {
+          "chainId": "31337",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7"
+        },
+        "registration": {
+          "uri": "https://fixtures.example/40.json",
+          "digest": "0x0000000000000000000000000000000000000000000000000000000000000028"
+        },
+        "agentCard": {
+          "uri": "https://fixtures.example/41.json",
+          "digest": "0x0000000000000000000000000000000000000000000000000000000000000032"
+        },
+        "capabilities": [
+          "structured-output-v1"
+        ],
+        "a2aVersion": "1.0",
+        "binding": "HTTP+JSON",
+        "profileVersion": 1,
+        "extensionUri": "urn:agentlance:a2a:1"
+      }
+    },
+    {
+      "id": "TaskSpec",
+      "type": "TaskSpec",
+      "value": {
+        "schemaVersion": 1,
+        "taskRef": {
+          "chainId": "31337",
+          "market": "0x0000000000000000000000000000000000000064",
+          "taskId": "1"
+        },
+        "requester": "0x00000000000000000000000000000000000000c8",
+        "terms": {
+          "policyVersion": 1,
+          "refundAddress": "0x00000000000000000000000000000000000000c8",
+          "asset": {
+            "kind": "NATIVE",
+            "symbol": "MON",
+            "decimals": 18
+          },
+          "budgetAtoms": "100",
+          "input": {
+            "uri": "https://fixtures.example/1.json",
+            "digest": "0x0000000000000000000000000000000000000000000000000000000000000001"
+          },
+          "outputSchema": {
+            "uri": "https://fixtures.example/2.json",
+            "digest": "0x0000000000000000000000000000000000000000000000000000000000000002"
+          },
+          "taskFamily": "structured-output-v1",
+          "alphaNum": "1",
+          "alphaDen": "100",
+          "biddingClose": "1200",
+          "allocationBy": "1300",
+          "acceptBy": "1500",
+          "resultBy": "2500",
+          "validationBy": "3000",
+          "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+          "validationPolicy": {
+            "uri": "https://fixtures.example/52.json",
+            "digest": "0x0000000000000000000000000000000000000000000000000000000000000034"
+          },
+          "delegation": {
+            "maxDepth": 2,
+            "maxChildren": 4
+          },
+          "retryOf": null
+        },
+        "parentRef": null,
+        "rootRef": {
+          "chainId": "31337",
+          "market": "0x0000000000000000000000000000000000000064",
+          "taskId": "1"
+        },
+        "depth": 0,
+        "createdAt": "1000",
+        "createdBlock": "10",
+        "reputationSnapshotBlock": "9"
+      }
+    },
+    {
+      "id": "Bid",
+      "type": "Bid",
+      "value": {
+        "schemaVersion": 1,
+        "offer": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          },
+          "agentRef": {
+            "chainId": "31337",
+            "identityRegistry": "0x0000000000000000000000000000000000000065",
+            "agentId": "7"
+          },
+          "bidAtoms": "20",
+          "executionSigner": "0x00000000000000000000000000000000000000c9",
+          "payout": "0x00000000000000000000000000000000000000ca",
+          "profileDigest": "0x0000000000000000000000000000000000000000000000000000000000000032"
+        },
+        "ownerAtBid": "0x7e5f4552091a69125d5dfcb7b8c2659029395bdf",
+        "snapshotBlock": "9",
+        "counters": {
+          "successes": "0",
+          "failures": "0"
+        },
+        "p": 500000,
+        "score": "30000000"
+      }
+    },
+    {
+      "id": "Allocation",
+      "type": "Allocation",
+      "value": {
+        "schemaVersion": 1,
+        "taskRef": {
+          "chainId": "31337",
+          "market": "0x0000000000000000000000000000000000000064",
+          "taskId": "1"
+        },
+        "mechanismVersion": 1,
+        "outcome": "AWARDED",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7"
+        },
+        "awardId": 1,
+        "winningScore": "30000000",
+        "secondScore": "0",
+        "criticalAtoms": "50",
+        "reservedAtoms": "50",
+        "allocatedAt": "1200"
+      }
+    },
+    {
+      "id": "ExecutionRef",
+      "type": "ExecutionRef",
+      "value": {
+        "taskRef": {
+          "chainId": "31337",
+          "market": "0x0000000000000000000000000000000000000064",
+          "taskId": "1"
+        },
+        "awardId": 1
+      }
+    },
+    {
+      "id": "ResultCommitment",
+      "type": "ResultCommitment",
+      "value": {
+        "schemaVersion": 1,
+        "executionRef": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          },
+          "awardId": 1
+        },
+        "artifact": {
+          "uri": "https://fixtures.example/51.json",
+          "digest": "0x0000000000000000000000000000000000000000000000000000000000000033"
+        },
+        "submittedAt": "2400"
+      }
+    },
+    {
+      "id": "ValidationRecord",
+      "type": "ValidationRecord",
+      "value": {
+        "schemaVersion": 1,
+        "executionRef": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          },
+          "awardId": 1
+        },
+        "agentRef": {
+          "chainId": "31337",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7"
+        },
+        "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+        "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+        "verdict": "PASS",
+        "evidence": {
+          "uri": "https://fixtures.example/53.json",
+          "digest": "0x0000000000000000000000000000000000000000000000000000000000000035"
+        },
+        "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+        "nonce": "4",
+        "expiry": "2900",
+        "signature": "0xb5aa3280b440858a0fb0d8ecb638c7dbad107c5ccadfddf08cfcb604ca9094855b16e7ec126dabf7161f47f5e547cdd3befef624ac339180fbee4793efab21c31c"
+      }
+    },
+    {
+      "id": "SettlementReceipt",
+      "type": "SettlementReceipt",
+      "value": {
+        "schemaVersion": 1,
+        "taskRef": {
+          "chainId": "31337",
+          "market": "0x0000000000000000000000000000000000000064",
+          "taskId": "1"
+        },
+        "reason": "SUCCESS",
+        "winner": {
+          "chainId": "31337",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7"
+        },
+        "payout": "0x00000000000000000000000000000000000000ca",
+        "refundAddress": "0x00000000000000000000000000000000000000c8",
+        "budgetAtoms": "100",
+        "reservedAtoms": "50",
+        "paidAtoms": "50",
+        "refundAtoms": "50",
+        "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+        "validation": {
+          "schemaVersion": 1,
+          "executionRef": {
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "awardId": 1
+          },
+          "agentRef": {
+            "chainId": "31337",
+            "identityRegistry": "0x0000000000000000000000000000000000000065",
+            "agentId": "7"
+          },
+          "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+          "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+          "verdict": "PASS",
+          "evidence": {
+            "uri": "https://fixtures.example/53.json",
+            "digest": "0x0000000000000000000000000000000000000000000000000000000000000035"
+          },
+          "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+          "nonce": "4",
+          "expiry": "2900",
+          "signature": "0xb5aa3280b440858a0fb0d8ecb638c7dbad107c5ccadfddf08cfcb604ca9094855b16e7ec126dabf7161f47f5e547cdd3befef624ac339180fbee4793efab21c31c"
+        },
+        "counterEffect": "SUCCESS",
+        "settledAt": "2600"
+      }
+    },
+    {
+      "id": "ReputationEvidence",
+      "type": "ReputationEvidence",
+      "value": {
+        "schemaVersion": 1,
+        "receiptRef": {
+          "chainId": "31337",
+          "market": "0x0000000000000000000000000000000000000064",
+          "taskId": "1"
+        },
+        "agentRef": {
+          "chainId": "31337",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7"
+        },
+        "taskFamily": "structured-output-v1",
+        "outcome": "SUCCESS",
+        "reason": "SUCCESS",
+        "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+        "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+        "evidenceDigest": "0x0000000000000000000000000000000000000000000000000000000000000035"
+      }
+    },
+    {
+      "id": "CostEstimate",
+      "type": "CostEstimate",
+      "value": {
+        "schemaVersion": 1,
+        "estimateId": "0x000000000000000000000000000000000000000000000000000000000000003c",
+        "taskRef": {
+          "chainId": "31337",
+          "market": "0x0000000000000000000000000000000000000064",
+          "taskId": "1"
+        },
+        "inputDigest": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "runtimeDigest": "0x000000000000000000000000000000000000000000000000000000000000003d",
+        "pricingDigest": "0x000000000000000000000000000000000000000000000000000000000000003e",
+        "estimatorVersion": "rates-v1",
+        "createdAt": "1000",
+        "expiresAt": "1100",
+        "unit": {
+          "currency": "USD",
+          "decimals": 6
+        },
+        "scenarios": [
+          {
+            "id": "short",
+            "probabilityPpm": 800000,
+            "costAtoms": "100"
+          },
+          {
+            "id": "long",
+            "probabilityPpm": 200000,
+            "costAtoms": "200"
+          }
+        ],
+        "meanAtoms": "120",
+        "p50Atoms": "100",
+        "p80Atoms": "100",
+        "p95Atoms": "200",
+        "sampleCount": "0",
+        "fallback": "BOUNDS",
+        "tail": "BOUNDED",
+        "coverage": "Synthetic finite usage bounds."
+      }
+    },
+    {
+      "id": "CostReport",
+      "type": "CostReport",
+      "value": {
+        "schemaVersion": 1,
+        "reportId": "0x000000000000000000000000000000000000000000000000000000000000003f",
+        "executionRef": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          },
+          "awardId": 1
+        },
+        "estimateId": "0x000000000000000000000000000000000000000000000000000000000000003c",
+        "observedAt": "2400",
+        "completeness": "COMPLETE",
+        "items": [
+          {
+            "expenseId": "0x0000000000000000000000000000000000000000000000000000000000000040",
+            "category": "EXECUTION",
+            "resource": "tokens",
+            "quantity": {
+              "numerator": "100",
+              "denominator": "1"
+            },
+            "quantityUnit": "token",
+            "costAtoms": "100",
+            "unit": {
+              "currency": "USD",
+              "decimals": 6
+            },
+            "provenance": "OPERATOR_REPORTED",
+            "providerRef": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "ValidationPolicy",
+      "type": "ValidationPolicy",
+      "value": {
+        "schemaVersion": 1,
+        "template": "structured-output-v1",
+        "evaluatorVersion": 1,
+        "outputSchemaDigest": "0x0000000000000000000000000000000000000000000000000000000000000002",
+        "predicates": [
+          {
+            "op": "equalsInput",
+            "outputPointer": "/answer",
+            "inputPointer": "/expected"
+          }
+        ],
+        "maxInputBytes": 1048576,
+        "maxResultBytes": 1048576,
+        "maxDepth": 16,
+        "maxNodes": 10000
+      }
+    },
+    {
+      "id": "OutputShape",
+      "type": "OutputShape",
+      "value": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "EvaluationEvidence",
+      "type": "EvaluationEvidence",
+      "value": {
+        "schemaVersion": 1,
+        "executionRef": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          },
+          "awardId": 1
+        },
+        "inputDigest": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+        "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+        "outputSchemaDigest": "0x0000000000000000000000000000000000000000000000000000000000000002",
+        "evaluatorVersion": 1,
+        "verdict": "PASS",
+        "reason": "PASS",
+        "failedPredicate": null
+      }
+    },
+    {
+      "id": "A2AExtension",
+      "type": "A2AExtension",
+      "value": {
+        "schemaVersion": 1,
+        "profileVersion": 1,
+        "executionRef": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          },
+          "awardId": 1
+        },
+        "agentRef": {
+          "chainId": "31337",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7"
+        },
+        "inputDigest": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+        "result": null
+      }
+    },
+    {
+      "id": "A2ACorrelation",
+      "type": "A2ACorrelation",
+      "value": {
+        "schemaVersion": 1,
+        "executionRef": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          },
+          "awardId": 1
+        },
+        "a2aTaskId": "run-1",
+        "a2aContextId": "agentlance:31337:0x0000000000000000000000000000000000000064:1:1"
+      }
+    },
+    {
+      "id": "BidPermit",
+      "type": "BidPermit",
+      "value": {
+        "taskRef": {
+          "chainId": "31337",
+          "market": "0x0000000000000000000000000000000000000064",
+          "taskId": "1"
+        },
+        "agentRef": {
+          "chainId": "31337",
+          "identityRegistry": "0x0000000000000000000000000000000000000065",
+          "agentId": "7"
+        },
+        "owner": "0x7e5f4552091a69125d5dfcb7b8c2659029395bdf",
+        "executionSigner": "0x00000000000000000000000000000000000000c9",
+        "payout": "0x00000000000000000000000000000000000000ca",
+        "bidAtoms": "20",
+        "profileDigest": "0x0000000000000000000000000000000000000000000000000000000000000032",
+        "nonce": "3",
+        "expiry": "1900"
+      }
+    },
+    {
+      "id": "DeploymentManifest",
+      "type": "DeploymentManifest",
+      "value": {
+        "schemaVersion": 1,
+        "policyVersion": 1,
+        "network": "monad-testnet",
+        "chainId": "10143",
+        "market": "0x0000000000000000000000000000000000000064",
+        "marketCodeHash": "0x0000000000000000000000000000000000000000000000000000000000000046",
+        "deploymentBlock": "1",
+        "deploymentBlockHash": "0x0000000000000000000000000000000000000000000000000000000000000047",
+        "identityRegistry": "0x0000000000000000000000000000000000000065",
+        "identityCodeHash": "0x0000000000000000000000000000000000000000000000000000000000000048",
+        "identityVersion": "synthetic-test",
+        "reputationRegistry": "0x0000000000000000000000000000000000000067",
+        "reputationCodeHash": "0x0000000000000000000000000000000000000000000000000000000000000049",
+        "reputationVersion": "synthetic-test",
+        "feedbackPublisher": "0x0000000000000000000000000000000000000068",
+        "publisherCodeHash": "0x000000000000000000000000000000000000000000000000000000000000004a",
+        "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+        "asset": {
+          "kind": "NATIVE",
+          "symbol": "MON",
+          "decimals": 18
+        },
+        "rpcUrls": [
+          "https://rpc.example"
+        ],
+        "confirmation": "FINALIZED",
+        "rpcVerification": {
+          "uri": "https://fixtures.example/75.json",
+          "digest": "0x000000000000000000000000000000000000000000000000000000000000004b"
+        },
+        "registryVerification": {
+          "uri": "https://fixtures.example/76.json",
+          "digest": "0x000000000000000000000000000000000000000000000000000000000000004c"
+        },
+        "validatorVerification": {
+          "uri": "https://fixtures.example/77.json",
+          "digest": "0x000000000000000000000000000000000000000000000000000000000000004d"
+        },
+        "minimumAcceptanceWindow": "120",
+        "synthesisSlack": "120",
+        "maxDepth": 2,
+        "maxChildren": 4,
+        "profileUri": "urn:agentlance:a2a:1"
+      }
+    },
+    {
+      "id": "createTask",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "createTask",
+        "input": {
+          "terms": {
+            "policyVersion": 1,
+            "refundAddress": "0x00000000000000000000000000000000000000c8",
+            "asset": {
+              "kind": "NATIVE",
+              "symbol": "MON",
+              "decimals": 18
+            },
+            "budgetAtoms": "100",
+            "input": {
+              "uri": "https://fixtures.example/1.json",
+              "digest": "0x0000000000000000000000000000000000000000000000000000000000000001"
+            },
+            "outputSchema": {
+              "uri": "https://fixtures.example/2.json",
+              "digest": "0x0000000000000000000000000000000000000000000000000000000000000002"
+            },
+            "taskFamily": "structured-output-v1",
+            "alphaNum": "1",
+            "alphaDen": "100",
+            "biddingClose": "1200",
+            "allocationBy": "1300",
+            "acceptBy": "1500",
+            "resultBy": "2500",
+            "validationBy": "3000",
+            "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+            "validationPolicy": {
+              "uri": "https://fixtures.example/52.json",
+              "digest": "0x0000000000000000000000000000000000000000000000000000000000000034"
+            },
+            "delegation": {
+              "maxDepth": 2,
+              "maxChildren": 4
+            },
+            "retryOf": null
+          }
+        }
+      }
+    },
+    {
+      "id": "submitBid",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "submitBid",
+        "input": {
+          "offer": {
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x0000000000000000000000000000000000000065",
+              "agentId": "7"
+            },
+            "bidAtoms": "20",
+            "executionSigner": "0x00000000000000000000000000000000000000c9",
+            "payout": "0x00000000000000000000000000000000000000ca",
+            "profileDigest": "0x0000000000000000000000000000000000000000000000000000000000000032"
+          },
+          "permit": {
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x0000000000000000000000000000000000000065",
+              "agentId": "7"
+            },
+            "owner": "0x7e5f4552091a69125d5dfcb7b8c2659029395bdf",
+            "executionSigner": "0x00000000000000000000000000000000000000c9",
+            "payout": "0x00000000000000000000000000000000000000ca",
+            "bidAtoms": "20",
+            "profileDigest": "0x0000000000000000000000000000000000000000000000000000000000000032",
+            "nonce": "3",
+            "expiry": "1900"
+          },
+          "signature": "0xdcc0a3f3088e2419ec71a676db974e938e33d850a3b8825a6b46b8d1a0983f400aa86c92f58af438e5275ae3125cfa1e81db4afe6acb89ebb48bda689e3045c21b"
+        }
+      }
+    },
+    {
+      "id": "allocateTask",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "allocateTask",
+        "input": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "acceptAward",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "acceptAward",
+        "input": {
+          "executionRef": {
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "awardId": 1
+          },
+          "ownWorkReserveAtoms": "10"
+        }
+      }
+    },
+    {
+      "id": "createChildTask",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "createChildTask",
+        "input": {
+          "parentRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          },
+          "terms": {
+            "policyVersion": 1,
+            "refundAddress": "0x00000000000000000000000000000000000000c8",
+            "asset": {
+              "kind": "NATIVE",
+              "symbol": "MON",
+              "decimals": 18
+            },
+            "budgetAtoms": "100",
+            "input": {
+              "uri": "https://fixtures.example/1.json",
+              "digest": "0x0000000000000000000000000000000000000000000000000000000000000001"
+            },
+            "outputSchema": {
+              "uri": "https://fixtures.example/2.json",
+              "digest": "0x0000000000000000000000000000000000000000000000000000000000000002"
+            },
+            "taskFamily": "structured-output-v1",
+            "alphaNum": "1",
+            "alphaDen": "100",
+            "biddingClose": "1600",
+            "allocationBy": "1700",
+            "acceptBy": "1900",
+            "resultBy": "2100",
+            "validationBy": "2300",
+            "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+            "validationPolicy": {
+              "uri": "https://fixtures.example/52.json",
+              "digest": "0x0000000000000000000000000000000000000000000000000000000000000034"
+            },
+            "delegation": {
+              "maxDepth": 2,
+              "maxChildren": 4
+            },
+            "retryOf": null
+          }
+        }
+      }
+    },
+    {
+      "id": "submitResult",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "submitResult",
+        "input": {
+          "executionRef": {
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "awardId": 1
+          },
+          "artifact": {
+            "uri": "https://fixtures.example/51.json",
+            "digest": "0x0000000000000000000000000000000000000000000000000000000000000033"
+          }
+        }
+      }
+    },
+    {
+      "id": "settleVerdict",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "settleVerdict",
+        "input": {
+          "record": {
+            "schemaVersion": 1,
+            "executionRef": {
+              "taskRef": {
+                "chainId": "31337",
+                "market": "0x0000000000000000000000000000000000000064",
+                "taskId": "1"
+              },
+              "awardId": 1
+            },
+            "agentRef": {
+              "chainId": "31337",
+              "identityRegistry": "0x0000000000000000000000000000000000000065",
+              "agentId": "7"
+            },
+            "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+            "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+            "verdict": "PASS",
+            "evidence": {
+              "uri": "https://fixtures.example/53.json",
+              "digest": "0x0000000000000000000000000000000000000000000000000000000000000035"
+            },
+            "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+            "nonce": "4",
+            "expiry": "2900",
+            "signature": "0xb5aa3280b440858a0fb0d8ecb638c7dbad107c5ccadfddf08cfcb604ca9094855b16e7ec126dabf7161f47f5e547cdd3befef624ac339180fbee4793efab21c31c"
+          }
+        }
+      }
+    },
+    {
+      "id": "expireTask",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "expireTask",
+        "input": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "cancelTask",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "cancelTask",
+        "input": {
+          "taskRef": {
+            "chainId": "31337",
+            "market": "0x0000000000000000000000000000000000000064",
+            "taskId": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "withdrawCredit",
+      "type": "Command",
+      "value": {
+        "schemaVersion": 1,
+        "command": "withdrawCredit",
+        "input": {
+          "receiver": "0x00000000000000000000000000000000000000ca",
+          "amountAtoms": "50"
+        }
+      }
+    },
+    {
+      "id": "TaskCreated",
+      "type": "Event",
+      "value": {
+        "schemaVersion": 1,
+        "policyVersion": 1,
+        "name": "TaskCreated",
+        "payload": {
+          "task": {
+            "schemaVersion": 1,
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "requester": "0x00000000000000000000000000000000000000c8",
+            "terms": {
+              "policyVersion": 1,
+              "refundAddress": "0x00000000000000000000000000000000000000c8",
+              "asset": {
+                "kind": "NATIVE",
+                "symbol": "MON",
+                "decimals": 18
+              },
+              "budgetAtoms": "100",
+              "input": {
+                "uri": "https://fixtures.example/1.json",
+                "digest": "0x0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              "outputSchema": {
+                "uri": "https://fixtures.example/2.json",
+                "digest": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "taskFamily": "structured-output-v1",
+              "alphaNum": "1",
+              "alphaDen": "100",
+              "biddingClose": "1200",
+              "allocationBy": "1300",
+              "acceptBy": "1500",
+              "resultBy": "2500",
+              "validationBy": "3000",
+              "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+              "validationPolicy": {
+                "uri": "https://fixtures.example/52.json",
+                "digest": "0x0000000000000000000000000000000000000000000000000000000000000034"
+              },
+              "delegation": {
+                "maxDepth": 2,
+                "maxChildren": 4
+              },
+              "retryOf": null
+            },
+            "parentRef": null,
+            "rootRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "depth": 0,
+            "createdAt": "1000",
+            "createdBlock": "10",
+            "reputationSnapshotBlock": "9"
+          }
+        }
+      }
+    },
+    {
+      "id": "BidAccepted",
+      "type": "Event",
+      "value": {
+        "schemaVersion": 1,
+        "policyVersion": 1,
+        "name": "BidAccepted",
+        "payload": {
+          "bid": {
+            "schemaVersion": 1,
+            "offer": {
+              "taskRef": {
+                "chainId": "31337",
+                "market": "0x0000000000000000000000000000000000000064",
+                "taskId": "1"
+              },
+              "agentRef": {
+                "chainId": "31337",
+                "identityRegistry": "0x0000000000000000000000000000000000000065",
+                "agentId": "7"
+              },
+              "bidAtoms": "20",
+              "executionSigner": "0x00000000000000000000000000000000000000c9",
+              "payout": "0x00000000000000000000000000000000000000ca",
+              "profileDigest": "0x0000000000000000000000000000000000000000000000000000000000000032"
+            },
+            "ownerAtBid": "0x7e5f4552091a69125d5dfcb7b8c2659029395bdf",
+            "snapshotBlock": "9",
+            "counters": {
+              "successes": "0",
+              "failures": "0"
+            },
+            "p": 500000,
+            "score": "30000000"
+          },
+          "permitNonce": "3"
+        }
+      }
+    },
+    {
+      "id": "TaskAwarded",
+      "type": "Event",
+      "value": {
+        "schemaVersion": 1,
+        "policyVersion": 1,
+        "name": "TaskAwarded",
+        "payload": {
+          "allocation": {
+            "schemaVersion": 1,
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "mechanismVersion": 1,
+            "outcome": "AWARDED",
+            "winner": {
+              "chainId": "31337",
+              "identityRegistry": "0x0000000000000000000000000000000000000065",
+              "agentId": "7"
+            },
+            "awardId": 1,
+            "winningScore": "30000000",
+            "secondScore": "0",
+            "criticalAtoms": "50",
+            "reservedAtoms": "50",
+            "allocatedAt": "1200"
+          }
+        }
+      }
+    },
+    {
+      "id": "AwardAccepted",
+      "type": "Event",
+      "value": {
+        "schemaVersion": 1,
+        "policyVersion": 1,
+        "name": "AwardAccepted",
+        "payload": {
+          "executionRef": {
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "awardId": 1
+          },
+          "ownWorkReserveAtoms": "10",
+          "acceptedAt": "1400"
+        }
+      }
+    },
+    {
+      "id": "ResultSubmitted",
+      "type": "Event",
+      "value": {
+        "schemaVersion": 1,
+        "policyVersion": 1,
+        "name": "ResultSubmitted",
+        "payload": {
+          "result": {
+            "schemaVersion": 1,
+            "executionRef": {
+              "taskRef": {
+                "chainId": "31337",
+                "market": "0x0000000000000000000000000000000000000064",
+                "taskId": "1"
+              },
+              "awardId": 1
+            },
+            "artifact": {
+              "uri": "https://fixtures.example/51.json",
+              "digest": "0x0000000000000000000000000000000000000000000000000000000000000033"
+            },
+            "submittedAt": "2400"
+          }
+        }
+      }
+    },
+    {
+      "id": "TaskSettled",
+      "type": "Event",
+      "value": {
+        "schemaVersion": 1,
+        "policyVersion": 1,
+        "name": "TaskSettled",
+        "payload": {
+          "receipt": {
+            "schemaVersion": 1,
+            "taskRef": {
+              "chainId": "31337",
+              "market": "0x0000000000000000000000000000000000000064",
+              "taskId": "1"
+            },
+            "reason": "SUCCESS",
+            "winner": {
+              "chainId": "31337",
+              "identityRegistry": "0x0000000000000000000000000000000000000065",
+              "agentId": "7"
+            },
+            "payout": "0x00000000000000000000000000000000000000ca",
+            "refundAddress": "0x00000000000000000000000000000000000000c8",
+            "budgetAtoms": "100",
+            "reservedAtoms": "50",
+            "paidAtoms": "50",
+            "refundAtoms": "50",
+            "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+            "validation": {
+              "schemaVersion": 1,
+              "executionRef": {
+                "taskRef": {
+                  "chainId": "31337",
+                  "market": "0x0000000000000000000000000000000000000064",
+                  "taskId": "1"
+                },
+                "awardId": 1
+              },
+              "agentRef": {
+                "chainId": "31337",
+                "identityRegistry": "0x0000000000000000000000000000000000000065",
+                "agentId": "7"
+              },
+              "resultDigest": "0x0000000000000000000000000000000000000000000000000000000000000033",
+              "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+              "verdict": "PASS",
+              "evidence": {
+                "uri": "https://fixtures.example/53.json",
+                "digest": "0x0000000000000000000000000000000000000000000000000000000000000035"
+              },
+              "validator": "0x2b5ad5c4795c026514f8317c7a215e218dccd6cf",
+              "nonce": "4",
+              "expiry": "2900",
+              "signature": "0xb5aa3280b440858a0fb0d8ecb638c7dbad107c5ccadfddf08cfcb604ca9094855b16e7ec126dabf7161f47f5e547cdd3befef624ac339180fbee4793efab21c31c"
+            },
+            "counterEffect": "SUCCESS",
+            "settledAt": "2600"
+          }
+        }
+      }
+    },
+    {
+      "id": "CreditWithdrawn",
+      "type": "Event",
+      "value": {
+        "schemaVersion": 1,
+        "policyVersion": 1,
+        "name": "CreditWithdrawn",
+        "payload": {
+          "owner": "0x00000000000000000000000000000000000000ca",
+          "receiver": "0x00000000000000000000000000000000000000ca",
+          "amountAtoms": "50"
+        }
+      }
+    }
+  ]
+}
