@@ -1,0 +1,27 @@
+# Local Python environment and generated files
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.hypothesis/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local work, credentials and downloaded inputs
+.scratch/
+.cache/
+tmp/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+
+# Independent signing-vector checker
+node_modules/
+.pnpm-store/
