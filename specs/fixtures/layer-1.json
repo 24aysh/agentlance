@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "domain": "layer-1",
+  "cases": [
+    {
+      "id": "analytics-solo-success",
+      "initial": {
+        "paid": "50",
+        "reason": "SUCCESS",
+        "ownExecution": "20",
+        "ownGas": "2",
+        "ownForecast": "1",
+        "ownValidation": "3",
+        "childPaid": "0",
+        "childExecution": "0",
+        "childGas": "0"
+      },
+      "action": {
+        "operation": "metrics"
+      },
+      "expected": {
+        "executionAtoms": "20",
+        "overheadAtoms": "6",
+        "operatingAtoms": "26",
+        "cashProfitAtoms": "24",
+        "userSpendingAtoms": "50",
+        "executionUtility": {
+          "numerator": "4",
+          "denominator": "5"
+        }
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "analytics-solo-fail",
+      "initial": {
+        "paid": "0",
+        "reason": "VALIDATION_FAILED",
+        "ownExecution": "20",
+        "ownGas": "2",
+        "ownForecast": "1",
+        "ownValidation": "3",
+        "childPaid": "0",
+        "childExecution": "0",
+        "childGas": "0"
+      },
+      "action": {
+        "operation": "metrics"
+      },
+      "expected": {
+        "executionAtoms": "20",
+        "overheadAtoms": "6",
+        "operatingAtoms": "26",
+        "cashProfitAtoms": "-26",
+        "userSpendingAtoms": "0",
+        "executionUtility": {
+          "numerator": "-1",
+          "denominator": "5"
+        }
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "analytics-manager",
+      "initial": {
+        "paid": "100",
+        "reason": "SUCCESS",
+        "ownExecution": "10",
+        "ownGas": "5",
+        "ownForecast": "0",
+        "ownValidation": "0",
+        "childPaid": "30",
+        "childExecution": "18",
+        "childGas": "2"
+      },
+      "action": {
+        "operation": "metrics"
+      },
+      "expected": {
+        "executionAtoms": "28",
+        "overheadAtoms": "7",
+        "operatingAtoms": "35",
+        "cashProfitAtoms": "55",
+        "userSpendingAtoms": "100",
+        "executionUtility": {
+          "numerator": "18",
+          "denominator": "25"
+        }
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "analytics-parent-fails",
+      "initial": {
+        "paid": "0",
+        "reason": "VALIDATION_FAILED",
+        "ownExecution": "10",
+        "ownGas": "5",
+        "ownForecast": "0",
+        "ownValidation": "0",
+        "childPaid": "30",
+        "childExecution": "18",
+        "childGas": "2"
+      },
+      "action": {
+        "operation": "metrics"
+      },
+      "expected": {
+        "executionAtoms": "28",
+        "overheadAtoms": "7",
+        "operatingAtoms": "35",
+        "cashProfitAtoms": "-45",
+        "userSpendingAtoms": "0",
+        "executionUtility": {
+          "numerator": "-7",
+          "denominator": "25"
+        }
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "analytics-unknown-verdict",
+      "initial": {
+        "paid": "0",
+        "reason": "VALIDATOR_TIMEOUT",
+        "ownExecution": "20",
+        "ownGas": "2",
+        "ownForecast": "1",
+        "ownValidation": "3",
+        "childPaid": "0",
+        "childExecution": "0",
+        "childGas": "0"
+      },
+      "action": {
+        "operation": "metrics"
+      },
+      "expected": {
+        "executionAtoms": "20",
+        "overheadAtoms": "6",
+        "operatingAtoms": "26",
+        "cashProfitAtoms": "-26",
+        "userSpendingAtoms": "0",
+        "executionUtility": null
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "analytics-duplicate-expense",
+      "initial": {
+        "sameOperator": true,
+        "costAtoms": "7"
+      },
+      "action": {
+        "operation": "deduplicate"
+      },
+      "expected": {
+        "executionAtoms": "7"
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "analytics-distinct-operators",
+      "initial": {
+        "sameOperator": false,
+        "costAtoms": "7"
+      },
+      "action": {
+        "operation": "deduplicate"
+      },
+      "expected": {
+        "executionAtoms": "14"
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "analytics-missing",
+      "initial": {
+        "reportPresent": false
+      },
+      "action": {
+        "operation": "costAvailability"
+      },
+      "expected": {
+        "executionAtoms": null,
+        "overheadAtoms": null,
+        "operatingAtoms": null,
+        "unavailableReasons": [
+          "MISSING_REPORT"
+        ]
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "analytics-units",
+      "initial": {
+        "currency": "USD",
+        "decimals": 6
+      },
+      "action": {
+        "operation": "costAvailability"
+      },
+      "expected": {
+        "executionAtoms": null,
+        "overheadAtoms": null,
+        "operatingAtoms": null,
+        "unavailableReasons": [
+          "UNIT_MISMATCH"
+        ]
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "alias-credit",
+      "initial": {
+        "budgetAtoms": "100",
+        "reservedAtoms": "50",
+        "payoutEqualsRefund": true
+      },
+      "action": {
+        "operation": "settle"
+      },
+      "expected": {
+        "creditAtoms": "100",
+        "escrowAtoms": "0"
+      },
+      "events": [
+        "TaskSettled"
+      ],
+      "error": null
+    },
+    {
+      "id": "checkpoint-at-ceiling",
+      "initial": {
+        "successes": "18446744073709551614",
+        "failures": "0",
+        "taskCount": "18446744073709551615"
+      },
+      "action": {
+        "operation": "observe"
+      },
+      "expected": {
+        "successes": "18446744073709551615",
+        "failures": "0"
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "expired-permit-rollback",
+      "initial": {
+        "expiry": "1100",
+        "now": "1100"
+      },
+      "action": {
+        "operation": "submitBid"
+      },
+      "expected": {
+        "bidCount": 0,
+        "consumedNonces": 0
+      },
+      "events": [],
+      "error": "SIGNATURE_EXPIRED"
+    },
+    {
+      "id": "nonce-type-separation",
+      "initial": {
+        "nonce": "7",
+        "primaryTypes": [
+          "BidPermit",
+          "ValidationVerdict"
+        ]
+      },
+      "action": {
+        "operation": "nonceKey"
+      },
+      "expected": {
+        "equal": false
+      },
+      "events": [],
+      "error": null
+    },
+    {
+      "id": "wrong-observation-binding",
+      "initial": {
+        "observationChainId": "1",
+        "commandChainId": "31337"
+      },
+      "action": {
+        "operation": "submitBid"
+      },
+      "expected": {
+        "bidCount": 0,
+        "consumedNonces": 0
+      },
+      "events": [],
+      "error": "INVALID_SIGNATURE"
+    },
+    {
+      "id": "terminal-parent-late-child",
+      "initial": {
+        "parentReason": "EXECUTION_TIMEOUT",
+        "childState": "RUNNING",
+        "childBudgetAtoms": "30"
+      },
+      "action": {
+        "operation": "expireChild"
+      },
+      "expected": {
+        "paidAtoms": "0",
+        "refundAtoms": "30",
+        "reservedChildBudgets": "0",
+        "activeChildren": 0,
+        "parentReceiptChanged": false
+      },
+      "events": [
+        "TaskSettled"
+      ],
+      "error": null
+    },
+    {
+      "id": "tree-success",
+      "initial": {
+        "rootBudget": "100",
+        "rootAlphaDen": "100",
+        "rootBids": [
+          "20",
+          "30"
+        ],
+        "ownReserve": "5",
+        "childBudget": "20",
+        "childAlphaDen": "20",
+        "childBid": "2",
+        "managerExecution": "4",
+        "managerGas": "1",
+        "childExecution": "3",
+        "childGas": "1"
+      },
+      "action": {
+        "operation": "tree",
+        "ending": "SUCCESS"
+      },
+      "expected": {
+        "rootPaid": "30",
+        "rootRefund": "70",
+        "childPaid": "10",
+        "childRefund": "10",
+        "withdrawnAtoms": "120",
+        "executionAtoms": "7",
+        "overheadAtoms": "2",
+        "operatingAtoms": "9",
+        "cashProfitAtoms": "15",
+        "executionUtility": {
+          "numerator": "93",
+          "denominator": "100"
+        }
+      },
+      "events": [
+        "TaskCreated",
+        "BidAccepted",
+        "BidAccepted",
+        "TaskAwarded",
+        "AwardAccepted",
+        "TaskCreated",
+        "BidAccepted",
+        "TaskAwarded",
+        "AwardAccepted",
+        "ResultSubmitted",
+        "TaskSettled",
+        "ResultSubmitted",
+        "TaskSettled",
+        "CreditWithdrawn",
+        "CreditWithdrawn",
+        "CreditWithdrawn",
+        "CreditWithdrawn"
+      ],
+      "error": null
+    },
+    {
+      "id": "tree-parent-timeout",
+      "initial": {
+        "rootBudget": "100",
+        "rootAlphaDen": "100",
+        "rootBids": [
+          "20",
+          "30"
+        ],
+        "ownReserve": "5",
+        "childBudget": "20",
+        "childAlphaDen": "20",
+        "childBid": "2",
+        "managerExecution": "4",
+        "managerGas": "1",
+        "childExecution": "3",
+        "childGas": "1"
+      },
+      "action": {
+        "operation": "tree",
+        "ending": "EXECUTION_TIMEOUT"
+      },
+      "expected": {
+        "rootPaid": "0",
+        "rootRefund": "100",
+        "childPaid": "10",
+        "childRefund": "10",
+        "withdrawnAtoms": "120",
+        "executionAtoms": "7",
+        "overheadAtoms": "2",
+        "operatingAtoms": "9",
+        "cashProfitAtoms": "-15",
+        "executionUtility": null
+      },
+      "events": [
+        "TaskCreated",
+        "BidAccepted",
+        "BidAccepted",
+        "TaskAwarded",
+        "AwardAccepted",
+        "TaskCreated",
+        "BidAccepted",
+        "TaskAwarded",
+        "AwardAccepted",
+        "ResultSubmitted",
+        "TaskSettled",
+        "TaskSettled",
+        "CreditWithdrawn",
+        "CreditWithdrawn",
+        "CreditWithdrawn"
+      ],
+      "error": null
+    }
+  ]
+}
