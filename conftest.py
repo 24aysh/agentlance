@@ -18,6 +18,19 @@ from modules.market_core.state import (
 )
 from modules.market_core.transitions import applyCommand
 
+
+@pytest.fixture
+def l2(tmp_path):
+    """Real adapters over isolated ASGI networking; socket coverage is a separate test."""
+    import asyncio
+
+    from tests.layer2_support import Layer2Rig
+
+    rig = Layer2Rig(tmp_path)
+    yield rig
+    asyncio.run(rig.close())
+
+
 ROOT = Path(__file__).parent
 SCHEMA = json.loads((ROOT / "specs/schemas/protocol.schema.json").read_text())
 OBJECTS = {
@@ -156,3 +169,23 @@ class Harness:
 @pytest.fixture
 def harness():
     return Harness()
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--l2-target", help="Local JSON descriptor for an external A2A conformance target"
+    )
+
+
+@pytest.fixture
+def target(request):
+    import asyncio
+
+    from tests.conformance.target import ExternalTarget
+
+    descriptor = request.config.getoption("--l2-target")
+    if descriptor is None:
+        return request.getfixturevalue("l2")
+    target = ExternalTarget(json.loads(Path(descriptor).read_text()))
+    request.addfinalizer(lambda: asyncio.run(target.http.aclose()))
+    return target

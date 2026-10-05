@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "byteHashes": {
+    "input.json": "0xd587891f0356b0fec2d227918ec777c9626ce70567e90299ef32e0ce37045c2b",
+    "result.json": "0xd587891f0356b0fec2d227918ec777c9626ce70567e90299ef32e0ce37045c2b",
+    "output-schema.json": "0x1dd4190640c35e054eda21970d8ba39e369c5f0472af205d1e3b5db687779e4c",
+    "policy.json": "0x1dc6a0fc6b3b0b169cbd2109ac43c3b146623b5d9cc351979522b4a2062469dd",
+    "card.json": "0x310a49760e25c7ec681d7efd764ace41c61ae8280e1b1374992f386ec067c6ce",
+    "registration.json": "0x3a0cf99309b9e93c175eea11469661033d2aaa69a0fd3d6eda8f4902edd52b4d"
+  },
+  "cases": [
+    {
+      "id": "pending-award",
+      "initial": "L2 fixture award PENDING at 1200",
+      "action": "receive hint; advance",
+      "expected": {
+        "phase": "WAIT",
+        "invocations": 0,
+        "status": "AWARDED",
+        "events": 3
+      }
+    },
+    {
+      "id": "normal-result",
+      "initial": "L2 fixture finalized award; acceptance at 1400",
+      "action": "advance through result commitment",
+      "expected": {
+        "phase": "RESULT_RECORDED",
+        "invocations": 1,
+        "status": "SUBMITTED",
+        "events": 5
+      }
+    },
+    {
+      "id": "uncertain-start",
+      "initial": "Accepted fixture obligation; durable STARTED claim",
+      "action": "restart agent; advance",
+      "expected": {
+        "phase": "INTERRUPTED",
+        "invocations": 0,
+        "status": "RUNNING",
+        "events": 4
+      }
+    },
+    {
+      "id": "expired-award",
+      "initial": "Finalized award without acceptance",
+      "action": "receive hint; advance time to acceptBy=1500; advance",
+      "expected": {
+        "phase": "STOPPED",
+        "invocations": 0,
+        "status": "AWARDED",
+        "events": 3
+      }
+    },
+    {
+      "id": "known-replay",
+      "initial": "Result committed; durable correlation and artifact",
+      "action": "restart; receive same hint; advance",
+      "expected": {
+        "phase": "RESULT_RECORDED",
+        "invocations": 1,
+        "status": "SUBMITTED",
+        "events": 5
+      }
+    }
+  ],
+  "requirements": {
+    "L2-01": [
+      "R",
+      "H"
+    ],
+    "L2-02": [
+      "W",
+      "C"
+    ],
+    "L2-03": [
+      "P",
+      "E"
+    ],
+    "L2-04": [
+      "S",
+      "I"
+    ],
+    "L2-05": [
+      "I",
+      "R"
+    ],
+    "L2-06": [
+      "J",
+      "C"
+    ],
+    "L2-07": [
+      "E"
+    ]
+  },
+  "groups": {
+    "R": [
+      "testResolvedExactBytes",
+      "testMalformedCard",
+      "testResolutionFailure",
+      "testIdentityIntegerRange"
+    ],
+    "H": [
+      "testFetchBoundary",
+      "testDestinationPolicy",
+      "testBadUri",
+      "testConnectionRebindingRejected",
+      "testTlsFailureAndIncompleteBody"
+    ],
+    "S": [
+      "testFrozenSignatures",
+      "testFrozenTampering",
+      "testSignatureBoundary",
+      "testContractAbi",
+      "testAdmissionAuthority",
+      "testContractSignatureReadBoundary"
+    ],
+    "I": [
+      "testTransferPreservesObligation",
+      "testAdmissionAuthority",
+      "testExecutionGuardFailures",
+      "testRestoredWalletNewOwner"
+    ],
+    "P": [
+      "testChildFundingAndAmbiguousResponse",
+      "testBridgeCannotInventAuthority",
+      "testCompleteDuplicateRestart",
+      "testLostWriteResponseReconciles",
+      "testUnknownWriteNeverResends"
+    ],
+    "W": [
+      "testPinnedSdkHttpJson",
+      "testHttpProfile",
+      "testStandardUnsupportedOperations",
+      "testClientCredentialScope",
+      "testLargeIdsOnWire",
+      "testStrictClientResponses"
+    ],
+    "C": [
+      "testSdkArtifactAndOrdering",
+      "testCorrelationConflicts",
+      "testJournalImmutableResult",
+      "testUntrustedResultBinding"
+    ],
+    "J": [
+      "testReviewedCases",
+      "testCrashPhases",
+      "testFinalityConflictPersists",
+      "testFinalizedObligationChangeHalts",
+      "testTentativeInvalidation",
+      "testProviderUnavailableWaits",
+      "testJournalLockSettingsAndCorruption",
+      "testWorkerFailureIsNotEconomicFailure"
+    ],
+    "E": [
+      "testTwoProcessDemo",
+      "testExactWorkerBytes",
+      "testUnsupportedInput",
+      "testIndependentFixtureHashes",
+      "testReferenceImportBoundary"
+    ]
+  },
+  "replayFixtures": {
+    "duplicate-a2a": "testCompleteDuplicateRestart",
+    "a2a-out-of-order": "testSdkArtifactAndOrdering",
+    "a2a-failure-no-refund": "testWorkerFailureIsNotEconomicFailure",
+    "unfinalized-award-hint": "testCompleteDuplicateRestart",
+    "forged-a2a-hint": "testInvalidAwardCannotPoison",
+    "profile-conflicting-digest": "testCorrelationConflicts",
+    "transfer-after-bid": "testTransferPreservesObligation",
+    "transferred-new-bid-unset-wallet": "testResolutionFailure",
+    "contract-owner-valid-magic": "testAdmissionAuthority",
+    "contract-owner-wrong-magic": "testContractAbi",
+    "contract-owner-reverts": "testAdmissionAuthority",
+    "contract-owner-short-return": "testAdmissionAuthority",
+    "approved-operator-cannot-bid": "testAdmissionAuthority",
+    "finality-rpc-unavailable": "testProviderUnavailableWaits",
+    "restored-wallet-new-owner-bid": "testRestoredWalletNewOwner"
+  }
+}
