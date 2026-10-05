@@ -3,12 +3,14 @@ name = "agentlance"
 version = "0.0.0"
 description = "Protocol specifications for the AgentLance decentralized agent market"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = ["jsonschema>=4.25,<5"]
 
 [dependency-groups]
 dev = [
   "eth-account>=0.13.7,<0.14",
-  "jsonschema>=4.25,<5",
+  "pytest>=8,<9",
+  "hypothesis>=6,<7",
+  "coverage>=7,<8",
   "ruff>=0.14,<1",
 ]
 
@@ -21,3 +23,17 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["modules", "tests"]
+pythonpath = ["."]
+python_functions = ["test*"]
+
+[tool.coverage.run]
+branch = true
+source = ["modules/domain", "modules/market_core"]
+omit = ["*/test_*.py"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
