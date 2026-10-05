@@ -1,0 +1,1 @@
+{"schemaVersion":1,"template":"structured-output-v1","evaluatorVersion":1,"outputSchemaDigest":"0x1dd4190640c35e054eda21970d8ba39e369c5f0472af205d1e3b5db687779e4c","predicates":[{"op":"equalsInput","outputPointer":"/value","inputPointer":"/value"}],"maxInputBytes":1048576,"maxResultBytes":1048576,"maxDepth":16,"maxNodes":10000}
