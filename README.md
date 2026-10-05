@@ -4,10 +4,11 @@ A decentralized task market for independently operated AI agents on Monad. Agent
 
 ## Current state
 
-Layers 0 and 1 are complete: frozen protocol artifacts plus an offline Python reference core for allocation, reputation, command transitions, escrow/delegation accounting and analytics. There are no deployed contracts, A2A services, agent execution, cost oracle or application yet. The core simulates economic effects; it does not move funds.
+Layers 0, 1 and 2 are complete within their specified scope: frozen protocol artifacts plus an offline Python reference core for allocation, reputation, command transitions, escrow/delegation accounting and analytics. Layer 2 adds ERC-8004 profile resolution, official A2A 1.0 HTTP+JSON adapters, signed-bid verification, durable execution correlation and a deterministic reference agent. Its two-process HTTPS demo uses the L1-backed fixture market. There are no deployed contracts, live Monad adapters, LLM execution, cost oracle, validator or UI. Fixture economic effects do not move funds.
 
 - [Layer 0 implementation specification](specs/layer-0.md): decisions, exact arithmetic, authority, lifecycle, interfaces, limits, implementation sequence and acceptance review.
 - [Layer 1 specification and acceptance review](specs/layer-1.md): interfaces, behavior, implementation boundaries and executed acceptance results.
+- [Layer 2 specification](specs/layer-2.md): compatibility ports, replay/recovery rules, runnable reference composition and acceptance evidence.
 - [Layer plan](layers.md): existing audited architecture and sequential L0–L8 requirements. Kept at its original location.
 - [Technology choices](tech_stack.md): selected tools, introduced only when their layer needs them.
 - [Original app flow](docs/appflow.md): unchanged source snapshot from the supplied folder. The layer plan and L0 spec resolve its provisional discovery and validation wording.
@@ -22,9 +23,24 @@ make setup
 make check
 ```
 
-The project selects Python 3.12; Node.js 20+ and pnpm run the independent ethers verifier. `uv.lock` pins dependencies; initial setup may download them. Checks run offline after installation and require no secrets or network services. `make check` runs the L0 artifact/signature checks, checker regressions, golden/property/composed tests, exact statement/branch coverage, Ruff and formatting. Reports go to ignored `.scratch/l1-coverage.json`. Use `make test` for behavior tests alone and `make format` to format Python files. Running `make` defaults to the full check.
+The project selects Python 3.12; Node.js 20+ and pnpm run the independent ethers verifier. `uv.lock` pins dependencies; initial setup may download them. Checks require no external services or private credentials after installation. The Layer 2 gate starts localhost HTTPS listeners. `make check` runs the L0 artifact/signature checks, checker regressions, golden/property/composed tests, exact statement/branch coverage, Ruff and formatting. Reports go to ignored `.scratch/l1-coverage.json`. Use `make check-l2` for the complete L0/L1/L2 gate, including both HTTPS processes and separate L2 branch coverage. Reports are `.scratch/l2-tests.xml` and `.scratch/l2-coverage.json`. `make check` retains the L0/L1-only coverage gate. Use `make test` for all behavior tests (including localhost listeners) and `make format` to format Python files. Running `make` defaults to the full check.
 
 The existing market/lifecycle/reputation/delegation fixtures remain reviewed expected data, consumed by the core tests. New L1 regressions and tree scenarios are in [layer-1.json](specs/fixtures/layer-1.json). The [L0 acceptance review](specs/acceptance.md) retains the deployment facts still requiring live verification.
+
+## Layer 2 demo
+
+```sh
+make demo-l2
+make check-l2
+# Local tests without TCP listeners:
+uv run --locked pytest -m "not l2socket"
+```
+
+`make demo-l2` creates a fresh ignored `.scratch/layer2-demo.*` directory. The report proves one valid fixture award, acceptance finality, one invocation, immutable correlated artifact, agent restart, rejection of forged/conflicting messages, and a canonical validator-timeout refund. Temporary localhost certificates use real TLS verification; keys and credentials remain in the ignored session directory. The default ports are 8740/8741; pass `--market-port` and `--agent-port` to `scripts/demo_layer2.py` to change them.
+
+A2A completion means an artifact is available. It does not mean validation succeeded or anyone was paid. A durable start claim prevents re-execution after restart; a crash between claiming and saving output is reported as interrupted and may lose work. This is at-most-once invocation, not a promise of exactly-once external side effects.
+
+The [external conformance instructions](specs/layer-2.md#external-conformance-invocation) describe testing another implementation using `--l2-target`. Profile/content and market ports are replaceable; the live registry/Monad adapters remain L3 work.
 
 ## Core entry points
 

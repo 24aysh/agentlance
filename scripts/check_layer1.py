@@ -26,7 +26,17 @@ def main():
     commands = [
         ["scripts/check_specs.py"],
         ["-m", "unittest", "discover", "-s", "scripts", "-p", "test_*.py"],
-        ["-m", "coverage", "run", "-m", "pytest", "modules", "tests", "-q"],
+        [
+            "-m",
+            "coverage",
+            "run",
+            "-m",
+            "pytest",
+            "modules/domain",
+            "modules/market_core",
+            "tests/test_layer1.py",
+            "-q",
+        ],
         ["-m", "coverage", "json", "--fail-under=0", "-o", str(coveragePath)],
     ]
     for command in commands:
