@@ -1,73 +1,21 @@
 """Validate L0 fixture syntax and ranges; auction behavior belongs to L1."""
 
-import json
-import re
 import subprocess
+import sys
 from pathlib import Path
-from urllib.parse import urlsplit
 
 from check_abi import verifyAbi
 from check_signatures import verifySignatures
-from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema import Draft202012Validator
 
 repoRoot = Path(__file__).resolve().parents[1]
-formatChecker = FormatChecker()
+sys.path.insert(0, str(repoRoot))
 
-
-def isUnsigned(value, bits):
-    return (
-        isinstance(value, str)
-        and len(value) <= 78
-        and re.fullmatch(r"0|[1-9][0-9]*", value) is not None
-        and int(value) < 2**bits
-    )
-
-
-@formatChecker.checks("uint64")
-def isUint64(value):
-    return isUnsigned(value, 64)
-
-
-@formatChecker.checks("uint96")
-def isUint96(value):
-    return isUnsigned(value, 96)
-
-
-@formatChecker.checks("uint256")
-def isUint256(value):
-    return isUnsigned(value, 256)
-
-
-@formatChecker.checks("int256")
-def isInt256(value):
-    return (
-        isinstance(value, str)
-        and len(value) <= 78
-        and re.fullmatch(r"0|-?[1-9][0-9]*", value) is not None
-        and -(2**255) <= int(value) < 2**255
-    )
-
-
-def rejectDuplicateKeys(pairs):
-    result = {}
-    for key, value in pairs:
-        if key in result:
-            raise ValueError(f"Duplicate JSON key: {key}")
-        result[key] = value
-    return result
-
-
-def rejectNonIntegerNumber(value):
-    raise ValueError(f"Invalid JSON number: {value}")
+from modules.domain.records import formatChecker, parseJson  # noqa: E402
 
 
 def readJson(path):
-    return json.loads(
-        path.read_text(encoding="utf-8"),
-        object_pairs_hook=rejectDuplicateKeys,
-        parse_constant=rejectNonIntegerNumber,
-        parse_float=rejectNonIntegerNumber,
-    )
+    return parseJson(path.read_bytes())
 
 
 def validateMarketVectors(document, schema):
@@ -79,31 +27,6 @@ def validateMarketVectors(document, schema):
             raise ValueError(f"Duplicate fixture ID: {case['id']}")
         seen.add(case["id"])
     return len(seen)
-
-
-@formatChecker.checks("content-uri")
-def isContentUri(value):
-    if not isinstance(value, str):
-        return False
-    try:
-        parts = urlsplit(value)
-        return (
-            len(value.encode("utf-8")) <= 2048
-            and parts.scheme in {"https", "ipfs"}
-            and bool(parts.hostname)
-            and (parts.port is None or 0 < parts.port <= 65535)
-            and not parts.username
-            and not parts.password
-            and not parts.fragment
-            and not any(char.isspace() for char in value)
-        )
-    except (ValueError, UnicodeError):
-        return False
-
-
-@formatChecker.checks("https-url")
-def isHttpsUrl(value):
-    return isContentUri(value) and value.startswith("https://")
 
 
 def validateObject(document, typeName, schema):
@@ -163,7 +86,7 @@ def validateArtifacts():
     scenarioSchema = readJson(repoRoot / "specs/schemas/scenarios.schema.json")
     Draft202012Validator.check_schema(scenarioSchema)
     caseCount = 0
-    for domain in ["lifecycle", "reputation", "delegation", "replay", "validation"]:
+    for domain in ["lifecycle", "reputation", "delegation", "replay", "validation", "layer-1"]:
         filename = f"{domain}.json"
         data = readJson(repoRoot / "specs/fixtures" / filename)
         Draft202012Validator(scenarioSchema).validate(data)

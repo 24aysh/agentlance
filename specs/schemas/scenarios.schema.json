@@ -14,7 +14,8 @@
         "reputation",
         "delegation",
         "replay",
-        "validation"
+        "validation",
+        "layer-1"
       ]
     },
     "cases": {
