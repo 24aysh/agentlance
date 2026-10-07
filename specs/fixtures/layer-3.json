@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {"id":"solo-success","initial":{"budgetAtoms":"100","bidAtoms":"20","alphaDen":"100"},"action":"fund-sign-allocate-accept-submit-pass-withdraw","expected":{"reason":"SUCCESS","paidAtoms":"50","refundAtoms":"50","successes":"1","failures":"0"}},
+    {"id":"validation-failed","initial":{"budgetAtoms":"100","bidAtoms":"20","alphaDen":"100"},"action":"fund-bid-allocate-accept-submit-fail","expected":{"reason":"VALIDATION_FAILED","paidAtoms":"0","refundAtoms":"100","successes":"0","failures":"1"}},
+    {"id":"no-show","initial":{"budgetAtoms":"100","bidAtoms":"20","alphaDen":"100"},"action":"expire-at-acceptBy","expected":{"reason":"NO_SHOW","paidAtoms":"0","refundAtoms":"100","successes":"0","failures":"1"}},
+    {"id":"execution-timeout","initial":{"budgetAtoms":"100","bidAtoms":"20","alphaDen":"100"},"action":"expire-at-resultBy","expected":{"reason":"EXECUTION_TIMEOUT","paidAtoms":"0","refundAtoms":"100","successes":"0","failures":"1"}},
+    {"id":"validator-timeout","initial":{"budgetAtoms":"100","bidAtoms":"20","alphaDen":"100"},"action":"expire-at-validationBy","expected":{"reason":"VALIDATOR_TIMEOUT","paidAtoms":"0","refundAtoms":"100","successes":"0","failures":"0"}},
+    {"id":"unallocated","initial":{"budgetAtoms":"100"},"action":"allocate-no-bids-at-biddingClose","expected":{"reason":"UNALLOCATED","paidAtoms":"0","refundAtoms":"100","successes":"0","failures":"0"}},
+    {"id":"allocation-expired","initial":{"budgetAtoms":"100"},"action":"expire-at-allocationBy","expected":{"reason":"ALLOCATION_EXPIRED","paidAtoms":"0","refundAtoms":"100","successes":"0","failures":"0"}},
+    {"id":"cancelled","initial":{"budgetAtoms":"100"},"action":"requester-cancels-without-bids","expected":{"reason":"CANCELLED","paidAtoms":"0","refundAtoms":"100","successes":"0","failures":"0"}}
+  ],
+  "differential": {"seedStart":0,"seeds":32,"actionsPerSeed":64},
+  "compatibilityExceptions": [{"id":"nonpayable-value","solidityRevert":"0x","pythonError":"WRONG_VALUE","stateChanges":false,"acceptedAsExactErrorParity":false}]
+}

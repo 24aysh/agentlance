@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "same-block-two-successes",
+      "initial": {"submittedTasks": 2, "agentId": "0", "successes": "0", "failures": "0"},
+      "action": {"order": ["createTask", "PASS", "PASS", "createTask"], "blocks": 1},
+      "expected": {"sameBlockSnapshots": {"successes": "0", "failures": "0", "p": 500000}, "nextBlockSnapshot": {"successes": "2", "failures": "0", "p": 750000}}
+    },
+    {
+      "id": "same-block-success-and-failure",
+      "initial": {"submittedTasks": 2, "agentId": "0", "successes": "0", "failures": "0"},
+      "action": {"order": ["createTask", "PASS", "FAIL", "createTask"], "blocks": 1},
+      "expected": {"sameBlockSnapshots": {"successes": "0", "failures": "0", "p": 500000}, "nextBlockSnapshot": {"successes": "1", "failures": "1", "p": 500000}}
+    }
+  ]
+}

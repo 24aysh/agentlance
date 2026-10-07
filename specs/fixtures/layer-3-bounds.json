@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {"id":"allocation-storage-bound","initial":{"bidderCounts":[1,2,10,16,100,256,1000,1024]},"action":"Allocate funded production markets; then settle each winner","expected":{"winningAgentId":"7","allocationGasDeltaAfterSecondBidAtMost":"5000","settlementGasDeltaAtMost":"5000","storageAccessCountsIndependentOfBidderCount":true}},
+    {"id":"maximum-wire-records","initial":{"uriBytes":2048,"permitSignatureBytes":4096,"validatorSignatureBytes":65},"action":"Create, admit contract-owner permit, allocate, accept, commit and settle exact maximum URI inputs","expected":{"reason":"SUCCESS","paidAtoms":"50","refundAtoms":"50","taskAndReceiptAbiRoundTrips":true}},
+    {"id":"depth-two-immediate-parent","initial":{"fundedBudgets":[400,100,30],"rootReserve":200,"childReserve":50},"action":"Expire root while both descendants remain active; expire grandchild; then expire child","expected":{"rootReceiptUnchangedAfterLateChildren":true,"grandchildUpdatesOnlyChild":true,"creditsAtoms":"530","duplicateExpiryRejected":true}}
+  ]
+}

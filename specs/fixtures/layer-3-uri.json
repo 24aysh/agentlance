@@ -1,0 +1,1060 @@
+{
+  "oracle": {
+    "python": "3.12.12",
+    "unicode": "15.0.0",
+    "reference": "modules/domain/records.py:isContentUri",
+    "parser": "Python 3.12.12 urllib.parse.urlsplit including _check_bracketed_netloc",
+    "review": "Expected values are explicit reviewed cases, checked against the unchanged oracle; no original golden fixtures were modified. Empty userinfo/fragment/port and non-whitespace C0 controls remain permitted. Invalid UTF-8 is rejected at the schema boundary.",
+    "whitespaceCodepoints": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      28,
+      29,
+      30,
+      31,
+      32,
+      133,
+      160,
+      5760,
+      8192,
+      8193,
+      8194,
+      8195,
+      8196,
+      8197,
+      8198,
+      8199,
+      8200,
+      8201,
+      8202,
+      8232,
+      8233,
+      8239,
+      8287,
+      12288
+    ],
+    "nfkcAuthorityDelimiters": [
+      8263,
+      8264,
+      8265,
+      8448,
+      8449,
+      8453,
+      8454,
+      10868,
+      65043,
+      65046,
+      65109,
+      65110,
+      65119,
+      65131,
+      65283,
+      65295,
+      65306,
+      65311,
+      65312
+    ]
+  },
+  "cases": [
+    {
+      "id": "https",
+      "uri": "https://example.org/data.json",
+      "valid": true
+    },
+    {
+      "id": "ipfs",
+      "uri": "ipfs://bafy/artifact",
+      "valid": true
+    },
+    {
+      "id": "uppercase-scheme",
+      "uri": "hTtPs://EXAMPLE.org",
+      "valid": true
+    },
+    {
+      "id": "uppercase-ipfs",
+      "uri": "IPFS://bafy",
+      "valid": true
+    },
+    {
+      "id": "wrong-scheme",
+      "uri": "http://example.org",
+      "valid": false
+    },
+    {
+      "id": "missing-authority",
+      "uri": "https:/example.org",
+      "valid": false
+    },
+    {
+      "id": "empty-authority",
+      "uri": "https:///example.org",
+      "valid": false
+    },
+    {
+      "id": "empty-host",
+      "uri": "https://:443/",
+      "valid": false
+    },
+    {
+      "id": "empty-fragment",
+      "uri": "https://example.org/#",
+      "valid": true
+    },
+    {
+      "id": "nonempty-fragment",
+      "uri": "https://example.org/#x",
+      "valid": false
+    },
+    {
+      "id": "double-fragment",
+      "uri": "https://example.org/##",
+      "valid": false
+    },
+    {
+      "id": "encoded-fragment",
+      "uri": "https://example.org/%23x",
+      "valid": true
+    },
+    {
+      "id": "empty-user",
+      "uri": "https://@example.org",
+      "valid": true
+    },
+    {
+      "id": "empty-user-password",
+      "uri": "https://:@example.org",
+      "valid": true
+    },
+    {
+      "id": "username",
+      "uri": "https://alice@example.org",
+      "valid": false
+    },
+    {
+      "id": "password",
+      "uri": "https://:secret@example.org",
+      "valid": false
+    },
+    {
+      "id": "multiple-at",
+      "uri": "https://@@example.org",
+      "valid": false
+    },
+    {
+      "id": "empty-user-host",
+      "uri": "https://@",
+      "valid": false
+    },
+    {
+      "id": "empty-port",
+      "uri": "https://example.org:",
+      "valid": true
+    },
+    {
+      "id": "minimum-port",
+      "uri": "https://example.org:1",
+      "valid": true
+    },
+    {
+      "id": "maximum-port",
+      "uri": "https://example.org:65535",
+      "valid": true
+    },
+    {
+      "id": "leading-zero-port",
+      "uri": "https://example.org:00000443",
+      "valid": true
+    },
+    {
+      "id": "long-leading-zero-port",
+      "uri": "https://x:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "valid": true
+    },
+    {
+      "id": "zero-port",
+      "uri": "https://example.org:0000",
+      "valid": false
+    },
+    {
+      "id": "overflow-port",
+      "uri": "https://example.org:65536",
+      "valid": false
+    },
+    {
+      "id": "negative-port",
+      "uri": "https://example.org:-1",
+      "valid": false
+    },
+    {
+      "id": "signed-port",
+      "uri": "https://example.org:+1",
+      "valid": false
+    },
+    {
+      "id": "text-port",
+      "uri": "https://example.org:https",
+      "valid": false
+    },
+    {
+      "id": "unicode-digit-port",
+      "uri": "https://example.org:\u0664\u0664\u0663",
+      "valid": false
+    },
+    {
+      "id": "multiple-port-colons",
+      "uri": "https://example.org:1:2",
+      "valid": false
+    },
+    {
+      "id": "query",
+      "uri": "https://example.org?x=%20&host=@",
+      "valid": true
+    },
+    {
+      "id": "unicode-host-path",
+      "uri": "https://\u4f8b\u3048.\u30c6\u30b9\u30c8/\u8cc7\u6599/\ud83c\udf4b",
+      "valid": true
+    },
+    {
+      "id": "unicode-combining-authority",
+      "uri": "https://e\u0301.example/path",
+      "valid": true
+    },
+    {
+      "id": "unicode-normalized-ordinary-host",
+      "uri": "https://\uff26\uff2f\uff2f.example",
+      "valid": true
+    },
+    {
+      "id": "unicode-delimiter-path",
+      "uri": "https://example.org/\u2100/\uff03/\uff1a",
+      "valid": true
+    },
+    {
+      "id": "zero-width-host",
+      "uri": "https://\u200b.example",
+      "valid": true
+    },
+    {
+      "id": "nul-host",
+      "uri": "https://\u0000",
+      "valid": true
+    },
+    {
+      "id": "nul-path",
+      "uri": "https://example.org/\u0000",
+      "valid": true
+    },
+    {
+      "id": "del-path",
+      "uri": "https://example.org/\u007f",
+      "valid": true
+    },
+    {
+      "id": "backslash-host",
+      "uri": "https://a\\b",
+      "valid": true
+    },
+    {
+      "id": "percent-host",
+      "uri": "https://%",
+      "valid": true
+    },
+    {
+      "id": "brackets-path",
+      "uri": "https://example.org/[]",
+      "valid": true
+    },
+    {
+      "id": "leading-nul",
+      "uri": "\u0000https://example.org",
+      "valid": true
+    },
+    {
+      "id": "leading-control",
+      "uri": "\u0001\b\u000e\u001bhttps://example.org",
+      "valid": true
+    },
+    {
+      "id": "embedded-scheme-control",
+      "uri": "ht\u0000tps://example.org",
+      "valid": false
+    },
+    {
+      "id": "leading-space",
+      "uri": " https://example.org",
+      "valid": false
+    },
+    {
+      "id": "embedded-tab",
+      "uri": "https://exam\tple.org",
+      "valid": false
+    },
+    {
+      "id": "trailing-newline",
+      "uri": "https://example.org\n",
+      "valid": false
+    },
+    {
+      "id": "ipv6",
+      "uri": "https://[2001:db8::1]/x",
+      "valid": true
+    },
+    {
+      "id": "ipv6-full",
+      "uri": "https://[1:2:3:4:5:6:7:8]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-zero",
+      "uri": "https://[::]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-min-compression",
+      "uri": "https://[1:2:3:4:5:6::8]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-leading-compression",
+      "uri": "https://[::1:2:3:4:5:6:7]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-trailing-compression",
+      "uri": "https://[1:2:3:4:5:6:7::]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-port",
+      "uri": "https://[::1]:65535",
+      "valid": true
+    },
+    {
+      "id": "ipv6-empty-port",
+      "uri": "https://[::1]:",
+      "valid": true
+    },
+    {
+      "id": "ipv6-userinfo",
+      "uri": "https://:@[::1]:1",
+      "valid": true
+    },
+    {
+      "id": "ipv6-scope",
+      "uri": "https://[fe80::1%eth0]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-encoded-scope",
+      "uri": "https://[fe80::1%25eth0]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-unicode-scope",
+      "uri": "https://[fe80::1%\u63a5\u53e3]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-colon-bracket-scope",
+      "uri": "https://[fe80::1%a:[b]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-empty-scope",
+      "uri": "https://[::1%]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-double-scope",
+      "uri": "https://[::1%x%y]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-embedded-v4",
+      "uri": "https://[::ffff:192.0.2.1]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-full-embedded-v4",
+      "uri": "https://[1:2:3:4:5:6:192.0.2.1]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-v4-leading-zero",
+      "uri": "https://[::ffff:192.0.02.1]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-overflow",
+      "uri": "https://[::ffff:256.0.2.1]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-empty-octet",
+      "uri": "https://[::ffff:192.0..1]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-short",
+      "uri": "https://[::ffff:192.0.1]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-trailing-dot",
+      "uri": "https://[::ffff:192.0.2.1.]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-nonascii-digit",
+      "uri": "https://[::ffff:192.0.2.\uff11]",
+      "valid": false
+    },
+    {
+      "id": "ipv4-bracketed",
+      "uri": "https://[127.0.0.1]",
+      "valid": false
+    },
+    {
+      "id": "ipv4-unbracketed",
+      "uri": "https://127.0.0.1",
+      "valid": true
+    },
+    {
+      "id": "ipvfuture",
+      "uri": "https://[v1.a:b]",
+      "valid": true
+    },
+    {
+      "id": "ipvfuture-hex-version",
+      "uri": "https://[vAbC.host]",
+      "valid": true
+    },
+    {
+      "id": "ipvfuture-arbitrary",
+      "uri": "https://[v1.\ud83c\udf4b%[]",
+      "valid": true
+    },
+    {
+      "id": "ipvfuture-uppercase-v",
+      "uri": "https://[V1.host]",
+      "valid": false
+    },
+    {
+      "id": "ipvfuture-empty-version",
+      "uri": "https://[v.host]",
+      "valid": false
+    },
+    {
+      "id": "ipvfuture-invalid-version",
+      "uri": "https://[vx.host]",
+      "valid": false
+    },
+    {
+      "id": "ipvfuture-empty-host",
+      "uri": "https://[v1.]",
+      "valid": false
+    },
+    {
+      "id": "ipvfuture-missing-dot",
+      "uri": "https://[v123]",
+      "valid": false
+    },
+    {
+      "id": "bracket-missing-close",
+      "uri": "https://[::1",
+      "valid": false
+    },
+    {
+      "id": "bracket-missing-open",
+      "uri": "https://::1]",
+      "valid": false
+    },
+    {
+      "id": "bracket-prefix",
+      "uri": "https://prefix[::1]",
+      "valid": false
+    },
+    {
+      "id": "bracket-suffix",
+      "uri": "https://[::1]suffix",
+      "valid": false
+    },
+    {
+      "id": "bracket-empty",
+      "uri": "https://[]",
+      "valid": false
+    },
+    {
+      "id": "bracket-text",
+      "uri": "https://[example.org]",
+      "valid": false
+    },
+    {
+      "id": "bracket-extra-close",
+      "uri": "https://[::1]]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-many-parts",
+      "uri": "https://[1:2:3:4:5:6:7:8:9]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-no-compression-space",
+      "uri": "https://[1:2:3:4:5:6:7:8::]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-short",
+      "uri": "https://[1:2:3]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-multiple-compression",
+      "uri": "https://[1::2::3]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-three-colons",
+      "uri": "https://[:::]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-leading-single-colon",
+      "uri": "https://[:1:2:3:4:5:6:7]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-trailing-single-colon",
+      "uri": "https://[1:2:3:4:5:6:7:]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-large-hextet",
+      "uri": "https://[12345::]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-invalid-hex",
+      "uri": "https://[::g]",
+      "valid": false
+    },
+    {
+      "id": "ascii-2048-bytes",
+      "uri": "https://x/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "valid": true
+    },
+    {
+      "id": "ascii-2049-bytes",
+      "uri": "https://x/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "valid": false
+    },
+    {
+      "id": "unicode-2048-bytes",
+      "uri": "https://x/\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9",
+      "valid": true
+    },
+    {
+      "id": "unicode-2049-bytes",
+      "uri": "https://x/\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9a",
+      "valid": false
+    },
+    {
+      "id": "highest-scalar",
+      "uri": "https://x/\udbff\udfff",
+      "valid": true
+    },
+    {
+      "id": "lowest-two-byte-scalar",
+      "uri": "https://x/\u0080",
+      "valid": true
+    },
+    {
+      "id": "lowest-three-byte-scalar",
+      "uri": "https://x/\u0800",
+      "valid": true
+    },
+    {
+      "id": "lowest-four-byte-scalar",
+      "uri": "https://x/\ud800\udc00",
+      "valid": true
+    },
+    {
+      "id": "unicode-noncharacter",
+      "uri": "https://x/\uffff",
+      "valid": true
+    },
+    {
+      "id": "whitespace-0009",
+      "uri": "https://x/\t",
+      "valid": false
+    },
+    {
+      "id": "whitespace-000a",
+      "uri": "https://x/\n",
+      "valid": false
+    },
+    {
+      "id": "whitespace-000b",
+      "uri": "https://x/\u000b",
+      "valid": false
+    },
+    {
+      "id": "whitespace-000c",
+      "uri": "https://x/\f",
+      "valid": false
+    },
+    {
+      "id": "whitespace-000d",
+      "uri": "https://x/\r",
+      "valid": false
+    },
+    {
+      "id": "whitespace-001c",
+      "uri": "https://x/\u001c",
+      "valid": false
+    },
+    {
+      "id": "whitespace-001d",
+      "uri": "https://x/\u001d",
+      "valid": false
+    },
+    {
+      "id": "whitespace-001e",
+      "uri": "https://x/\u001e",
+      "valid": false
+    },
+    {
+      "id": "whitespace-001f",
+      "uri": "https://x/\u001f",
+      "valid": false
+    },
+    {
+      "id": "whitespace-0020",
+      "uri": "https://x/ ",
+      "valid": false
+    },
+    {
+      "id": "whitespace-0085",
+      "uri": "https://x/\u0085",
+      "valid": false
+    },
+    {
+      "id": "whitespace-00a0",
+      "uri": "https://x/\u00a0",
+      "valid": false
+    },
+    {
+      "id": "whitespace-1680",
+      "uri": "https://x/\u1680",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2000",
+      "uri": "https://x/\u2000",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2001",
+      "uri": "https://x/\u2001",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2002",
+      "uri": "https://x/\u2002",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2003",
+      "uri": "https://x/\u2003",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2004",
+      "uri": "https://x/\u2004",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2005",
+      "uri": "https://x/\u2005",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2006",
+      "uri": "https://x/\u2006",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2007",
+      "uri": "https://x/\u2007",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2008",
+      "uri": "https://x/\u2008",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2009",
+      "uri": "https://x/\u2009",
+      "valid": false
+    },
+    {
+      "id": "whitespace-200a",
+      "uri": "https://x/\u200a",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2028",
+      "uri": "https://x/\u2028",
+      "valid": false
+    },
+    {
+      "id": "whitespace-2029",
+      "uri": "https://x/\u2029",
+      "valid": false
+    },
+    {
+      "id": "whitespace-202f",
+      "uri": "https://x/\u202f",
+      "valid": false
+    },
+    {
+      "id": "whitespace-205f",
+      "uri": "https://x/\u205f",
+      "valid": false
+    },
+    {
+      "id": "whitespace-3000",
+      "uri": "https://x/\u3000",
+      "valid": false
+    },
+    {
+      "id": "nfkc-authority-2047",
+      "uri": "https://a\u2047b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-2047",
+      "uri": "https://x/\u2047",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-2048",
+      "uri": "https://a\u2048b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-2048",
+      "uri": "https://x/\u2048",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-2049",
+      "uri": "https://a\u2049b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-2049",
+      "uri": "https://x/\u2049",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-2100",
+      "uri": "https://a\u2100b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-2100",
+      "uri": "https://x/\u2100",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-2101",
+      "uri": "https://a\u2101b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-2101",
+      "uri": "https://x/\u2101",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-2105",
+      "uri": "https://a\u2105b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-2105",
+      "uri": "https://x/\u2105",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-2106",
+      "uri": "https://a\u2106b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-2106",
+      "uri": "https://x/\u2106",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-2a74",
+      "uri": "https://a\u2a74b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-2a74",
+      "uri": "https://x/\u2a74",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-fe13",
+      "uri": "https://a\ufe13b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-fe13",
+      "uri": "https://x/\ufe13",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-fe16",
+      "uri": "https://a\ufe16b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-fe16",
+      "uri": "https://x/\ufe16",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-fe55",
+      "uri": "https://a\ufe55b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-fe55",
+      "uri": "https://x/\ufe55",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-fe56",
+      "uri": "https://a\ufe56b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-fe56",
+      "uri": "https://x/\ufe56",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-fe5f",
+      "uri": "https://a\ufe5fb",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-fe5f",
+      "uri": "https://x/\ufe5f",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-fe6b",
+      "uri": "https://a\ufe6bb",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-fe6b",
+      "uri": "https://x/\ufe6b",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-ff03",
+      "uri": "https://a\uff03b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-ff03",
+      "uri": "https://x/\uff03",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-ff0f",
+      "uri": "https://a\uff0fb",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-ff0f",
+      "uri": "https://x/\uff0f",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-ff1a",
+      "uri": "https://a\uff1ab",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-ff1a",
+      "uri": "https://x/\uff1a",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-ff1f",
+      "uri": "https://a\uff1fb",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-ff1f",
+      "uri": "https://x/\uff1f",
+      "valid": true
+    },
+    {
+      "id": "nfkc-authority-ff20",
+      "uri": "https://a\uff20b",
+      "valid": false
+    },
+    {
+      "id": "nfkc-path-ff20",
+      "uri": "https://x/\uff20",
+      "valid": true
+    },
+    {
+      "id": "empty-string",
+      "uri": "",
+      "valid": false
+    },
+    {
+      "id": "only-controls",
+      "uri": "\u0000\u0001",
+      "valid": false
+    },
+    {
+      "id": "empty-query-fragment",
+      "uri": "https://x?#",
+      "valid": true
+    },
+    {
+      "id": "pre-surrogate-scalar",
+      "uri": "https://x/\ud7ff",
+      "valid": true
+    },
+    {
+      "id": "post-surrogate-scalar",
+      "uri": "https://x/\ue000",
+      "valid": true
+    },
+    {
+      "id": "ipv6-longest-v4-tail",
+      "uri": "https://[ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255]",
+      "valid": true
+    },
+    {
+      "id": "ipv6-overlong-address",
+      "uri": "https://[fffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-too-many-octets",
+      "uri": "https://[::1.2.3.4.5]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-invalid-octet",
+      "uri": "https://[::1.2.3.a]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-double-leading-zero",
+      "uri": "https://[::1.2.3.00]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-v4-zero",
+      "uri": "https://[::0.0.0.0]",
+      "valid": true
+    },
+    {
+      "id": "empty-ipv6-before-scope",
+      "uri": "https://[%scope]",
+      "valid": false
+    },
+    {
+      "id": "ipv6-single-hextet",
+      "uri": "https://[a]",
+      "valid": false
+    },
+    {
+      "id": "empty-host-with-empty-port",
+      "uri": "https://:",
+      "valid": false
+    }
+  ],
+  "rawCases": [
+    {
+      "hexValue": "0x68747470733a2f2f782fc080",
+      "id": "overlong-two",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782fe08080",
+      "id": "overlong-three",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782ff0808080",
+      "id": "overlong-four",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782feda080",
+      "id": "surrogate-high",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782fedbfbf",
+      "id": "surrogate-low",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782ff4908080",
+      "id": "above-unicode",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782fff",
+      "id": "invalid-leading-byte",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782f80",
+      "id": "bare-continuation",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782fc2",
+      "id": "truncated-two",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782fe0a0",
+      "id": "truncated-three",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782ff09080",
+      "id": "truncated-four",
+      "valid": false
+    },
+    {
+      "hexValue": "0x68747470733a2f2f782fe08041",
+      "id": "invalid-continuation",
+      "valid": false
+    }
+  ]
+}
