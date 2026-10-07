@@ -62,7 +62,8 @@ def main():
         "[run]\nbranch = True\nparallel = True\nsigterm = True\n"
         f"data_file = {scratch / 'l2.coverage'}\n"
         "source = modules/agent_client, modules/adapters, apps\n"
-        "omit = */test_*.py\n[report]\nshow_missing = True\nfail_under = 0\n"
+        "omit = */test_*.py\n[report]\ninclude_namespace_packages = True\n"
+        "show_missing = True\nfail_under = 0\n"
     )
     env = os.environ | {"AGENTLANCE_COVERAGE_CONFIG": str(config)}
     # Only remove this gate's generated coverage shards, never an execution journal.

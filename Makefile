@@ -1,4 +1,4 @@
-.PHONY: check check-l2 check-l3 demo-l2 demo-l3 setup setup-l3 test format
+.PHONY: check check-l2 check-l3 check-l4 demo-l2 demo-l3 demo-l4 setup setup-l3 test format
 
 check:
 	uv run --locked python scripts/check_layer1.py
@@ -28,3 +28,9 @@ check-l3:
 
 demo-l3:
 	uv run --locked python scripts/demo_layer3.py
+
+check-l4:
+	uv run --locked python scripts/check_layer4.py
+
+demo-l4:
+	uv run --locked python scripts/demo_layer4.py

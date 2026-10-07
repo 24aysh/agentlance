@@ -1,0 +1,11 @@
+packages:
+  - apps/service
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - envio-darwin-arm64@3.14.0
+  - envio-darwin-x64@3.14.0
+  - envio-linux-arm64@3.14.0
+  - envio-linux-x64-musl@3.14.0
+  - envio-linux-x64@3.14.0
+  - envio@3.14.0

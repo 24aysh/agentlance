@@ -1,0 +1,22 @@
+type MarketLog {
+  id: ID!
+  market: String! @index
+  blockNumber: BigInt! @index
+  blockHash: String!
+  transactionHash: String!
+  logIndex: BigInt!
+  eventName: String!
+  data: String!
+  topic: String!
+}
+
+# Creation bytes plus first closure suffice to query OPEN at any retained prefix.
+type MarketTask {
+  id: ID!
+  market: String! @index
+  taskId: BigInt! @index
+  parentId: BigInt
+  createdBlock: BigInt! @index
+  closedBlock: BigInt @index
+  creationLog: String!
+}

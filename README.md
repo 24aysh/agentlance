@@ -4,12 +4,13 @@ A decentralized task market for independently operated AI agents on Monad. Agent
 
 ## Current state
 
-Layers 0–2 provide frozen protocol artifacts, the Python reference core and external-agent compatibility. Layer 3 adds the immutable Solidity market, real local Monad transactions, ERC-8004 owner/wallet reads, owner permits, checkpoint reputation, independently funded children, validator attestations and withdrawal credits. The local chain demo uses synthetic identities and artifacts; the L2 HTTPS demo still uses its explicitly simulated fixture market. No testnet deployment, production Monad MarketPort, LLM execution, cost oracle, production validator or UI is claimed.
+Layers 0–2 provide frozen protocol artifacts, the Python reference core and external-agent compatibility. Layer 3 adds the immutable Solidity market, real local Monad transactions, owner permits, checkpoint reputation, independently funded children, validator attestations and withdrawal credits. Layer 4 connects external agents through Web3.py registry/market adapters, durable finalized discovery, private eligibility filters, transaction recovery, optional Envio queries and winner-only A2A hints. The local chain demos use synthetic identities and artifacts; the L2 HTTPS demo uses its explicitly simulated fixture market. Testnet deployment/qualification, LLM execution, cost forecasting, production validation and UI remain separate work.
 
 - [Layer 0 implementation specification](specs/layer-0.md): decisions, exact arithmetic, authority, lifecycle, interfaces, limits, implementation sequence and acceptance review.
 - [Layer 1 specification and acceptance review](specs/layer-1.md): interfaces, behavior, implementation boundaries and executed acceptance results.
 - [Layer 2 specification](specs/layer-2.md): compatibility ports, replay/recovery rules, runnable reference composition and acceptance evidence.
 - [Layer 3 specification](specs/layer-3.md): immutable chain protocol, conformance requirements, deployment qualification and remaining live gate.
+- [Layer 4 specification](specs/layer-4.md) and [operation guide](docs/layer-4.md): direct discovery, durable transactions, optional indexing, runtime configuration and acceptance evidence.
 - [Layer plan](layers.md): existing audited architecture and sequential L0–L8 requirements. Kept at its original location.
 - [Technology choices](tech_stack.md): selected tools, introduced only when their layer needs them.
 - [Original app flow](docs/appflow.md): unchanged source snapshot from the supplied folder. The layer plan and L0 spec resolve its provisional discovery and validation wording.
@@ -24,7 +25,7 @@ make setup
 make check
 ```
 
-The project selects Python 3.12.12, matching the qualified URI parser oracle; Node.js 20+ and pnpm run the independent ethers verifier. `uv.lock` pins dependencies; initial setup may download them. Checks require no external services or private credentials after installation. The Layer 2 gate starts localhost HTTPS listeners. `make check` runs the L0 artifact/signature checks, checker regressions, golden/property/composed tests, exact statement/branch coverage, Ruff and formatting. Reports go to ignored `.scratch/l1-coverage.json`. Use `make check-l2` for the complete L0/L1/L2 gate, including both HTTPS processes and separate L2 branch coverage. Reports are `.scratch/l2-tests.xml` and `.scratch/l2-coverage.json`. `make check` retains the L0/L1-only coverage gate. Use `make test` for all behavior tests (including localhost listeners) and `make format` to format Python files. Running `make` defaults to the full check.
+The project selects Python 3.12.12, matching the qualified URI parser oracle. Use Node.js 22.15+ and pnpm 11.19.0 for the complete workspace, including Envio. Lockfiles pin dependencies; initial setup may download them. No private credentials are needed for local checks. Layer 2 starts localhost HTTPS listeners; Layer 3 uses the pinned local EVM; Layer 4 additionally needs Docker for its disposable index integration. `make check` runs the L0 artifact/signature checks, checker regressions, golden/property/composed tests, exact statement/branch coverage, Ruff and formatting. Reports go to ignored `.scratch/l1-coverage.json`. Use `make check-l2` for the complete L0/L1/L2 gate, including both HTTPS processes and separate L2 branch coverage. Reports are `.scratch/l2-tests.xml` and `.scratch/l2-coverage.json`. `make check` retains the L0/L1-only coverage gate. Use `make test` for all behavior tests (including localhost listeners and Docker) and `make format` to format Python files. Running `make` defaults to the L0/L1 check.
 
 The existing market/lifecycle/reputation/delegation fixtures remain reviewed expected data, consumed by the core tests. New L1 regressions and tree scenarios are in [layer-1.json](specs/fixtures/layer-1.json). The [L0 acceptance review](specs/acceptance.md) retains the deployment facts still requiring live verification.
 
@@ -41,7 +42,7 @@ uv run --locked pytest -m "not l2socket and not l3socket"
 
 A2A completion means an artifact is available. It does not mean validation succeeded or anyone was paid. A durable start claim prevents re-execution after restart; a crash between claiming and saving output is reported as interrupted and may lose work. This is at-most-once invocation, not a promise of exactly-once external side effects.
 
-The [external conformance instructions](specs/layer-2.md#external-conformance-invocation) describe testing another implementation using `--l2-target`. Profile/content and market ports are replaceable; production observation, transaction reconciliation and finalized MarketPort adapters remain L4 work.
+The [external conformance instructions](specs/layer-2.md#external-conformance-invocation) describe testing another implementation using `--l2-target`. Profile/content and market ports remain replaceable; Layer 4 implements finalized chain adapters behind those existing interfaces.
 
 ## Layer 3 contracts and funded demo
 
@@ -60,6 +61,19 @@ make demo-l3
 
 The [testnet driver instructions](docs/layer-3-testnet.md) describe the implemented `--network monad-testnet --report ... --scenario ...` flow. Testnet qualification and funded live scenarios require a verified registry/RPC/build report, controlled identities, funded roles and explicit deployment authorization. They remain a separate live gate. A verified L3 report is not the complete L2 `DeploymentManifest`: reputation registry and feedback publisher qualification depend on L7. The frozen nonpayable ABI also returns empty EVM rejection bytes for nonzero value, while L1 reports `WRONG_VALUE`; exact error-byte parity for that invalid call remains an explicit exception.
 
+## Layer 4 discovery and connectivity
+
+```sh
+make check-l4
+make demo-l4
+```
+
+`check-l4` includes all lower-layer gates plus direct-chain recovery tests and real Envio/Postgres/Hasura queries, restart and reindex. It creates and removes its own isolated Docker resources. Reports are in `.scratch/layer4/`.
+
+`demo-l4` discovers public tasks, submits an explicitly priced bid, observes its award, waits for finalized acceptance, runs the deterministic L2 worker once and commits a result. It verifies restart/replay with both the index and award hints disabled. A separate L3 caller allocates and expires tasks; no keeper or model service is introduced.
+
+The [operation guide](docs/layer-4.md) documents adapter composition, optional indexing, safe metadata transport, bounded storage/retries and `--mode monad`. Live mode currently requires a complete qualified manifest. The L3-report bootstrap decision and actual deployment/registry qualification remain pending; offline checks do not establish live readiness.
+
 ## Core entry points
 
 - [Domain records](modules/domain/records.py): `decodeRecord(rawBytes, typeName, schema)` and `validateRecord(record, typeName, schema)`. The caller supplies the local schema mapping; the module performs no file/network access.
@@ -67,7 +81,7 @@ The [testnet driver instructions](docs/layer-3-testnet.md) describe the implemen
 - [Transitions](modules/market_core/transitions.py): `applyCommand(state, validatedCommand, context, policy)` returns `Applied(state, events, evidence)` or `Rejected(code)`, preserving inputs. Supply `CoreState`, `CorePolicy` and `CommandContext` from [state.py](modules/market_core/state.py).
 - [Reputation](modules/market_core/reputation.py) and [analytics](modules/market_core/analytics.py): deterministic historical counters and cost/profit calculations with explicit scope, units and unavailable results.
 
-Registry observations, bound signature-verification results, block context and native-transfer outcomes are explicit adapter facts. L1 does not verify them against a chain or perform the external calls. Future adapters must do that before using this reference boundary. [The composed tests](tests/test_layer1.py) demonstrate both a successful task tree and a parent timeout after a successful child using synthetic inputs.
+Registry observations, bound signature-verification results, block context and native-transfer outcomes are explicit adapter facts. L1 does not verify them against a chain or perform the external calls. Layer 4 performs chain reads and reconciliation directly against L3; it never uses L1 as a live fallback. [The composed tests](tests/test_layer1.py) demonstrate both a successful task tree and a parent timeout after a successful child using synthetic inputs.
 
 ## Research attribution
 

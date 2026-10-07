@@ -28,7 +28,9 @@ def executionKey(ref):
 
 
 class Journal:
-    def __init__(self, path, settings):
+    def __init__(self, path, settings, *, maxContentBytes=64 * 1024 * 1024):
+        ensure(type(maxContentBytes) is int and maxContentBytes > 0, "Content storage limit")
+        self.maxContentBytes = maxContentBytes
         self.lock = open(str(path) + ".lock", "a+b")
         try:
             fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -41,7 +43,7 @@ class Journal:
             self.db.execute("PRAGMA synchronous=FULL")
             self.db.execute("PRAGMA foreign_keys=ON")
             version = self.db.execute("PRAGMA user_version").fetchone()[0]
-            ensure(version in (0, 1), "Unknown journal version")
+            ensure(version in (0, 1, 2), "Unknown journal version")
             self.db.executescript("""
                 CREATE TABLE IF NOT EXISTS settings (
                     id INTEGER PRIMARY KEY CHECK(id=1), body BLOB NOT NULL);
@@ -57,7 +59,25 @@ class Journal:
                 CREATE TABLE IF NOT EXISTS content (digest TEXT PRIMARY KEY, raw BLOB NOT NULL);
                 CREATE TABLE IF NOT EXISTS finalized (height TEXT PRIMARY KEY, hash TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS flags (name TEXT PRIMARY KEY, value TEXT NOT NULL);
-                PRAGMA user_version=1;
+                CREATE TABLE IF NOT EXISTS chain_binding (
+                    id INTEGER PRIMARY KEY CHECK(id=1), body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS native_operations (
+                    id TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS streams (
+                    name TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS observed_logs (
+                    stream TEXT NOT NULL, hash TEXT NOT NULL, position TEXT NOT NULL,
+                    body BLOB NOT NULL, PRIMARY KEY(stream,hash,position));
+                CREATE TABLE IF NOT EXISTS task_versions (
+                    key TEXT NOT NULL, height TEXT NOT NULL, body BLOB NOT NULL,
+                    PRIMARY KEY(key,height));
+                CREATE TABLE IF NOT EXISTS deliveries (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS discovered_agents (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS notifications (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                PRAGMA user_version=2;
             """)
             with self.db:
                 old = self.db.execute("SELECT body FROM settings WHERE id=1").fetchone()
@@ -182,12 +202,18 @@ class Journal:
     def storeContent(self, raw):
         digest = contentDigest(raw)
         with self.db:
-            existing = self.db.execute(
-                "SELECT raw FROM content WHERE digest=?", (digest,)
-            ).fetchone()
-            ensure(existing is None or existing[0] == raw, "Content collision", "CONFLICT")
-            self.db.execute("INSERT OR IGNORE INTO content VALUES (?,?)", (digest, raw))
+            self.insertContent(digest, raw)
         return digest
+
+    def insertContent(self, digest, raw):
+        existing = self.db.execute("SELECT raw FROM content WHERE digest=?", (digest,)).fetchone()
+        ensure(existing is None or existing[0] == raw, "Content collision", "CONFLICT")
+        if existing is None:
+            used = self.db.execute("SELECT COALESCE(sum(length(raw)),0) FROM content").fetchone()[0]
+            ensure(
+                used + len(raw) <= self.maxContentBytes, "Content storage capacity", "UNAVAILABLE"
+            )
+            self.db.execute("INSERT INTO content VALUES (?,?)", (digest, raw))
 
     def readContent(self, digest):
         value = self.db.execute("SELECT raw FROM content WHERE digest=?", (digest,)).fetchone()
@@ -207,7 +233,7 @@ class Journal:
                 return
             ensure(row["phase"] == "STARTED", "Result outside execution")
             # Same transaction binds available bytes to the immutable final artifact.
-            self.db.execute("INSERT OR IGNORE INTO content VALUES (?,?)", (artifact["digest"], raw))
+            self.insertContent(artifact["digest"], raw)
             ensure(self.readContent(artifact["digest"]) == raw, "Content collision")
             row.update(
                 result=deepcopy(artifact), phase="ARTIFACT_READY", detail="Artifact available"
@@ -250,6 +276,54 @@ class Journal:
                 "UPDATE operations SET body=? WHERE id=?",
                 (jsonBytes(intent), intent["operationId"]),
             )
+
+    def findIntent(self, scope):
+        row = self.db.execute("SELECT body FROM operations WHERE scope=?", (scope,)).fetchone()
+        return strictJson(row[0]) if row else None
+
+    def bindChain(self, binding):
+        settings = strictJson(self.db.execute("SELECT body FROM settings WHERE id=1").fetchone()[0])
+        ensure(
+            "sessionId" not in settings, "Fixture journal cannot become a chain journal", "CONFLICT"
+        )
+        with self.db:
+            old = self.db.execute("SELECT body FROM chain_binding WHERE id=1").fetchone()
+            ensure(
+                old is None or strictJson(old[0]) == binding,
+                "Chain journal identity changed",
+                "CONFLICT",
+            )
+            self.db.execute(
+                "INSERT OR IGNORE INTO chain_binding VALUES (1,?)", (jsonBytes(binding),)
+            )
+
+    def bindSender(self, signer):
+        with self.db:
+            old = self.db.execute("SELECT value FROM flags WHERE name='sender'").fetchone()
+            ensure(old is None or old[0] == signer, "Journal sender changed", "CONFLICT")
+            self.db.execute("INSERT OR IGNORE INTO flags VALUES ('sender',?)", (signer,))
+
+    def nativeOperation(self, operationId):
+        row = self.db.execute(
+            "SELECT body FROM native_operations WHERE id=?", (operationId,)
+        ).fetchone()
+        return strictJson(row[0]) if row else None
+
+    def nativeOperations(self):
+        return [strictJson(row[0]) for row in self.db.execute("SELECT body FROM native_operations")]
+
+    def saveNative(self, operation):
+        with self.db:
+            self.db.execute(
+                "INSERT INTO native_operations VALUES (?,?) "
+                "ON CONFLICT(id) DO UPDATE SET body=excluded.body",
+                (operation["operationId"], jsonBytes(operation)),
+            )
+
+    def latestFinalized(self):
+        return self.db.execute(
+            "SELECT height,hash FROM finalized ORDER BY length(height) DESC,height DESC LIMIT 1"
+        ).fetchone()
 
     def observe(self, stamp):
         ensure(not self.halted(), "Finalized history conflict", "FINALITY_CONFLICT")

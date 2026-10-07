@@ -143,5 +143,11 @@ async def main(config):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", required=True)
+    parser.add_argument("--mode", choices=("fixture", "monad"), default="fixture")
     args = parser.parse_args()
-    asyncio.run(main(strictJson(Path(args.config).read_bytes())))
+    if args.mode == "monad":
+        from apps.reference_agent.chain import main as chainMain
+
+        asyncio.run(chainMain(strictJson(Path(args.config).read_bytes())))
+    else:
+        asyncio.run(main(strictJson(Path(args.config).read_bytes())))

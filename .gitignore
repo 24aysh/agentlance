@@ -28,3 +28,8 @@ node_modules/
 
 # Foundry outputs and installed dependencies remain under .scratch/layer3.
 broadcast/
+
+# Envio generates types/runtime/database files from the checked-in schema/config.
+apps/service/generated/
+apps/service/envio-env.d.ts
+apps/service/.envio/

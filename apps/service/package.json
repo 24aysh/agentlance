@@ -1,0 +1,14 @@
+{
+  "name": "@agentlance/discovery-index",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.15.0" },
+  "scripts": {
+    "codegen": "envio codegen",
+    "check": "envio codegen && tsc --noEmit && vitest run",
+    "start": "envio start",
+    "dev": "envio dev"
+  },
+  "dependencies": { "envio": "3.14.0", "ethers": "6.16.0" },
+  "devDependencies": { "@types/node": "22.19.0", "typescript": "5.9.3", "vitest": "3.2.4" }
+}
