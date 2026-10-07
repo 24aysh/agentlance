@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "foundry": {
+    "version": "1.8.0",
+    "revision": "61ae26af36320d4fa1020f7db53785885e29eeb5",
+    "archives": {
+      "darwin_arm64": {
+        "url": "https://github.com/foundry-rs/foundry/releases/download/v1.8.0/foundry_v1.8.0_darwin_arm64.tar.gz",
+        "sha256": "0599b28a19af97c3ae91fab12ad868a1922db7770c4adff6b6d26235862153d0"
+      },
+      "darwin_amd64": {
+        "url": "https://github.com/foundry-rs/foundry/releases/download/v1.8.0/foundry_v1.8.0_darwin_amd64.tar.gz",
+        "sha256": "962fc88264c58720d06989fc5199098e4cdafbf214fb9b9a42960b15eee6ed97"
+      },
+      "linux_amd64": {
+        "url": "https://github.com/foundry-rs/foundry/releases/download/v1.8.0/foundry_v1.8.0_linux_amd64.tar.gz",
+        "sha256": "8c8560de380d58d1ee145934427887b107182367600a3c33aa71f16f2ce7ac57"
+      }
+    }
+  },
+  "solc": {
+    "version": "0.8.30+commit.73712a01",
+    "binaries": {
+      "macosx-amd64": {
+        "url": "https://raw.githubusercontent.com/ethereum/solc-bin/gh-pages/macosx-amd64/solc-macosx-amd64-v0.8.30+commit.73712a01",
+        "sha256": "738dcdc6afddeb505ee4e4ef24f1c1fdba2b8c924e614cbbf5801a5b062dd683"
+      },
+      "linux-amd64": {
+        "url": "https://raw.githubusercontent.com/ethereum/solc-bin/gh-pages/linux-amd64/solc-linux-amd64-v0.8.30+commit.73712a01",
+        "sha256": "f3e987dc6ecebd4bd350c48edcbc320b46cf9e3109bd3fc3d88f1acaf4c428f7"
+      }
+    }
+  },
+  "libraries": {
+    "openzeppelin-contracts": {
+      "version": "5.4.0",
+      "revision": "c64a1edb67b6e3f4a15cca8909c9482ad33a02b0",
+      "url": "https://codeload.github.com/OpenZeppelin/openzeppelin-contracts/tar.gz/c64a1edb67b6e3f4a15cca8909c9482ad33a02b0",
+      "sha256": "cad1e509c993850363d8218383499a0a8c7ac24ba71aeb120c43e96f2448b2fb"
+    },
+    "forge-std": {
+      "version": "1.9.7",
+      "revision": "77041d2ce690e692d6e03cc812b57d1ddaa4d505",
+      "url": "https://codeload.github.com/foundry-rs/forge-std/tar.gz/77041d2ce690e692d6e03cc812b57d1ddaa4d505",
+      "sha256": "a387f7c2a10387f889b0d18b999cfa667a5273ac11cc11e18923022eb8b24bc3"
+    }
+  },
+  "execution": {
+    "network": "monad",
+    "hardfork": "monad:MonadTen",
+    "evmVersion": "paris",
+    "optimizerRuns": 200,
+    "viaIR": true
+  }
+}

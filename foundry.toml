@@ -1,0 +1,36 @@
+[profile.default]
+src = "contracts/src"
+test = "contracts/test"
+script = "contracts/script"
+out = ".scratch/layer3/out"
+cache_path = ".scratch/layer3/cache"
+libs = [".scratch/layer3/toolchain/lib"]
+solc = ".scratch/layer3/toolchain/bin/solc"
+evm_version = "paris"
+network = "monad"
+hardfork = "monad:MonadTen"
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+bytecode_hash = "ipfs"
+extra_output = ["storageLayout"]
+remappings = [
+    "@openzeppelin/contracts/=.scratch/layer3/toolchain/lib/openzeppelin-contracts/contracts/",
+    "forge-std/=.scratch/layer3/toolchain/lib/forge-std/src/",
+]
+fs_permissions = [{ access = "read", path = "./specs" }]
+
+[profile.default.fuzz]
+runs = 256
+seed = "0x6c6179657233"
+failure_persist_dir = ".scratch/layer3/fuzz"
+
+[profile.default.invariant]
+runs = 64
+depth = 128
+fail_on_revert = false
+failure_persist_dir = ".scratch/layer3/invariant"
+
+[fmt]
+line_length = 100
+bracket_spacing = false

@@ -1,0 +1,1400 @@
+[
+  {
+    "type": "function",
+    "name": "readTask",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "taskRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "view_",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "task",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "schemaVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "taskRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "requester",
+                "type": "address"
+              },
+              {
+                "name": "terms",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "policyVersion",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "refundAddress",
+                    "type": "address"
+                  },
+                  {
+                    "name": "asset",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "kind",
+                        "type": "string"
+                      },
+                      {
+                        "name": "symbol",
+                        "type": "string"
+                      },
+                      {
+                        "name": "decimals",
+                        "type": "uint8"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "budgetAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "input",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "uri",
+                        "type": "string"
+                      },
+                      {
+                        "name": "digest",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "outputSchema",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "uri",
+                        "type": "string"
+                      },
+                      {
+                        "name": "digest",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "taskFamily",
+                    "type": "string"
+                  },
+                  {
+                    "name": "alphaNum",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "alphaDen",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "biddingClose",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "allocationBy",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "acceptBy",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "resultBy",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "validationBy",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "validator",
+                    "type": "address"
+                  },
+                  {
+                    "name": "validationPolicy",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "uri",
+                        "type": "string"
+                      },
+                      {
+                        "name": "digest",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "delegation",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "maxDepth",
+                        "type": "uint32"
+                      },
+                      {
+                        "name": "maxChildren",
+                        "type": "uint32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "retryOf",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "market",
+                            "type": "address"
+                          },
+                          {
+                            "name": "taskId",
+                            "type": "uint64"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "parentRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "market",
+                        "type": "address"
+                      },
+                      {
+                        "name": "taskId",
+                        "type": "uint64"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "rootRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "depth",
+                "type": "uint32"
+              },
+              {
+                "name": "createdAt",
+                "type": "uint64"
+              },
+              {
+                "name": "createdBlock",
+                "type": "uint64"
+              },
+              {
+                "name": "reputationSnapshotBlock",
+                "type": "uint64"
+              }
+            ]
+          },
+          {
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "name": "allocation",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "present",
+                "type": "bool"
+              },
+              {
+                "name": "value",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "schemaVersion",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "taskRef",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "market",
+                        "type": "address"
+                      },
+                      {
+                        "name": "taskId",
+                        "type": "uint64"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "mechanismVersion",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "outcome",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "winner",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "identityRegistry",
+                            "type": "address"
+                          },
+                          {
+                            "name": "agentId",
+                            "type": "uint256"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "awardId",
+                    "type": "uint32"
+                  },
+                  {
+                    "name": "winningScore",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "int256"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "secondScore",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "int256"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "criticalAtoms",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "uint96"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "reservedAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "allocatedAt",
+                    "type": "uint64"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "winningBid",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "present",
+                "type": "bool"
+              },
+              {
+                "name": "value",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "schemaVersion",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "offer",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "taskRef",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "market",
+                            "type": "address"
+                          },
+                          {
+                            "name": "taskId",
+                            "type": "uint64"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "agentRef",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "identityRegistry",
+                            "type": "address"
+                          },
+                          {
+                            "name": "agentId",
+                            "type": "uint256"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "bidAtoms",
+                        "type": "uint96"
+                      },
+                      {
+                        "name": "executionSigner",
+                        "type": "address"
+                      },
+                      {
+                        "name": "payout",
+                        "type": "address"
+                      },
+                      {
+                        "name": "profileDigest",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "ownerAtBid",
+                    "type": "address"
+                  },
+                  {
+                    "name": "snapshotBlock",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "counters",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "successes",
+                        "type": "uint64"
+                      },
+                      {
+                        "name": "failures",
+                        "type": "uint64"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "p",
+                    "type": "uint32"
+                  },
+                  {
+                    "name": "score",
+                    "type": "int256"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "ownWorkReserveAtoms",
+            "type": "uint96"
+          },
+          {
+            "name": "childrenCreated",
+            "type": "uint32"
+          },
+          {
+            "name": "activeChildren",
+            "type": "uint32"
+          },
+          {
+            "name": "reservedChildBudgets",
+            "type": "uint96"
+          },
+          {
+            "name": "committedChildPayouts",
+            "type": "uint96"
+          },
+          {
+            "name": "result",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "present",
+                "type": "bool"
+              },
+              {
+                "name": "value",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "schemaVersion",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "executionRef",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "taskRef",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "market",
+                            "type": "address"
+                          },
+                          {
+                            "name": "taskId",
+                            "type": "uint64"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "awardId",
+                        "type": "uint8"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "artifact",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "uri",
+                        "type": "string"
+                      },
+                      {
+                        "name": "digest",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "submittedAt",
+                    "type": "uint64"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "receipt",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "present",
+                "type": "bool"
+              },
+              {
+                "name": "value",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "schemaVersion",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "taskRef",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "market",
+                        "type": "address"
+                      },
+                      {
+                        "name": "taskId",
+                        "type": "uint64"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "reason",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "winner",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "identityRegistry",
+                            "type": "address"
+                          },
+                          {
+                            "name": "agentId",
+                            "type": "uint256"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "payout",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "address"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "refundAddress",
+                    "type": "address"
+                  },
+                  {
+                    "name": "budgetAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "reservedAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "paidAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "refundAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "resultDigest",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "bytes32"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "validation",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "present",
+                        "type": "bool"
+                      },
+                      {
+                        "name": "value",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "schemaVersion",
+                            "type": "uint8"
+                          },
+                          {
+                            "name": "executionRef",
+                            "type": "tuple",
+                            "components": [
+                              {
+                                "name": "taskRef",
+                                "type": "tuple",
+                                "components": [
+                                  {
+                                    "name": "chainId",
+                                    "type": "uint256"
+                                  },
+                                  {
+                                    "name": "market",
+                                    "type": "address"
+                                  },
+                                  {
+                                    "name": "taskId",
+                                    "type": "uint64"
+                                  }
+                                ]
+                              },
+                              {
+                                "name": "awardId",
+                                "type": "uint8"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "agentRef",
+                            "type": "tuple",
+                            "components": [
+                              {
+                                "name": "chainId",
+                                "type": "uint256"
+                              },
+                              {
+                                "name": "identityRegistry",
+                                "type": "address"
+                              },
+                              {
+                                "name": "agentId",
+                                "type": "uint256"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "resultDigest",
+                            "type": "bytes32"
+                          },
+                          {
+                            "name": "validationPolicyDigest",
+                            "type": "bytes32"
+                          },
+                          {
+                            "name": "verdict",
+                            "type": "uint8"
+                          },
+                          {
+                            "name": "evidence",
+                            "type": "tuple",
+                            "components": [
+                              {
+                                "name": "uri",
+                                "type": "string"
+                              },
+                              {
+                                "name": "digest",
+                                "type": "bytes32"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "validator",
+                            "type": "address"
+                          },
+                          {
+                            "name": "nonce",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "expiry",
+                            "type": "uint64"
+                          },
+                          {
+                            "name": "signature",
+                            "type": "bytes"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "counterEffect",
+                    "type": "uint8"
+                  },
+                  {
+                    "name": "settledAt",
+                    "type": "uint64"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "readBid",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "taskRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      },
+      {
+        "name": "agentRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "identityRegistry",
+            "type": "address"
+          },
+          {
+            "name": "agentId",
+            "type": "uint256"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "bid",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "present",
+            "type": "bool"
+          },
+          {
+            "name": "value",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "schemaVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "offer",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "taskRef",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "market",
+                        "type": "address"
+                      },
+                      {
+                        "name": "taskId",
+                        "type": "uint64"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "agentRef",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "identityRegistry",
+                        "type": "address"
+                      },
+                      {
+                        "name": "agentId",
+                        "type": "uint256"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "bidAtoms",
+                    "type": "uint96"
+                  },
+                  {
+                    "name": "executionSigner",
+                    "type": "address"
+                  },
+                  {
+                    "name": "payout",
+                    "type": "address"
+                  },
+                  {
+                    "name": "profileDigest",
+                    "type": "bytes32"
+                  }
+                ]
+              },
+              {
+                "name": "ownerAtBid",
+                "type": "address"
+              },
+              {
+                "name": "snapshotBlock",
+                "type": "uint64"
+              },
+              {
+                "name": "counters",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "successes",
+                    "type": "uint64"
+                  },
+                  {
+                    "name": "failures",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "p",
+                "type": "uint32"
+              },
+              {
+                "name": "score",
+                "type": "int256"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "readSettlement",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "taskRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "name": "taskId",
+            "type": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "receipt",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "present",
+            "type": "bool"
+          },
+          {
+            "name": "value",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "schemaVersion",
+                "type": "uint8"
+              },
+              {
+                "name": "taskRef",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "chainId",
+                    "type": "uint256"
+                  },
+                  {
+                    "name": "market",
+                    "type": "address"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "uint64"
+                  }
+                ]
+              },
+              {
+                "name": "reason",
+                "type": "uint8"
+              },
+              {
+                "name": "winner",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "chainId",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "identityRegistry",
+                        "type": "address"
+                      },
+                      {
+                        "name": "agentId",
+                        "type": "uint256"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "payout",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "address"
+                  }
+                ]
+              },
+              {
+                "name": "refundAddress",
+                "type": "address"
+              },
+              {
+                "name": "budgetAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "reservedAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "paidAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "refundAtoms",
+                "type": "uint96"
+              },
+              {
+                "name": "resultDigest",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "bytes32"
+                  }
+                ]
+              },
+              {
+                "name": "validation",
+                "type": "tuple",
+                "components": [
+                  {
+                    "name": "present",
+                    "type": "bool"
+                  },
+                  {
+                    "name": "value",
+                    "type": "tuple",
+                    "components": [
+                      {
+                        "name": "schemaVersion",
+                        "type": "uint8"
+                      },
+                      {
+                        "name": "executionRef",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "taskRef",
+                            "type": "tuple",
+                            "components": [
+                              {
+                                "name": "chainId",
+                                "type": "uint256"
+                              },
+                              {
+                                "name": "market",
+                                "type": "address"
+                              },
+                              {
+                                "name": "taskId",
+                                "type": "uint64"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "awardId",
+                            "type": "uint8"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "agentRef",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "chainId",
+                            "type": "uint256"
+                          },
+                          {
+                            "name": "identityRegistry",
+                            "type": "address"
+                          },
+                          {
+                            "name": "agentId",
+                            "type": "uint256"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "resultDigest",
+                        "type": "bytes32"
+                      },
+                      {
+                        "name": "validationPolicyDigest",
+                        "type": "bytes32"
+                      },
+                      {
+                        "name": "verdict",
+                        "type": "uint8"
+                      },
+                      {
+                        "name": "evidence",
+                        "type": "tuple",
+                        "components": [
+                          {
+                            "name": "uri",
+                            "type": "string"
+                          },
+                          {
+                            "name": "digest",
+                            "type": "bytes32"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "validator",
+                        "type": "address"
+                      },
+                      {
+                        "name": "nonce",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "expiry",
+                        "type": "uint64"
+                      },
+                      {
+                        "name": "signature",
+                        "type": "bytes"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "counterEffect",
+                "type": "uint8"
+              },
+              {
+                "name": "settledAt",
+                "type": "uint64"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "readCounters",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "agentRef",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "name": "identityRegistry",
+            "type": "address"
+          },
+          {
+            "name": "agentId",
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "name": "taskFamily",
+        "type": "string"
+      },
+      {
+        "name": "snapshotBlock",
+        "type": "uint64"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "successes",
+        "type": "uint64"
+      },
+      {
+        "name": "failures",
+        "type": "uint64"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "readCredit",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "amountAtoms",
+        "type": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "isNonceUsed",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "signer",
+        "type": "address"
+      },
+      {
+        "name": "primaryTypeHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "nonce",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "used",
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "readPolicy",
+    "stateMutability": "view",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "identityRegistry",
+        "type": "address"
+      },
+      {
+        "name": "validator",
+        "type": "address"
+      },
+      {
+        "name": "policyVersion",
+        "type": "uint8"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "readAccounting",
+    "stateMutability": "view",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "taskCount",
+        "type": "uint64"
+      },
+      {
+        "name": "depositedAtoms",
+        "type": "uint256"
+      },
+      {
+        "name": "escrowTotalAtoms",
+        "type": "uint256"
+      },
+      {
+        "name": "creditTotalAtoms",
+        "type": "uint256"
+      },
+      {
+        "name": "withdrawnAtoms",
+        "type": "uint256"
+      }
+    ]
+  }
+]

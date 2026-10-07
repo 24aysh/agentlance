@@ -25,3 +25,6 @@ tmp/
 # Independent signing-vector checker
 node_modules/
 .pnpm-store/
+
+# Foundry outputs and installed dependencies remain under .scratch/layer3.
+broadcast/
