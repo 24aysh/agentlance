@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import os
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from secrets import randbits
@@ -22,6 +23,7 @@ from modules.adapters.registry.resolution import selectInterface
 from modules.adapters.storage.content import ContentStore, NetworkPolicy, createHttpClient
 from modules.adapters.storage.journal import Journal
 from modules.agent_client.discovery import MarketWatcher, checkFilterPolicy, deliverObserved
+from modules.agent_client.economics import EconomicRuntime
 from modules.agent_client.participant import Participant
 from modules.agent_client.ports import AdapterError, closed, ensure, recordCheck
 from modules.agent_client.signing import buildBidPermitTypedData, contentDigest
@@ -39,14 +41,22 @@ def readKeystore(config):
 
 
 class DiscoveryRuntime:
-    def __init__(self, participant, watcher, policy, capacity, bidAtoms, signPermit):
+    def __init__(
+        self, participant, watcher, policy, capacity, bidAtoms, signPermit, *, economics=None
+    ):
         checkFilterPolicy(policy, watcher.schema)
         ensure(type(capacity) is int and capacity > 0, "Configured capacity")
-        recordCheck(bidAtoms, "Uint96", watcher.schema)
+        ensure((bidAtoms is None) == (economics is not None), "Select fixed bid or economics")
+        if bidAtoms is not None:
+            recordCheck(bidAtoms, "Uint96", watcher.schema)
+        self.economics = economics
         self.participant, self.watcher, self.policy = participant, watcher, policy
         self.capacity, self.bidAtoms, self.signPermit = capacity, bidAtoms, signPermit
 
     async def consider(self, task, stamp):
+        if self.economics is not None:
+            await self.economics.enqueueCandidate(task, stamp)
+            return
         if int(self.bidAtoms) > int(task["terms"]["budgetAtoms"]):
             return
         # A nonce is chosen only for a new intent; prepareBid reuses any retained command.
@@ -81,16 +91,20 @@ class DiscoveryRuntime:
             if intent["transactionHash"] and intent["result"] is None:
                 await self.participant.market.readOperation(intent["operationId"])
         await self.participant.tick()
+        if self.economics is not None:
+            await self.economics.tick()
 
 
 async def main(config):
     """Live activation requires a complete manifest until the bootstrap decision is resolved."""
+    economicConfig = config.get("economics")
     closed(
         config,
         "manifestPath genesisHash registryVerificationPath rpcUrl database agentRef "
         "executionKeystore ownerKeystore bundleDir artifactOrigin ipfsGateway "
         "maxFinalizedAgeSeconds maxGas maxGasPriceWei bidAtoms capacity filter "
-        "broadcast listenHost agentPort certificate tlsKey",
+        "broadcast listenHost agentPort certificate tlsKey"
+        + (" economics" if economicConfig is not None else ""),
     )
     ensure(config["broadcast"] is True, "Explicit broadcast configuration required", "CONFLICT")
     root = Path(__file__).resolve().parents[2]
@@ -228,6 +242,29 @@ async def main(config):
                 + bytes(owner.sign_message(encode_typed_data(full_message=typed)).signature).hex()
             )
 
+        economics = None
+        if economicConfig is not None:
+            from modules.adapters.jev import JevPredictor
+
+            ensure(config["bidAtoms"] is None, "Economics cannot coexist with a fixed bid")
+            forecast = economicConfig["forecast"]
+            predictor = None
+            if forecast["enabled"]:
+                predictor = JevPredictor(
+                    http,
+                    os.environ.get("TYPESAFE_API_KEY"),
+                    forecast["model"],
+                    forecast["requestVersion"],
+                )
+            economics = EconomicRuntime(
+                participant,
+                policy,
+                config["capacity"],
+                signPermit,
+                economicConfig,
+                time.time,
+                predictor,
+            )
         runtime = DiscoveryRuntime(
             participant,
             MarketWatcher(chain, registry),
@@ -235,6 +272,7 @@ async def main(config):
             config["capacity"],
             config["bidAtoms"],
             signPermit,
+            economics=economics,
         )
         failures = []
 
@@ -262,6 +300,8 @@ async def main(config):
             finally:
                 background.cancel()
                 await asyncio.gather(background, return_exceptions=True)
+                if economics is not None:
+                    await economics.close()
 
         server = uvicorn.Server(
             uvicorn.Config(

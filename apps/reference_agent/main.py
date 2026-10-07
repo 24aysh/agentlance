@@ -141,10 +141,14 @@ async def main(config):
 
 
 if __name__ == "__main__":
+    import os
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", required=True)
+    parser.add_argument("--config", default=os.environ.get("AGENTLANCE_CONFIG"))
     parser.add_argument("--mode", choices=("fixture", "monad"), default="fixture")
     args = parser.parse_args()
+    if not args.config:
+        parser.error("--config or AGENTLANCE_CONFIG is required")
     if args.mode == "monad":
         from apps.reference_agent.chain import main as chainMain
 

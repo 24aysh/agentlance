@@ -23,6 +23,7 @@ from modules.domain.records import agentKey, taskKey
 
 SESSION_HEADER = "X-AgentLance-Fixture-Session"
 READ_ARGS = {
+    "readReputation": "taskRef agentRef",
     "readIdentity": "agentRef",
     "readTask": "taskRef",
     "readBid": "taskRef agentRef",
@@ -140,6 +141,32 @@ class FixtureMarket:
 
     async def readTask(self, taskRef):
         return self.view(taskRef, True)
+
+    async def readReputation(self, taskRef, agentRef):
+        from modules.market_core.reputation import calculateProbability, snapshotCounters
+
+        recordCheck(agentRef, "AgentRef", self.schema)
+        ensure(
+            agentRef["chainId"] == str(self.policy.chainId)
+            and agentRef["identityRegistry"] == self.policy.identityRegistry,
+            "Reputation namespace",
+        )
+        task = self.taskState(taskRef, True).spec
+        successes, failures = snapshotCounters(
+            self.finalizedState.reputation,
+            agentRef,
+            task["terms"]["taskFamily"],
+            int(task["reputationSnapshotBlock"]),
+        )
+        return {
+            "taskRef": taskRef,
+            "agentRef": agentRef,
+            "taskFamily": task["terms"]["taskFamily"],
+            "snapshotBlock": task["reputationSnapshotBlock"],
+            "counters": {"successes": str(successes), "failures": str(failures)},
+            "p": calculateProbability(successes, failures),
+            "stamp": self.stamp(True),
+        }
 
     async def observeAward(self, executionRef):
         recordCheck(executionRef, "ExecutionRef", self.schema)
@@ -376,6 +403,16 @@ class FixtureClient:
         value = await self.read("readTask", taskRef=taskRef)
         checkTaskView(value, self.schema)
         ensure(value["task"]["taskRef"] == taskRef, "Task reference")
+        return value
+
+    async def readReputation(self, taskRef, agentRef):
+        from modules.agent_client.ports import checkReputation
+
+        value = await self.read("readReputation", taskRef=taskRef, agentRef=agentRef)
+        checkReputation(value, self.schema)
+        ensure(
+            value["taskRef"] == taskRef and value["agentRef"] == agentRef, "Reputation reference"
+        )
         return value
 
     async def observeAward(self, executionRef):

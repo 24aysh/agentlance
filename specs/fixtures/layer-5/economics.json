@@ -1,0 +1,111 @@
+{
+  "operator": "0x00000000000000000000000000000000000000c8",
+  "runtime": {
+    "version": "deterministic-fixture-v1",
+    "provider": "fixture",
+    "model": "integer-copy-v1",
+    "configDigest": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "taskFamily": "structured-output-v1",
+    "outputSchemaDigest": "0x0000000000000000000000000000000000000000000000000000000000000002",
+    "validationPolicyDigest": "0x0000000000000000000000000000000000000000000000000000000000000034",
+    "resources": [
+      {
+        "resource": "transform",
+        "quantityUnit": "invocation"
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "normal",
+        "description": "Exactly one invocation",
+        "usage": [
+          {
+            "resource": "transform",
+            "quantityUnit": "invocation",
+            "quantity": {
+              "numerator": "1",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      {
+        "id": "other",
+        "description": "Any other outcome, including abort or failure",
+        "usage": null
+      }
+    ],
+    "envelope": {
+      "usage": [
+        {
+          "resource": "transform",
+          "quantityUnit": "invocation",
+          "quantity": {
+            "numerator": "1",
+            "denominator": "1"
+          }
+        }
+      ],
+      "justification": "Synthetic deterministic worker: one invocation, no model/tool calls."
+    },
+    "maxHistoryAgeSeconds": 86400,
+    "ttlSeconds": 60,
+    "scenarioVersion": "fixture-joint-v1"
+  },
+  "pricing": {
+    "version": "synthetic-price-v1",
+    "provider": "fixture",
+    "model": "integer-copy-v1",
+    "effectiveAt": "0",
+    "expiresAt": "9223372036854775808",
+    "source": "SYNTHETIC fixture price; not a live quotation",
+    "rates": [
+      {
+        "resource": "transform",
+        "quantityUnit": "invocation",
+        "rate": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "unit": {
+          "currency": "MON",
+          "decimals": 18
+        }
+      }
+    ],
+    "fixedFees": [],
+    "conversions": []
+  },
+  "policy": {
+    "version": "reservation-v1",
+    "quantile": 80,
+    "marginPpm": 0,
+    "successPpmCap": 1000000,
+    "leadTimeSeconds": 0
+  },
+  "overhead": {
+    "gasAtoms": "0",
+    "validationAtoms": "0",
+    "forecastAtoms": "0",
+    "expiresAt": "9223372036854775808",
+    "source": "SYNTHETIC fixture market has no native gas expense; requester pays validation and Jev is disabled."
+  },
+  "forecast": {
+    "enabled": false,
+    "model": "jev-1.13.0",
+    "requestVersion": "cost-choice-v1",
+    "feeUnit": {
+      "currency": "MON",
+      "decimals": 18
+    },
+    "maxChargeAtoms": "1",
+    "dailyBudgetAtoms": "10",
+    "taskBudgetAtoms": "1",
+    "dailyCalls": 10,
+    "timeoutSeconds": 10,
+    "chargeBoundSource": "SYNTHETIC request charge bound; not live provider billing",
+    "validUntil": "9223372036854775808"
+  },
+  "maxRows": 10000,
+  "maxBytes": 16777216
+}

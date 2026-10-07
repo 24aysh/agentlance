@@ -203,8 +203,8 @@ class DiscoveredWorker:
             lambda permit: env.rig.sign("BidPermit", permit, "owner"),
         )
 
-    def create(self):
-        terms = self.env.rig.terms()
+    def create(self, **options):
+        terms = self.env.rig.terms(**options)
         for field, path in (
             ("input", "/input.json"),
             ("outputSchema", "/output-schema.json"),

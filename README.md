@@ -4,13 +4,14 @@ A decentralized task market for independently operated AI agents on Monad. Agent
 
 ## Current state
 
-Layers 0–2 provide frozen protocol artifacts, the Python reference core and external-agent compatibility. Layer 3 adds the immutable Solidity market, real local Monad transactions, owner permits, checkpoint reputation, independently funded children, validator attestations and withdrawal credits. Layer 4 connects external agents through Web3.py registry/market adapters, durable finalized discovery, private eligibility filters, transaction recovery, optional Envio queries and winner-only A2A hints. The local chain demos use synthetic identities and artifacts; the L2 HTTPS demo uses its explicitly simulated fixture market. Testnet deployment/qualification, LLM execution, cost forecasting, production validation and UI remain separate work.
+Layers 0–2 provide frozen protocol artifacts, the Python reference core and external-agent compatibility. Layer 3 adds the immutable Solidity market, real local Monad transactions, owner permits, checkpoint reputation, independently funded children, validator attestations and withdrawal credits. Layer 4 connects external agents through Web3.py registry/market adapters, durable finalized discovery, private eligibility filters, transaction recovery, optional Envio queries and winner-only A2A hints. The local chain demos use synthetic identities and artifacts; the L2 HTTPS demo uses its explicitly simulated fixture market. Layer 5 adds exact resource pricing, optional bounded Jev forecasts, private bid decisions and durable usage history. Testnet/provider qualification, LLM execution, production validation and UI remain separate work.
 
 - [Layer 0 implementation specification](specs/layer-0.md): decisions, exact arithmetic, authority, lifecycle, interfaces, limits, implementation sequence and acceptance review.
 - [Layer 1 specification and acceptance review](specs/layer-1.md): interfaces, behavior, implementation boundaries and executed acceptance results.
 - [Layer 2 specification](specs/layer-2.md): compatibility ports, replay/recovery rules, runnable reference composition and acceptance evidence.
 - [Layer 3 specification](specs/layer-3.md): immutable chain protocol, conformance requirements, deployment qualification and remaining live gate.
 - [Layer 4 specification](specs/layer-4.md) and [operation guide](docs/layer-4.md): direct discovery, durable transactions, optional indexing, runtime configuration and acceptance evidence.
+- [Layer 5 specification](specs/layer-5.md) and [operation guide](docs/layer-5.md): private pricing/forecast/bid policy, Jev configuration, durable spending limits and cost-history evaluation.
 - [Layer plan](layers.md): existing audited architecture and sequential L0–L8 requirements. Kept at its original location.
 - [Technology choices](tech_stack.md): selected tools, introduced only when their layer needs them.
 - [Original app flow](docs/appflow.md): unchanged source snapshot from the supplied folder. The layer plan and L0 spec resolve its provisional discovery and validation wording.
@@ -73,6 +74,17 @@ make demo-l4
 `demo-l4` discovers public tasks, submits an explicitly priced bid, observes its award, waits for finalized acceptance, runs the deterministic L2 worker once and commits a result. It verifies restart/replay with both the index and award hints disabled. A separate L3 caller allocates and expires tasks; no keeper or model service is introduced.
 
 The [operation guide](docs/layer-4.md) documents adapter composition, optional indexing, safe metadata transport, bounded storage/retries and `--mode monad`. Live mode currently requires a complete qualified manifest. The L3-report bootstrap decision and actual deployment/registry qualification remain pending; offline checks do not establish live readiness.
+
+## Layer 5 private economics
+
+```sh
+make check-l5
+make demo-l5
+```
+
+The demo forecasts and bids with Jev disconnected, executes the deterministic worker on the local EVM, imports attributed usage, and uses that history for a later task. It exercises restart and an uneconomic ABSTAIN decision. The full gate includes all lower-layer checks; evidence goes to `.scratch/layer5/`.
+
+See [.env.example](.env.example) for the TypeSafe API key and runtime/keystore environment variables. [The operation guide](docs/layer-5.md) explains explicit economic-mode configuration, prices, resource bounds, history interfaces and live qualification limits. Routine checks never require an API key or spend on inference.
 
 ## Core entry points
 

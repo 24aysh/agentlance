@@ -29,7 +29,7 @@ def testLayer2JournalMigrationKeepsClaims(l2):
         l2.journal.db.execute("PRAGMA user_version=1")
         l2.journal.db.commit()
         l2.restart()
-        assert l2.journal.db.execute("PRAGMA user_version").fetchone()[0] == 2
+        assert l2.journal.db.execute("PRAGMA user_version").fetchone()[0] == 3
         assert l2.journal.db.execute("SELECT * FROM operations").fetchall() == oldRows
         assert l2.journal.readContent(digest) == b"migration-provenance"
         assert l2.journal.get(l2.ref)["phase"] == "INTERRUPTED"

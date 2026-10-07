@@ -106,6 +106,30 @@ class MonadMarket:
     async def readTask(self, taskRef):
         return await self.readTaskAt(taskRef, await self.chain.qualify())
 
+    async def readReputation(self, taskRef, agentRef):
+        from modules.agent_client.ports import checkReputation
+        from modules.market_core.reputation import calculateProbability
+
+        stamp = await self.chain.qualify()
+        task = (await self.readTaskAt(taskRef, stamp))["task"]
+        values = [
+            self.checkRef(agentRef, "AgentRef"),
+            task["terms"]["taskFamily"],
+            int(task["reputationSnapshotBlock"]),
+        ]
+        successes, failures = await self.chain.read("readCounters", values, stamp)
+        result = {
+            "taskRef": taskRef,
+            "agentRef": agentRef,
+            "taskFamily": task["terms"]["taskFamily"],
+            "snapshotBlock": task["reputationSnapshotBlock"],
+            "counters": {"successes": str(successes), "failures": str(failures)},
+            "p": calculateProbability(successes, failures),
+            "stamp": stamp,
+        }
+        checkReputation(result, self.schema)
+        return result
+
     async def observeAward(self, executionRef):
         recordCheck(executionRef, "ExecutionRef", self.schema)
         return await self.readTask(executionRef["taskRef"])

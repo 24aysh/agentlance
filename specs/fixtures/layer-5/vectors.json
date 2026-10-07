@@ -1,0 +1,30 @@
+{
+  "synthetic": true,
+  "distribution": {
+    "scenarios": [
+      {
+        "id": "short",
+        "costAtoms": "100",
+        "probabilityPpm": 800000
+      },
+      {
+        "id": "long",
+        "costAtoms": "200",
+        "probabilityPpm": 200000
+      }
+    ],
+    "summary": {
+      "meanAtoms": "120",
+      "p50Atoms": "100",
+      "p80Atoms": "100",
+      "p95Atoms": "200"
+    }
+  },
+  "policy": {
+    "costAtoms": "10",
+    "overheadAtoms": "2",
+    "p": 500000,
+    "marginPpm": 100000,
+    "bidAtoms": "27"
+  }
+}
