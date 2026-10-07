@@ -1,0 +1,2335 @@
+{
+  "schemaVersion": 1,
+  "scope": "Offline implementation evidence; live deployment is a separate gate.",
+  "requirements": {
+    "L3-01": {
+      "pytest": [
+        "tests.integration.test_layer3_transactions.testTerminalDifferential[no-show]",
+        "tests.integration.test_layer3_transactions.testTerminalDifferential[execution-timeout]",
+        "tests.integration.test_layer3_transactions.testTerminalDifferential[unallocated]",
+        "tests.integration.test_layer3_transactions.testTerminalDifferential[allocation-expired]",
+        "tests.integration.test_layer3_transactions.testTerminalDifferential[cancelled]",
+        "tests.integration.test_layer3_transactions.testNonpayableEncodingException",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[overlong-two]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[overlong-three]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[overlong-four]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[surrogate-high]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[surrogate-low]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[above-unicode]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[invalid-leading-byte]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[bare-continuation]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[truncated-two]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[truncated-three]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[truncated-four]",
+        "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[invalid-continuation]"
+      ],
+      "forge": [
+        "MarketLifecycleTest.testLifecycleCreateRoot()",
+        "MarketLifecycleTest.testLifecycleAcceptBid()",
+        "MarketLifecycleTest.testLifecycleAllocatePositive()",
+        "MarketLifecycleTest.testLifecycleAcceptAward()",
+        "MarketLifecycleTest.testLifecycleSubmitResult()",
+        "MarketLifecycleTest.testLifecycleSuccess()",
+        "MarketLifecycleTest.testLifecycleFailedValidation()",
+        "MarketLifecycleTest.testLifecycleUnallocated()",
+        "MarketLifecycleTest.testLifecycleAllocationExpired()",
+        "MarketLifecycleTest.testLifecycleNoShow()",
+        "MarketLifecycleTest.testLifecycleExecutionTimeout()",
+        "MarketLifecycleTest.testLifecycleValidatorTimeout()",
+        "MarketLifecycleTest.testLifecycleCancelled()",
+        "MarketLifecycleTest.testLifecycleDuplicateSettlement()",
+        "MarketLifecycleTest.testLifecycleWrongSigner()",
+        "MarketLifecycleTest.testLifecycleEarlyAllocation()",
+        "MarketLifecycleTest.testLifecycleAllocationAtCutoff()",
+        "MarketLifecycleTest.testLifecycleAcceptAtCutoff()",
+        "MarketLifecycleTest.testLifecycleSubmitAtCutoff()",
+        "MarketLifecycleTest.testLifecycleVerdictAtCutoff()",
+        "MarketLifecycleTest.testLifecycleLateBid()",
+        "MarketLifecycleTest.testLifecycleCancelWithBid()",
+        "MarketLifecycleTest.testLifecycleSubmitBeforeAccept()",
+        "MarketLifecycleTest.testLifecycleActiveChildBlocksResult()",
+        "MarketLifecycleTest.testLifecycleEarlyTimeout()",
+        "MarketLifecycleTest.testLifecycleWrongCreationValue()",
+        "MarketLifecycleTest.testLifecycleWithdrawBlocked()",
+        "MarketLifecycleTest.testLifecycleWithdrawSuccess()",
+        "MarketLifecycleTest.testLifecycleAcceptBeforeCutoff()",
+        "MarketLifecycleTest.testLifecycleSubmitBeforeCutoff()",
+        "MarketLifecycleTest.testLifecycleVerdictBeforeCutoff()",
+        "MarketLifecycleTest.testLifecycleWrongResultBinding()",
+        "MarketLifecycleTest.testLifecycleWrongPolicyBinding()",
+        "MarketLifecycleTest.testLifecycleNonzeroCallValue()"
+      ]
+    },
+    "L3-02": {
+      "pytest": [
+        "tests.conformance.test_layer3.testOriginalSigningVectors[BidPermit]",
+        "tests.conformance.test_layer3.testOriginalSigningVectors[ValidationVerdict]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-chain]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-market]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-task]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-agent]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-result]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-policy]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-nonce]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-expiry]",
+        "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-primary-type]",
+        "tests.integration.test_layer3_transactions.testMaliciousAndSignaturePrecedence"
+      ],
+      "forge": [
+        "MarketPropertiesTest.testFuzzEoaDigestAndSignerIsolation(bytes32,uint256)",
+        "SignaturesTest.testEoaRelayedPermitFreezesOwnerAndPayout()",
+        "SignaturesTest.testOldOwnerPermitAndTransferBack()",
+        "SignaturesTest.testContractOwnerExactMagic()",
+        "SignaturesTest.testContractOwnerRevert()",
+        "SignaturesTest.testContractOwnerShort()",
+        "SignaturesTest.testContractOwnerExtra()",
+        "SignaturesTest.testContractOwnerDirty()",
+        "SignaturesTest.testContractOwnerReturnBomb()",
+        "SignaturesTest.testContractOwnerGasExhaustion()",
+        "SignaturesTest.testContractOwnerStateful()",
+        "SignaturesTest.testEoaRejectsHighSBadVCompactAndZero()",
+        "SignaturesTest.testPermitFailuresDoNotConsumeNonce()",
+        "SignaturesTest.testExpiredPermitRollbackAndNonceTypeSeparation()",
+        "SignaturesTest.testUsedPermitNonceRejectsAndDirectBidConsumesNone()",
+        "SignaturesTest.testPermitTaskMismatchPrecedesSettledGuard()",
+        "SignaturesTest.testMismatchedOptionalPermitAndSignature()",
+        "MarketBoundsTest.testMaximumWireRecordsAndContractSignature()"
+      ]
+    },
+    "L3-03": {
+      "pytest": [
+        "tests.integration.test_layer3_transactions.testTransferPreservesAdmittedObligation"
+      ],
+      "forge": [
+        "MarketPropertiesTest.testFuzzBestTwoEqualsIndependentFullSort(uint96[8],uint256)",
+        "MarketBoundsTest.testAllocationGasOneBid()",
+        "MarketBoundsTest.testAllocationGasTwoBids()",
+        "MarketBoundsTest.testAllocationGasTenBids()",
+        "MarketBoundsTest.testAllocationGasSixteenBids()",
+        "MarketBoundsTest.testAllocationGasHundredBids()",
+        "MarketBoundsTest.testAllocationGas256Bids()",
+        "MarketBoundsTest.testAllocationGasThousandBids()",
+        "MarketBoundsTest.testAllocationGas1024Bids()",
+        "MarketBoundsTest.testMaximumWireTransactionGasLimits()"
+      ]
+    },
+    "L3-04": {
+      "pytest": [
+        "tests.conformance.test_layer3.testMarketGoldens[normal]",
+        "tests.conformance.test_layer3.testMarketGoldens[single-bidder]",
+        "tests.conformance.test_layer3.testMarketGoldens[budget-cap]",
+        "tests.conformance.test_layer3.testMarketGoldens[no-bids]",
+        "tests.conformance.test_layer3.testMarketGoldens[negative-score]",
+        "tests.conformance.test_layer3.testMarketGoldens[zero-score]",
+        "tests.conformance.test_layer3.testMarketGoldens[exact-tie]",
+        "tests.conformance.test_layer3.testMarketGoldens[numeric-id-order]",
+        "tests.conformance.test_layer3.testMarketGoldens[fractional-price-floor]",
+        "tests.conformance.test_layer3.testMarketGoldens[positive-score-zero-price]",
+        "tests.conformance.test_layer3.testMarketGoldens[maximum-denominator]",
+        "tests.conformance.test_layer3.testMarketGoldens[maximum-negative-product]",
+        "tests.conformance.test_layer3.testMarketGoldens[zero-alpha-numerator]",
+        "tests.conformance.test_layer3.testMarketGoldens[zero-alpha-denominator]",
+        "tests.conformance.test_layer3.testMarketGoldens[unreduced-alpha]",
+        "tests.conformance.test_layer3.testMarketGoldens[over-budget]",
+        "tests.conformance.test_layer3.testMarketGoldens[duplicate-agent]",
+        "tests.conformance.test_layer3.testMarketGoldens[zero-budget]"
+      ],
+      "forge": [
+        "MarketPropertiesTest.testFuzzBestTwoEqualsIndependentFullSort(uint96[8],uint256)",
+        "MarketBoundsTest.testAllocationGasOneBid()",
+        "MarketBoundsTest.testAllocationGasTwoBids()",
+        "MarketBoundsTest.testAllocationGasTenBids()",
+        "MarketBoundsTest.testAllocationGasSixteenBids()",
+        "MarketBoundsTest.testAllocationGasHundredBids()",
+        "MarketBoundsTest.testAllocationGas256Bids()",
+        "MarketBoundsTest.testAllocationGasThousandBids()",
+        "MarketBoundsTest.testAllocationGas1024Bids()",
+        "MarketBoundsTest.testMaximumWireTransactionGasLimits()"
+      ]
+    },
+    "L3-05": {
+      "pytest": [
+        "tests.conformance.test_layer3.testProbabilityGoldens[fresh]",
+        "tests.conformance.test_layer3.testProbabilityGoldens[one-success]",
+        "tests.conformance.test_layer3.testProbabilityGoldens[one-failure]",
+        "tests.conformance.test_layer3.testProbabilityGoldens[three-success-one-failure]",
+        "tests.conformance.test_layer3.testProbabilityGoldens[balanced]",
+        "tests.conformance.test_layer3.testProbabilityGoldens[counter-bound]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[settle-success]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[settle-failure]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[unknown-correctness]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[duplicate-receipt]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[family-separation]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[same-block-snapshot]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[next-block-snapshot]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[transfer-keeps-counters]",
+        "tests.conformance.test_layer3.testReputationStateGoldens[creation-namespace-exhausted]",
+        "tests.conformance.test_layer3_blocks.testSameBlockSnapshotDifferential[same-block-two-successes]",
+        "tests.conformance.test_layer3_blocks.testSameBlockSnapshotDifferential[same-block-success-and-failure]"
+      ],
+      "forge": [
+        "ReputationCheckpointsTest.testSameBlockBeforeAfterSettlementAndNextBlockVisibility()",
+        "ReputationCheckpointsTest.testNamespaceCeilingDoesNotBlockFinalObservation()",
+        "ReputationCheckpointsTest.testImpossibleCounterOverflowRollsBackVerdictNonceAndMoney()",
+        "ReputationCheckpointsTest.testFuzzProbabilityBounds(uint64,uint64)"
+      ]
+    },
+    "L3-06": {
+      "pytest": [
+        "tests.conformance.test_layer3.testSeededDifferential[0]",
+        "tests.conformance.test_layer3.testSeededDifferential[1]",
+        "tests.conformance.test_layer3.testSeededDifferential[2]",
+        "tests.conformance.test_layer3.testSeededDifferential[3]",
+        "tests.conformance.test_layer3.testSeededDifferential[4]",
+        "tests.conformance.test_layer3.testSeededDifferential[5]",
+        "tests.conformance.test_layer3.testSeededDifferential[6]",
+        "tests.conformance.test_layer3.testSeededDifferential[7]",
+        "tests.conformance.test_layer3.testSeededDifferential[8]",
+        "tests.conformance.test_layer3.testSeededDifferential[9]",
+        "tests.conformance.test_layer3.testSeededDifferential[10]",
+        "tests.conformance.test_layer3.testSeededDifferential[11]",
+        "tests.conformance.test_layer3.testSeededDifferential[12]",
+        "tests.conformance.test_layer3.testSeededDifferential[13]",
+        "tests.conformance.test_layer3.testSeededDifferential[14]",
+        "tests.conformance.test_layer3.testSeededDifferential[15]",
+        "tests.conformance.test_layer3.testSeededDifferential[16]",
+        "tests.conformance.test_layer3.testSeededDifferential[17]",
+        "tests.conformance.test_layer3.testSeededDifferential[18]",
+        "tests.conformance.test_layer3.testSeededDifferential[19]",
+        "tests.conformance.test_layer3.testSeededDifferential[20]",
+        "tests.conformance.test_layer3.testSeededDifferential[21]",
+        "tests.conformance.test_layer3.testSeededDifferential[22]",
+        "tests.conformance.test_layer3.testSeededDifferential[23]",
+        "tests.conformance.test_layer3.testSeededDifferential[24]",
+        "tests.conformance.test_layer3.testSeededDifferential[25]",
+        "tests.conformance.test_layer3.testSeededDifferential[26]",
+        "tests.conformance.test_layer3.testSeededDifferential[27]",
+        "tests.conformance.test_layer3.testSeededDifferential[28]",
+        "tests.conformance.test_layer3.testSeededDifferential[29]",
+        "tests.conformance.test_layer3.testSeededDifferential[30]",
+        "tests.conformance.test_layer3.testSeededDifferential[31]",
+        "tests.conformance.test_layer3.testEventReplayAndOrphanRollback",
+        "tests.conformance.test_layer3_replay.testFullTreeEventReplayRebuildsIndependentState"
+      ],
+      "forge": [
+        "MarketInvariantsTest.invariantConservationImmutabilityAndOnceOnlyCounters()",
+        "MarketSecurityTest.testWithdrawalCrossCommandReentrancy()",
+        "MarketSecurityTest.testHostileRecipientCannotBlockSettlementAndCanChooseReceiver()",
+        "MarketSecurityTest.testForcedBalanceIsNotCredit()",
+        "MarketSecurityTest.testAliasCreditAndZeroPaymentSuccess()",
+        "MarketSecurityTest.testRegistryUnavailableAndWrongRoleDoNotAdmit()",
+        "MarketSecurityTest.testRegistryMalformedResponsesAreBounded()"
+      ]
+    },
+    "L3-07": {
+      "pytest": [
+        "tests.integration.test_layer3_transactions.testFundedTreeDifferential[SUCCESS]",
+        "tests.integration.test_layer3_transactions.testFundedTreeDifferential[PARENT_TIMEOUT]",
+        "tests.integration.test_layer3_transactions.testFundedTreeDifferential[ACTIVE_CHILD]",
+        "tests.integration.test_layer3_transactions.testRetryIndependentFunding"
+      ],
+      "forge": [
+        "AccountingDelegationTest.testDelegationCreateChild()",
+        "AccountingDelegationTest.testDelegationEnvelopeExactBoundary()",
+        "AccountingDelegationTest.testDelegationSuccessReleasesUnused()",
+        "AccountingDelegationTest.testDelegationUnallocatedReleasesEnvelope()",
+        "AccountingDelegationTest.testDelegationRetryConsumesNewSlot()",
+        "AccountingDelegationTest.testDelegationParentFailsAfterChildPaid()",
+        "AccountingDelegationTest.testDelegationLateChildSettlement()",
+        "AccountingDelegationTest.testDelegationEnvelopeOneOver()",
+        "AccountingDelegationTest.testDelegationDeadlineOneOver()",
+        "AccountingDelegationTest.testDelegationLifetimeCount()",
+        "AccountingDelegationTest.testDelegationDepthCap()",
+        "AccountingDelegationTest.testDelegationParentNotRunning()",
+        "AccountingDelegationTest.testDelegationWrongManager()",
+        "AccountingDelegationTest.testDelegationNoParentAdvance()",
+        "AccountingDelegationTest.testDelegationChildPermissionsCannotExpand()",
+        "AccountingDelegationTest.testDelegationRetrySuccessRejected()",
+        "AccountingDelegationTest.testDelegationRetryCrossParentRejected()",
+        "MarketBoundsTest.testDepthTwoSettlementOnlyUpdatesImmediateParent()",
+        "MarketLayerOneTest.testLayerOneTreeSuccess()",
+        "MarketLayerOneTest.testLayerOneTreeParentTimeout()"
+      ]
+    },
+    "L3-08": {
+      "pytest": [
+        "tests.integration.test_layer3_transactions.testTerminalDifferential[solo-success]",
+        "tests.integration.test_layer3_transactions.testTerminalDifferential[validation-failed]",
+        "tests.integration.test_layer3_transactions.testTerminalDifferential[validator-timeout]",
+        "tests.integration.test_layer3_transactions.testMaliciousAndSignaturePrecedence"
+      ],
+      "forge": [
+        "SignaturesTest.testInvalidVerdictSignaturePrecedesNonceAndExpiry()",
+        "SignaturesTest.testValidatorWithCodeStillRequiresEcdsa()"
+      ]
+    },
+    "L3-09": {
+      "pytest": [
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[AgentRef]",
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[TaskRef]",
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[TaskSpec]",
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[Bid]",
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[Allocation]",
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[ExecutionRef]",
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[ResultCommitment]",
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[ValidationRecord]",
+        "tests.conformance.test_layer3.testCanonicalWireRoundtrip[SettlementReceipt]",
+        "tests.conformance.test_layer3.testOriginalContentHashes[empty]",
+        "tests.conformance.test_layer3.testOriginalContentHashes[json-original]",
+        "tests.conformance.test_layer3.testOriginalContentHashes[json-reordered]",
+        "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[https]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipfs]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[uppercase-scheme]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[uppercase-ipfs]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[wrong-scheme]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[missing-authority]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-authority]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-host]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-fragment]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nonempty-fragment]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[double-fragment]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[encoded-fragment]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-user]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-user-password]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[username]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[password]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[multiple-at]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-user-host]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[minimum-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[maximum-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[leading-zero-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[long-leading-zero-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[zero-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[overflow-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[negative-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[signed-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[text-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-digit-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[multiple-port-colons]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[query]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-host-path]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-combining-authority]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-normalized-ordinary-host]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-delimiter-path]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[zero-width-host]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nul-host]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nul-path]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[del-path]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[backslash-host]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[percent-host]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[brackets-path]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[leading-nul]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[leading-control]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[embedded-scheme-control]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[leading-space]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[embedded-tab]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[trailing-newline]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-full]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-zero]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-min-compression]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-leading-compression]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-trailing-compression]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-empty-port]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-userinfo]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-scope]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-encoded-scope]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-unicode-scope]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-colon-bracket-scope]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-empty-scope]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-double-scope]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-embedded-v4]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-full-embedded-v4]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-leading-zero]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-overflow]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-empty-octet]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-short]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-trailing-dot]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-nonascii-digit]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv4-bracketed]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv4-unbracketed]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-hex-version]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-arbitrary]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-uppercase-v]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-empty-version]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-invalid-version]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-empty-host]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-missing-dot]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-missing-close]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-missing-open]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-prefix]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-suffix]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-empty]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-text]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-extra-close]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-many-parts]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-no-compression-space]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-short]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-multiple-compression]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-three-colons]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-leading-single-colon]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-trailing-single-colon]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-large-hextet]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-invalid-hex]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ascii-2048-bytes]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ascii-2049-bytes]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-2048-bytes]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-2049-bytes]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[highest-scalar]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[lowest-two-byte-scalar]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[lowest-three-byte-scalar]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[lowest-four-byte-scalar]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-noncharacter]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-0009]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-000a]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-000b]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-000c]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-000d]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-001c]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-001d]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-001e]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-001f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-0020]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-0085]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-00a0]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-1680]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2000]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2001]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2002]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2003]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2004]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2005]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2006]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2007]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2008]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2009]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-200a]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2028]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2029]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-202f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-205f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-3000]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2047]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2047]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2048]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2048]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2049]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2049]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2100]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2100]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2101]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2101]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2105]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2105]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2106]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2106]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2a74]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2a74]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe13]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe13]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe16]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe16]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe55]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe55]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe56]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe56]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe5f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe5f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe6b]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe6b]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff03]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff03]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff0f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff0f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff1a]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff1a]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff1f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff1f]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff20]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff20]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-string]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[only-controls]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-query-fragment]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[pre-surrogate-scalar]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[post-surrogate-scalar]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-longest-v4-tail]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-overlong-address]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-too-many-octets]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-invalid-octet]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-double-leading-zero]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-zero]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-ipv6-before-scope]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-single-hextet]",
+        "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-host-with-empty-port]",
+        "tests.test_layer3_uri_fixtures.testUriUnicodeTablesAreComplete",
+        "tests.integration.test_layer3_live_driver.testRealDriverScenariosOnLocalChain[solo]",
+        "tests.integration.test_layer3_live_driver.testRealDriverScenariosOnLocalChain[parent-child]",
+        "tests.integration.test_layer3_live_driver.testRealDriverScenariosOnLocalChain[timeouts]",
+        "tests.integration.test_layer3_live_driver.testRealDriverScenariosOnLocalChain[malicious]",
+        "tests.test_layer3_testnet.testFinalityWaitsAndChecksCanonicalBlock",
+        "tests.test_layer3_testnet.testFinalityUnavailableDoesNotFallBack[None]",
+        "tests.test_layer3_testnet.testFinalityUnavailableDoesNotFallBack[answer1]",
+        "tests.test_layer3_testnet.testFinalityConflictAndDeadline",
+        "tests.test_layer3_testnet.testBroadcastTimeoutRetainsRecoveryHashWithoutSecrets",
+        "tests.test_layer3_testnet.testGasCapAbstainsBeforeBroadcast",
+        "tests.test_layer3_testnet.testEncryptedActorsAndSecretHygiene",
+        "tests.test_layer3_testnet.testEvidenceDigestAndProxyChanges",
+        "tests.test_layer3_testnet.testPreflightRefusesWrongNetworkBeforeAnyWrite"
+      ],
+      "forge": [
+        "MarketSecurityTest.testAbsentWrapperHiddenFieldsAndZeroAgentDigest()",
+        "MarketSecurityTest.testTermsBoundaryErrorsAndRollback()",
+        "MarketSecurityTest.testConstructorNamespaceAndRoleFailures()",
+        "ContentUriTest.testReviewedPythonUriBoundaries()",
+        "ContentUriTest.testFuzzPermissiveAsciiPath(bytes)",
+        "ContentUriTest.testFuzzPort(uint32)"
+      ]
+    }
+  },
+  "fixtureCoverage": {
+    "market.json": {
+      "normal": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[normal]"
+        ]
+      },
+      "single-bidder": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[single-bidder]"
+        ]
+      },
+      "budget-cap": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[budget-cap]"
+        ]
+      },
+      "no-bids": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[no-bids]"
+        ]
+      },
+      "negative-score": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[negative-score]"
+        ]
+      },
+      "zero-score": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[zero-score]"
+        ]
+      },
+      "exact-tie": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[exact-tie]"
+        ]
+      },
+      "numeric-id-order": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[numeric-id-order]"
+        ]
+      },
+      "fractional-price-floor": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[fractional-price-floor]"
+        ]
+      },
+      "positive-score-zero-price": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[positive-score-zero-price]"
+        ]
+      },
+      "maximum-denominator": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[maximum-denominator]"
+        ]
+      },
+      "maximum-negative-product": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[maximum-negative-product]"
+        ]
+      },
+      "zero-alpha-numerator": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[zero-alpha-numerator]"
+        ]
+      },
+      "zero-alpha-denominator": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[zero-alpha-denominator]"
+        ]
+      },
+      "unreduced-alpha": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[unreduced-alpha]"
+        ]
+      },
+      "over-budget": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[over-budget]"
+        ]
+      },
+      "duplicate-agent": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[duplicate-agent]"
+        ]
+      },
+      "zero-budget": {
+        "pytest": [
+          "tests.conformance.test_layer3.testMarketGoldens[zero-budget]"
+        ]
+      }
+    },
+    "reputation.json": {
+      "fresh": {
+        "pytest": [
+          "tests.conformance.test_layer3.testProbabilityGoldens[fresh]"
+        ]
+      },
+      "one-success": {
+        "pytest": [
+          "tests.conformance.test_layer3.testProbabilityGoldens[one-success]"
+        ]
+      },
+      "one-failure": {
+        "pytest": [
+          "tests.conformance.test_layer3.testProbabilityGoldens[one-failure]"
+        ]
+      },
+      "three-success-one-failure": {
+        "pytest": [
+          "tests.conformance.test_layer3.testProbabilityGoldens[three-success-one-failure]"
+        ]
+      },
+      "balanced": {
+        "pytest": [
+          "tests.conformance.test_layer3.testProbabilityGoldens[balanced]"
+        ]
+      },
+      "counter-bound": {
+        "pytest": [
+          "tests.conformance.test_layer3.testProbabilityGoldens[counter-bound]"
+        ]
+      },
+      "settle-success": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[settle-success]"
+        ]
+      },
+      "settle-failure": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[settle-failure]"
+        ]
+      },
+      "unknown-correctness": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[unknown-correctness]"
+        ]
+      },
+      "duplicate-receipt": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[duplicate-receipt]"
+        ]
+      },
+      "family-separation": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[family-separation]"
+        ]
+      },
+      "same-block-snapshot": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[same-block-snapshot]"
+        ]
+      },
+      "next-block-snapshot": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[next-block-snapshot]"
+        ]
+      },
+      "transfer-keeps-counters": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[transfer-keeps-counters]"
+        ]
+      },
+      "creation-namespace-exhausted": {
+        "pytest": [
+          "tests.conformance.test_layer3.testReputationStateGoldens[creation-namespace-exhausted]"
+        ]
+      }
+    },
+    "lifecycle.json": {
+      "create-root": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleCreateRoot()"
+        ]
+      },
+      "accept-bid": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleAcceptBid()"
+        ]
+      },
+      "allocate-positive": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleAllocatePositive()"
+        ]
+      },
+      "accept-award": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleAcceptAward()"
+        ]
+      },
+      "submit-result": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleSubmitResult()"
+        ]
+      },
+      "success": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleSuccess()"
+        ]
+      },
+      "failed-validation": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleFailedValidation()"
+        ]
+      },
+      "unallocated": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleUnallocated()"
+        ]
+      },
+      "allocation-expired": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleAllocationExpired()"
+        ]
+      },
+      "no-show": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleNoShow()"
+        ]
+      },
+      "execution-timeout": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleExecutionTimeout()"
+        ]
+      },
+      "validator-timeout": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleValidatorTimeout()"
+        ]
+      },
+      "cancelled": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleCancelled()"
+        ]
+      },
+      "duplicate-settlement": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleDuplicateSettlement()"
+        ]
+      },
+      "wrong-signer": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleWrongSigner()"
+        ]
+      },
+      "early-allocation": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleEarlyAllocation()"
+        ]
+      },
+      "allocation-at-cutoff": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleAllocationAtCutoff()"
+        ]
+      },
+      "accept-at-cutoff": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleAcceptAtCutoff()"
+        ]
+      },
+      "submit-at-cutoff": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleSubmitAtCutoff()"
+        ]
+      },
+      "verdict-at-cutoff": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleVerdictAtCutoff()"
+        ]
+      },
+      "late-bid": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleLateBid()"
+        ]
+      },
+      "cancel-with-bid": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleCancelWithBid()"
+        ]
+      },
+      "submit-before-accept": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleSubmitBeforeAccept()"
+        ]
+      },
+      "active-child-blocks-result": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleActiveChildBlocksResult()"
+        ]
+      },
+      "early-timeout": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleEarlyTimeout()"
+        ]
+      },
+      "wrong-creation-value": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleWrongCreationValue()"
+        ]
+      },
+      "withdraw-blocked": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleWithdrawBlocked()"
+        ]
+      },
+      "withdraw-success": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleWithdrawSuccess()"
+        ]
+      },
+      "accept-before-cutoff": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleAcceptBeforeCutoff()"
+        ]
+      },
+      "submit-before-cutoff": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleSubmitBeforeCutoff()"
+        ]
+      },
+      "verdict-before-cutoff": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleVerdictBeforeCutoff()"
+        ]
+      },
+      "wrong-result-binding": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleWrongResultBinding()"
+        ]
+      },
+      "wrong-policy-binding": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleWrongPolicyBinding()"
+        ]
+      },
+      "nonzero-call-value": {
+        "forge": [
+          "MarketLifecycleTest.testLifecycleNonzeroCallValue()"
+        ]
+      }
+    },
+    "delegation.json": {
+      "create-child": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationCreateChild()"
+        ]
+      },
+      "envelope-exact-boundary": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationEnvelopeExactBoundary()"
+        ]
+      },
+      "success-releases-unused": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationSuccessReleasesUnused()"
+        ]
+      },
+      "unallocated-releases-envelope": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationUnallocatedReleasesEnvelope()"
+        ]
+      },
+      "retry-consumes-new-slot": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationRetryConsumesNewSlot()"
+        ]
+      },
+      "parent-fails-after-child-paid": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationParentFailsAfterChildPaid()"
+        ]
+      },
+      "late-child-settlement": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationLateChildSettlement()"
+        ]
+      },
+      "envelope-one-over": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationEnvelopeOneOver()"
+        ]
+      },
+      "deadline-one-over": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationDeadlineOneOver()"
+        ]
+      },
+      "lifetime-count": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationLifetimeCount()"
+        ]
+      },
+      "depth-cap": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationDepthCap()"
+        ]
+      },
+      "parent-not-running": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationParentNotRunning()"
+        ]
+      },
+      "wrong-manager": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationWrongManager()"
+        ]
+      },
+      "no-parent-advance": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationNoParentAdvance()"
+        ]
+      },
+      "child-permissions-cannot-expand": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationChildPermissionsCannotExpand()"
+        ]
+      },
+      "retry-success-rejected": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationRetrySuccessRejected()"
+        ]
+      },
+      "retry-cross-parent-rejected": {
+        "forge": [
+          "AccountingDelegationTest.testDelegationRetryCrossParentRejected()"
+        ]
+      }
+    },
+    "signatures.json": {
+      "BidPermit": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningVectors[BidPermit]"
+        ]
+      },
+      "ValidationVerdict": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningVectors[ValidationVerdict]"
+        ]
+      },
+      "wrong-chain": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-chain]"
+        ]
+      },
+      "wrong-market": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-market]"
+        ]
+      },
+      "wrong-task": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-task]"
+        ]
+      },
+      "wrong-agent": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-agent]"
+        ]
+      },
+      "wrong-result": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-result]"
+        ]
+      },
+      "wrong-policy": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-policy]"
+        ]
+      },
+      "wrong-nonce": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-nonce]"
+        ]
+      },
+      "wrong-expiry": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-expiry]"
+        ]
+      },
+      "wrong-primary-type": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalSigningMutations[wrong-primary-type]"
+        ]
+      },
+      "used-nonce": {
+        "forge": [
+          "SignaturesTest.testUsedPermitNonceRejectsAndDirectBidConsumesNone()"
+        ]
+      },
+      "expiry-equality": {
+        "forge": [
+          "SignaturesTest.testExpiredPermitRollbackAndNonceTypeSeparation()"
+        ]
+      },
+      "transferred-owner": {
+        "forge": [
+          "SignaturesTest.testOldOwnerPermitAndTransferBack()"
+        ]
+      },
+      "empty": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalContentHashes[empty]"
+        ]
+      },
+      "json-original": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalContentHashes[json-original]"
+        ]
+      },
+      "json-reordered": {
+        "pytest": [
+          "tests.conformance.test_layer3.testOriginalContentHashes[json-reordered]"
+        ]
+      }
+    },
+    "layer-3.json": {
+      "solo-success": {
+        "pytest": [
+          "tests.integration.test_layer3_transactions.testTerminalDifferential[solo-success]"
+        ]
+      },
+      "validation-failed": {
+        "pytest": [
+          "tests.integration.test_layer3_transactions.testTerminalDifferential[validation-failed]"
+        ]
+      },
+      "no-show": {
+        "pytest": [
+          "tests.integration.test_layer3_transactions.testTerminalDifferential[no-show]"
+        ]
+      },
+      "execution-timeout": {
+        "pytest": [
+          "tests.integration.test_layer3_transactions.testTerminalDifferential[execution-timeout]"
+        ]
+      },
+      "validator-timeout": {
+        "pytest": [
+          "tests.integration.test_layer3_transactions.testTerminalDifferential[validator-timeout]"
+        ]
+      },
+      "unallocated": {
+        "pytest": [
+          "tests.integration.test_layer3_transactions.testTerminalDifferential[unallocated]"
+        ]
+      },
+      "allocation-expired": {
+        "pytest": [
+          "tests.integration.test_layer3_transactions.testTerminalDifferential[allocation-expired]"
+        ]
+      },
+      "cancelled": {
+        "pytest": [
+          "tests.integration.test_layer3_transactions.testTerminalDifferential[cancelled]"
+        ]
+      }
+    },
+    "layer-3-blocks.json": {
+      "same-block-two-successes": {
+        "pytest": [
+          "tests.conformance.test_layer3_blocks.testSameBlockSnapshotDifferential[same-block-two-successes]"
+        ]
+      },
+      "same-block-success-and-failure": {
+        "pytest": [
+          "tests.conformance.test_layer3_blocks.testSameBlockSnapshotDifferential[same-block-success-and-failure]"
+        ]
+      }
+    },
+    "layer-3-bounds.json": {
+      "allocation-storage-bound": {
+        "forge": [
+          "MarketBoundsTest.testAllocationGasOneBid()",
+          "MarketBoundsTest.testAllocationGasTwoBids()",
+          "MarketBoundsTest.testAllocationGasTenBids()",
+          "MarketBoundsTest.testAllocationGasSixteenBids()",
+          "MarketBoundsTest.testAllocationGasHundredBids()",
+          "MarketBoundsTest.testAllocationGas256Bids()",
+          "MarketBoundsTest.testAllocationGasThousandBids()",
+          "MarketBoundsTest.testAllocationGas1024Bids()"
+        ]
+      },
+      "maximum-wire-records": {
+        "forge": [
+          "MarketBoundsTest.testMaximumWireRecordsAndContractSignature()",
+          "MarketBoundsTest.testMaximumWireTransactionGasLimits()"
+        ]
+      },
+      "depth-two-immediate-parent": {
+        "forge": [
+          "MarketBoundsTest.testDepthTwoSettlementOnlyUpdatesImmediateParent()"
+        ]
+      }
+    },
+    "layer-3-uri.json": {
+      "https": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[https]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipfs": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipfs]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "uppercase-scheme": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[uppercase-scheme]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "uppercase-ipfs": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[uppercase-ipfs]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "wrong-scheme": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[wrong-scheme]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "missing-authority": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[missing-authority]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-authority": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-authority]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-host": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-host]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-fragment": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-fragment]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nonempty-fragment": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nonempty-fragment]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "double-fragment": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[double-fragment]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "encoded-fragment": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[encoded-fragment]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-user": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-user]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-user-password": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-user-password]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "username": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[username]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "password": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[password]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "multiple-at": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[multiple-at]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-user-host": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-user-host]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "minimum-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[minimum-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "maximum-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[maximum-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "leading-zero-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[leading-zero-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "long-leading-zero-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[long-leading-zero-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "zero-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[zero-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "overflow-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[overflow-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "negative-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[negative-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "signed-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[signed-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "text-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[text-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "unicode-digit-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-digit-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "multiple-port-colons": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[multiple-port-colons]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "query": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[query]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "unicode-host-path": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-host-path]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "unicode-combining-authority": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-combining-authority]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "unicode-normalized-ordinary-host": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-normalized-ordinary-host]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "unicode-delimiter-path": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-delimiter-path]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "zero-width-host": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[zero-width-host]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nul-host": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nul-host]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nul-path": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nul-path]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "del-path": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[del-path]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "backslash-host": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[backslash-host]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "percent-host": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[percent-host]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "brackets-path": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[brackets-path]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "leading-nul": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[leading-nul]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "leading-control": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[leading-control]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "embedded-scheme-control": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[embedded-scheme-control]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "leading-space": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[leading-space]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "embedded-tab": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[embedded-tab]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "trailing-newline": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[trailing-newline]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-full": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-full]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-zero": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-zero]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-min-compression": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-min-compression]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-leading-compression": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-leading-compression]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-trailing-compression": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-trailing-compression]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-empty-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-empty-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-userinfo": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-userinfo]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-scope": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-scope]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-encoded-scope": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-encoded-scope]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-unicode-scope": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-unicode-scope]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-colon-bracket-scope": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-colon-bracket-scope]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-empty-scope": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-empty-scope]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-double-scope": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-double-scope]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-embedded-v4": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-embedded-v4]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-full-embedded-v4": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-full-embedded-v4]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-leading-zero": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-leading-zero]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-overflow": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-overflow]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-empty-octet": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-empty-octet]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-short": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-short]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-trailing-dot": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-trailing-dot]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-nonascii-digit": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-nonascii-digit]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv4-bracketed": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv4-bracketed]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv4-unbracketed": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv4-unbracketed]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipvfuture": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipvfuture-hex-version": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-hex-version]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipvfuture-arbitrary": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-arbitrary]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipvfuture-uppercase-v": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-uppercase-v]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipvfuture-empty-version": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-empty-version]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipvfuture-invalid-version": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-invalid-version]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipvfuture-empty-host": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-empty-host]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipvfuture-missing-dot": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipvfuture-missing-dot]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "bracket-missing-close": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-missing-close]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "bracket-missing-open": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-missing-open]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "bracket-prefix": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-prefix]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "bracket-suffix": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-suffix]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "bracket-empty": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-empty]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "bracket-text": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-text]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "bracket-extra-close": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[bracket-extra-close]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-many-parts": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-many-parts]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-no-compression-space": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-no-compression-space]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-short": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-short]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-multiple-compression": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-multiple-compression]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-three-colons": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-three-colons]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-leading-single-colon": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-leading-single-colon]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-trailing-single-colon": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-trailing-single-colon]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-large-hextet": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-large-hextet]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-invalid-hex": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-invalid-hex]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ascii-2048-bytes": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ascii-2048-bytes]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ascii-2049-bytes": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ascii-2049-bytes]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "unicode-2048-bytes": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-2048-bytes]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "unicode-2049-bytes": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-2049-bytes]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "highest-scalar": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[highest-scalar]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "lowest-two-byte-scalar": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[lowest-two-byte-scalar]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "lowest-three-byte-scalar": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[lowest-three-byte-scalar]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "lowest-four-byte-scalar": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[lowest-four-byte-scalar]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "unicode-noncharacter": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[unicode-noncharacter]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-0009": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-0009]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-000a": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-000a]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-000b": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-000b]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-000c": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-000c]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-000d": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-000d]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-001c": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-001c]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-001d": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-001d]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-001e": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-001e]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-001f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-001f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-0020": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-0020]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-0085": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-0085]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-00a0": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-00a0]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-1680": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-1680]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2000": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2000]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2001": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2001]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2002": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2002]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2003": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2003]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2004": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2004]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2005": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2005]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2006": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2006]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2007": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2007]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2008": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2008]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2009": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2009]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-200a": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-200a]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2028": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2028]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-2029": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-2029]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-202f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-202f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-205f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-205f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "whitespace-3000": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[whitespace-3000]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-2047": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2047]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-2047": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2047]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-2048": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2048]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-2048": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2048]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-2049": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2049]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-2049": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2049]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-2100": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2100]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-2100": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2100]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-2101": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2101]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-2101": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2101]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-2105": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2105]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-2105": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2105]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-2106": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2106]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-2106": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2106]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-2a74": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-2a74]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-2a74": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-2a74]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-fe13": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe13]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-fe13": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe13]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-fe16": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe16]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-fe16": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe16]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-fe55": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe55]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-fe55": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe55]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-fe56": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe56]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-fe56": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe56]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-fe5f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe5f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-fe5f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe5f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-fe6b": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-fe6b]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-fe6b": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-fe6b]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-ff03": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff03]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-ff03": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff03]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-ff0f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff0f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-ff0f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff0f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-ff1a": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff1a]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-ff1a": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff1a]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-ff1f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff1f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-ff1f": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff1f]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-authority-ff20": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-authority-ff20]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "nfkc-path-ff20": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[nfkc-path-ff20]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-string": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-string]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "only-controls": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[only-controls]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-query-fragment": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-query-fragment]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "pre-surrogate-scalar": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[pre-surrogate-scalar]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "post-surrogate-scalar": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[post-surrogate-scalar]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-longest-v4-tail": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-longest-v4-tail]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-overlong-address": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-overlong-address]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-too-many-octets": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-too-many-octets]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-invalid-octet": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-invalid-octet]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-double-leading-zero": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-double-leading-zero]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-v4-zero": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-v4-zero]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-ipv6-before-scope": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-ipv6-before-scope]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "ipv6-single-hextet": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[ipv6-single-hextet]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "empty-host-with-empty-port": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testReviewedUriBoundary[empty-host-with-empty-port]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "overlong-two": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[overlong-two]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "overlong-three": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[overlong-three]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "overlong-four": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[overlong-four]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "surrogate-high": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[surrogate-high]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "surrogate-low": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[surrogate-low]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "above-unicode": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[above-unicode]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "invalid-leading-byte": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[invalid-leading-byte]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "bare-continuation": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[bare-continuation]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "truncated-two": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[truncated-two]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "truncated-three": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[truncated-three]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "truncated-four": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[truncated-four]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      },
+      "invalid-continuation": {
+        "pytest": [
+          "tests.test_layer3_uri_fixtures.testInvalidUtf8Boundary[invalid-continuation]",
+          "tests.conformance.test_layer3_uri.testUriEvmMatchesPinnedPython"
+        ]
+      }
+    }
+  },
+  "compatibilityExceptions": [
+    {
+      "id": "nonpayable-value",
+      "pythonError": "WRONG_VALUE",
+      "evmRevertData": "0x",
+      "economicDifference": false,
+      "strictErrorParityAccepted": false,
+      "evidence": [
+        "MarketLifecycleTest.testLifecycleNonzeroCallValue()",
+        "tests.integration.test_layer3_transactions.testNonpayableEncodingException"
+      ]
+    },
+    {
+      "id": "verdict-guard-order",
+      "behavior": "Executable L1 signature check precedes nonce and expiry; prose order differs.",
+      "evidence": [
+        "SignaturesTest.testInvalidVerdictSignaturePrecedesNonceAndExpiry()"
+      ]
+    },
+    {
+      "id": "read-view-output-name",
+      "behavior": "Read-only output name view_ because view is a Solidity reserved keyword; no frozen command, event or record changed."
+    }
+  ],
+  "liveGate": {
+    "status": "pending",
+    "missing": [
+      "Qualified official Monad testnet registry implementation/proxy/control evidence",
+      "Testnet RPC finality/build/deployment evidence",
+      "Controlled identities, encrypted role keystores and native funding",
+      "Explicit testnet deployment authorization",
+      "Funded finalized solo/child/refund/malicious scenario receipts"
+    ],
+    "pendingManifestFields": [
+      "reputationRegistry",
+      "reputationCodeHash",
+      "reputationVersion",
+      "feedbackPublisher",
+      "publisherCodeHash",
+      "registryVerification"
+    ]
+  },
+  "projectionNotes": [
+    "Original market vectors use production arithmetic/ordering through a pure arbitrary-p harness; public bids never accept p.",
+    "Lifecycle/delegation historical-state fixtures use test-only state seeding. Production differential sequences independently advance both implementations without state seeding.",
+    "Reputation duplicate-receipt is a projector no-op; corresponding repeated on-chain command rejects ALREADY_SETTLED.",
+    "child-permissions-cannot-expand is a helper DEPTH_LIMIT projection; public maxDepth >2 rejects INVALID_RANGE.",
+    "Schema-invalid ABI boundary cases are separate from schema-validated L1 commands. Explicit Layer3 range/encoding rules govern raw ABI fields."
+  ],
+  "unreachableDefensiveBranches": []
+}

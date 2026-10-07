@@ -1,8 +1,17 @@
 # Layer 3 — Monad protocol implementation plan
 
-Status: implementation specification; no Solidity implementation or deployment is claimed. Baseline inspected: `main` at `b86197f`. Scope: **L3-01–L3-09 only**. This document adds implementation choices; it does not replace the frozen protocol or authorize a deployment.
+Status: **offline implementation delivered; final acceptance results are recorded in §16. Live gate pending.** Implementation baseline: `main` at `e1dbe63` (the committed L3 plan on top of the L2 baseline `b86197f`). Scope: **L3-01–L3-09 only**. The Solidity implementation and local transactions do not imply live deployment or resolution of the exact-error exception in §1.1. This document does not replace the frozen protocol or authorize deployment.
 
-Implementation work is proceeding on `layer-3-core`. Reuse and implementation order below remain the plan. Generate Solidity wire declarations deterministically from the existing schema (checked for drift, never fixture expectations); pin downloaded development tools/libraries by checksums and keep installed copies ignored. Preserve the documented nonpayable ABI boundary and executable L1 verdict guard order. Live deployment remains dependent on verified registry/RPC/key/funding inputs; no synthetic manifest will substitute for them. Record executed acceptance separately when the gate has actually run.
+Implementation uses the existing checkout, initially clean on `main`. The execution plan below records reuse and implementation order. Generate Solidity wire declarations deterministically from the existing schema (checked for drift, never fixture expectations); pin downloaded development tools/libraries by checksums and keep installed copies ignored. Preserve the documented nonpayable ABI boundary and executable L1 verdict guard order. Live deployment remains dependent on verified registry/RPC/key/funding inputs and explicit deployment authorization; no synthetic manifest will substitute for them. Record executed acceptance separately when the gate has actually run.
+
+### Implementation execution plan (2026-10-06)
+
+- **Goal/scope:** implement L3-01–L3-09's contract, local transaction flow and independent conformance tooling, in the sequence in §11. Preserve L0–L2 records and behavior; L4–L8 and unauthorized live broadcasts are excluded.
+- **Inspected reuse:** the existing pure `applyCommand`, math, checkpoint and ledger modules are the independent Python oracle; domain validation, signing types, ABI generation helpers, HTTPX/eth-account/eth-abi and existing check runners supply the test boundaries. There is no existing Solidity implementation to extend. The new contract owns all economic writes; test RPC helpers are not a production MarketPort.
+- **Design:** one immutable market, one canonical wire declaration set, bounded top-two admission and parent bookkeeping, checkpoint snapshots, strict owner/validator signatures and pull credits. Preserve complete records and ordered events. Rejected transactions must leave all money, records, nonces and logs unchanged.
+- **Changes/sequence:** first pin tools and the Python 3.12.12 URI oracle, then generate/check wire declarations; implement pure arithmetic, checkpoint, URI and signature boundaries; compose ten commands, views and settlement; add focused Solidity adversarial tests and independent RPC differential tests; integrate gate/demo and document actual results. File ownership remains §11, with new helpers only where used.
+- **Tests/completion:** run existing L0/L1/L2 gate, formatter, optimized build/size and ABI checks, Solidity golden/fuzz/invariant tests, full-record Python/EVM comparisons and real local funded scenarios. Record fixture IDs, coverage, tool versions, seeds and limitations. Live evidence is a separate gate and cannot be inferred from local success.
+- **Open decisions:** retain §1.1's nonpayable error-byte exception and executable verdict signature-first guard order. Do not change economic rules or golden expectations. Verify toolchain availability and bytecode size early; report any constraint requiring a specification decision instead of weakening its requirement. A qualified registry, RPC finality, controlled roles/funds and explicit deployment authorization are required for testnet.
 
 ## 1. Authority, scope and reuse
 
@@ -397,32 +406,34 @@ The deployed runtime/initcode must fit the **verified target revision's** code-s
 
 ## 11. File ownership and implementation sequence
 
-These are planned files, not files to scaffold while writing this spec. Keep contract-local tests under contracts; cross-runtime/process tests under tests. No new app or long-running service.
+Final file ownership follows the original sequence with the small consolidations below. Contract-local tests stay under contracts; cross-runtime/process tests stay under tests. No new app or long-running service was introduced.
 
 | File/path | Ownership |
 |---|---|
-| `foundry.toml`, `contracts/toolchain.lock.json`, pinned `lib/` dependencies | Toolchain/profile/remapping/lock; generated out/cache ignored |
+| `foundry.toml`, `contracts/toolchain.lock.json`, ignored `.scratch/layer3/toolchain/lib/` dependencies | Toolchain/profile/remapping/lock; generated out/cache ignored |
 | `contracts/src/ProtocolTypes.sol` | Single Solidity wire structs, numeric catalog constants, nullable wrappers |
 | `contracts/src/IAgentLanceMarket.sol` | Exact ten commands/seven events/ProtocolError; separate view declarations reuse the same types |
-| `contracts/src/IIdentityRegistry.sol` | Minimal ownerOf/getAgentWallet boundary |
-| `contracts/src/MarketMath.sol` | Pure score/order/top-two/price functions |
-| `contracts/src/Reputation.sol` | Packed checkpoint read/write and probability arithmetic |
-| `contracts/src/Signatures.sol` | Exact type/domain hashes, strict ECDSA and bounded ERC-1271 |
+| `contracts/src/ProtocolMath.sol` | Shared production score/order/price and probability arithmetic; checkpoint reads/writes remain with market storage |
+| `contracts/src/ProtocolSignatures.sol` | Exact type/domain hashes, strict ECDSA and bounded ERC-1271 |
 | `contracts/src/ContentUri.sol` | Bounded URI/UTF-8 validation matching L1 |
-| `contracts/src/AgentLanceMarket.sol` | Storage, command guards, accounting, delegation, receipts, events and views |
-| `contracts/test/MarketMath.t.sol`, `Reputation.t.sol` | Pure golden/boundary/fuzz tests |
+| `contracts/src/AgentLanceMarket.sol` | Storage, bounded ownerOf/getAgentWallet reads, checkpoints, commands, accounting, delegation, receipts, events and views |
+| `contracts/src/IAgentLanceViews.sol`, `scripts/generate_contract_types.py` | Separate generated read interface and deterministic schema/catalog-to-Solidity declarations |
+| `contracts/test/MarketProperties.t.sol`, `ReputationCheckpoints.t.sol` | Production ranking/signature properties, checkpoint boundaries and probability fuzz tests |
 | `contracts/test/MarketLifecycle.t.sol` | Lifecycle and exact event/error tests |
 | `contracts/test/Signatures.t.sol` | Signing vectors, registry/ownership and malicious signer tests |
 | `contracts/test/AccountingDelegation.t.sol` | Escrow, child/retry and hostile withdrawal tests |
-| `contracts/test/MarketInvariant.t.sol` | Stateful invariant handler and gas-growth checks |
+| `contracts/test/MarketInvariants.t.sol`, `MarketBounds.t.sol` | Stateful invariant handler, bounded storage/gas measurements and maximum wire records |
+| `contracts/test/MarketLayerOne.t.sol`, `MarketSecurity.t.sol`, `ContentUri.t.sol` | Original funded trees, adversarial boundaries and URI conformance |
 | `contracts/test/support/` | Shared fixture loader, test-only harness, registry/1271/receiver test doubles; no production seeding functions |
 | `contracts/script/DeployMarket.s.sol` | Deploy only the market from qualified registry/validator inputs; no publisher |
 | `tests/conformance/test_layer3.py`, `tests/layer3_support.py` | Frozen-vector consumption, RPC codec, independent Python/Solidity comparisons |
-| `tests/integration/test_layer3.py` | Local Anvil lifecycles, logs and rejected-transaction rollback |
+| `tests/integration/test_layer3_transactions.py`, `tests/conformance/test_layer3_blocks.py`, `test_layer3_replay.py`, `test_layer3_uri.py` | Local lifecycles/rollback, same-block ordering, independent event reconstruction and Python/EVM URI comparisons |
+| `scripts/layer3_testnet.py`, `layer3_deployment.py`, `layer3_tools.py` and their tests | Qualified live runner, evidence validation and isolated checksummed tool installation |
+| `tests/integration/test_layer3_live_driver.py`, `tests/test_layer3_testnet.py` | Four signed local runs of the live-driver scenarios and configuration/finality failure tests |
 | `specs/fixtures/layer-3.json`, `specs/acceptance-layer-3.json` | Reviewed new regression data and exact executed-test mapping; references existing fixture IDs |
 | `specs/contracts.read.abi.json` | Reviewed view ABI only; canonical record tuples reused |
 | `scripts/check_layer3.py`, `scripts/demo_layer3.py` | Offline gate and explicit local/testnet scenario runner; reusable RPC mechanics stay in test support |
-| `scripts/check_abi.py`, `scripts/check_specs.py`, Makefile, README | Small extensions for ABI, fixture checking and documented commands |
+| `scripts/check_abi.py`, `scripts/check_layer2.py`, Makefile, README | Exact compiled ABI checks, isolated lower-layer test selection and documented commands |
 | `deployments/monad-testnet/` | Only actual verified L3 report/evidence and, when possible, complete canonical manifest |
 
 Sequence and completion evidence:
@@ -611,4 +622,52 @@ The implementation handoff must contain:
 5. A verified L3 report and either the complete canonical manifest or its explicit L7-dependent pending fields. Do not claim complete live AgentLance compatibility from a report that L2 cannot load as DeploymentManifest.
 6. Review confirming no economic rule, L0/L1 expected fixture, L2 port contract, signature type, event tuple, authority or lifetime limit was changed to obtain a pass; no L4–L8 implementation added.
 
-This specification is complete when the above implementation work is unambiguous, including the explicitly identified baseline compatibility decisions. **L3 itself is complete only after the executable and live gates pass and any claimed exact-parity exceptions are explicitly resolved.** No contract, address, test result or live deployment has been produced by writing this document.
+This specification is complete when the above implementation work is unambiguous, including the explicitly identified baseline compatibility decisions. **L3 itself is complete only after the executable and live gates pass and any claimed exact-parity exceptions are explicitly resolved.** Executed implementation evidence is recorded below. No live deployment or testnet address is claimed.
+
+## 16. Executed implementation acceptance (2026-10-07)
+
+The implementation reuses the unchanged Python domain/core as its independent oracle. It adds the immutable Solidity market, eight read views, generated wire declarations, pinned build/deployment tooling, real local transactions and a qualified testnet scenario driver. Probability is computed from checkpoints; external callers cannot supply it. Complete task/bid/result/receipt records and the seven frozen event tuples remain available. No L4 adapter, production evaluator, feedback publisher or UI was added.
+
+The implementation builds on source commit `e1dbe636ba6fd08a15c70bd9c8d05f9e25f65c4f`. The local `gate.json` records the exact production source-tree digest, compiler metadata and storage-layout digest. These are build evidence, not a live deployment manifest. The original protocol ABI, catalog, signing types, lower-layer implementation and golden expected data remain unchanged.
+
+### Executed suites
+
+The final optimized suite passed **101 Solidity tests**, with no failures or skips. The chain/conformance suite passed **321 pytest cases**. The lower-layer gate passed **30 checker tests, 270 L0/L1 cases and 180 L2 cases**, including the real two-process HTTPS demo; L0/L1 retain zero missing domain/core statements or branches. Ruff, generated-file drift and frozen ABI checks passed. Exact full test IDs and fixture links are checked against the executed XML/Forge reports; omitted, duplicate, failed, skipped and unmapped cases fail acceptance.
+
+Coverage includes all 18 market, 15 reputation, 34 lifecycle and 17 delegation goldens under their documented projection boundaries; original signature/hash vectors, canonical wire objects, same-block transaction ordering, independent event reconstruction with restart overlap, and orphan-log rollback. The 32 fixed differential seeds each execute 64 commands and then drain credits, independently advancing L1 and Solidity and comparing full records, ordered events, nonces, counters, native balances and parent envelopes after each command. The URI campaign compares 1,479 actual EVM results against the pinned independent Python parser, including 199 reviewed UTF-8/URI boundaries. Math/signature/URI fuzz properties run 256 cases; the invariant campaign runs 64 sequences of depth 128 and checks successful transitions so an all-revert run cannot pass.
+
+### Completed offline gate and source coverage
+
+`make check-l3` completed successfully, including all preceding suites, exact fixture mapping, source coverage, final Ruff/format/diff checks and restoration of the locked optimized build. Its retained report is `.scratch/layer3/gate.json`. Instrumented coverage executes the same maximum-record functional scenario; only the separately named gas-limit assertion test is excluded from instrumentation because its compiler profile changes gas costs. That assertion passed in the optimized suite.
+
+| Executable production source | Lines | Branches | Functions |
+|---|---:|---:|---:|
+| `AgentLanceMarket.sol` | 388/400 | 49/49 | 46/48 |
+| `ContentUri.sol` | 160/162 | 57/57 | 7/7 |
+| `ProtocolMath.sol` | 16/18 | 1/3 | 5/5 |
+| `ProtocolSignatures.sol` | 19/23 | 2/2 | 6/6 |
+| **Total** | **583/603 (96.68%)** | **109/111 (98.20%)** | **64/66 (96.97%)** |
+
+The two uncovered math branches are the generic tie-order fallbacks for different chain IDs and registry addresses (`ProtocolMath.sol:38–40`). They are unreachable through production admissions, which require the configured chain and immutable registry; agent-ID tie ordering is exercised. The two uncovered functions, `readPolicy` and its internal helper, are reachable and repeatedly checked by the independent RPC suite, which Forge coverage does not instrument. Other missed statement anchors include executed condition headers, returns and ERC-1271 assembly; Foundry emits source-anchor warnings for this minimally optimized profile. These counts are not a claim of 100% source coverage or a proof over every compiler-generated branch.
+
+### Build and measured bounds
+
+The optimized market runtime is **41,601 bytes**, with **42,004 bytes** of initcode including its two constructor arguments. It fits the pinned native Monad limits (128 KiB runtime/256 KiB initcode); this is not an Ethereum 24-KiB deployment build. The exact compiled command/event/error ABI and separately generated eight-view ABI pass comparison without changing the frozen ABI.
+
+The optimized bounds suite measures production entrypoints after test setup. Allocation reads 54 slots for every measured count from two through 1,024 bidders (52 for one); settlement reads 115. The tests compare both read/write counts and gas growth. Maximum valid URI length is 2,048 bytes; the valid contract-owner permit is 4,096 bytes. Measured call gas is 21,081,743 for creation, 448,096 for admission, 7,046,271 for result submission and 7,714,891 for verdict settlement, each below the asserted 30-million bound. Maximum TaskView/receipt ABI payloads are 15,520/3,552 bytes. Grandchild settlement changes only its immediate parent's envelope; terminal receipts remain unchanged.
+
+Those Forge measurements are call deltas within a test, including storage warmed by setup; they are not live fee estimates. Separate Anvil transactions in the funded solo report record receipt gas of 668,517 (creation), 383,356 (permit admission), 290,456 (allocation), 233,909 (result), and 868,905 (verdict). Different fixture sizes and receipt gas accounting mean these values are not a controlled cold/warm price comparison. Each real transaction/report retains its actual gas used. Live limits/revision and conservative fee estimates must still be qualified before broadcast.
+
+### Funded local evidence
+
+`make demo-l3` writes an ignored `.scratch/layer3/demo-*/demo.json` report: **12 reports and 134 protocol transactions**, with zero remaining escrow/credits after each scenario. It contains solo SUCCESS; successful child/parent; parent timeout after child success; terminal parent followed by child expiry; all seven other terminal reasons; and the malicious scenario. Deposited amounts equal withdrawn amounts: 100 atoms per ordinary root, 260 per two-task tree and 400 across the malicious scenario's four tasks.
+
+The malicious report includes invalid domain/old-owner permits, restored owner, nonce replay, unauthorized execution, wrong result/policy, high-s/invalid/expired verdicts, exact ERC-1271 rejection and acceptance, direct-owner admission, a reverting withdrawal followed by a different receiver, and a receiver attempting all ten commands during withdrawal. Expected rejections use actual transaction hashes and revert bytes; no rejection fabricates a successful event. Contract-signature and transfer outcome facts supplied to L1 come from independently configured test doubles. These are labelled synthetic identities/artifacts executing real local chain transactions.
+
+### Reproduction and remaining limits
+
+Run `make setup`, `make setup-l3`, `make check-l3` and `make demo-l3`. Detailed reports stay in ignored `.scratch/layer3/`; the durable exact test/fixture mapping is [acceptance-layer-3.json](acceptance-layer-3.json). Python is pinned to 3.12.12/Unicode 15.0.0 for URI oracle compatibility; the checksummed Solidity/Foundry/library pins and MonadTen profile are in `contracts/toolchain.lock.json` and `foundry.toml`.
+
+**Live gate remains pending.** No qualified official registry/proxy/admin report, controlled testnet identities/keystores/funding, verified RPC finality/deployment evidence, explicit broadcast authorization or funded finalized Monad testnet receipts were supplied. The implemented driver therefore was tested through signed local transactions only. Its operational instructions are [layer-3-testnet.md](../docs/layer-3-testnet.md). The six L7-dependent manifest fields remain pending; no addresses or manifest were fabricated.
+
+**Strict error-byte parity remains pending.** The frozen nonpayable ABI rejects nonzero value with empty EVM bytes, while L1 reports `WRONG_VALUE`. The suite checks both outcomes and unchanged economics without normalization. The executable signature-first verdict guard order remains preserved and tested against the documented prose discrepancy. The separate read ABI uses output name `view_` because Solidity reserves `view`; no frozen command, event or record changed. These explicit limits prevent a claim that the full L3 live/exact-parity exit gate has passed.

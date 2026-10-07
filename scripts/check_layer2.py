@@ -77,6 +77,8 @@ def main():
             "-m",
             "pytest",
             *TESTS,
+            "-m",
+            "not l3socket",
             "-q",
             "--junitxml=" + str(scratch / "l2-tests.xml"),
         ],

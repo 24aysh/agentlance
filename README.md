@@ -4,11 +4,12 @@ A decentralized task market for independently operated AI agents on Monad. Agent
 
 ## Current state
 
-Layers 0, 1 and 2 are complete within their specified scope: frozen protocol artifacts plus an offline Python reference core for allocation, reputation, command transitions, escrow/delegation accounting and analytics. Layer 2 adds ERC-8004 profile resolution, official A2A 1.0 HTTP+JSON adapters, signed-bid verification, durable execution correlation and a deterministic reference agent. Its two-process HTTPS demo uses the L1-backed fixture market. There are no deployed contracts, live Monad adapters, LLM execution, cost oracle, validator or UI. Fixture economic effects do not move funds.
+Layers 0–2 provide frozen protocol artifacts, the Python reference core and external-agent compatibility. Layer 3 adds the immutable Solidity market, real local Monad transactions, ERC-8004 owner/wallet reads, owner permits, checkpoint reputation, independently funded children, validator attestations and withdrawal credits. The local chain demo uses synthetic identities and artifacts; the L2 HTTPS demo still uses its explicitly simulated fixture market. No testnet deployment, production Monad MarketPort, LLM execution, cost oracle, production validator or UI is claimed.
 
 - [Layer 0 implementation specification](specs/layer-0.md): decisions, exact arithmetic, authority, lifecycle, interfaces, limits, implementation sequence and acceptance review.
 - [Layer 1 specification and acceptance review](specs/layer-1.md): interfaces, behavior, implementation boundaries and executed acceptance results.
 - [Layer 2 specification](specs/layer-2.md): compatibility ports, replay/recovery rules, runnable reference composition and acceptance evidence.
+- [Layer 3 specification](specs/layer-3.md): immutable chain protocol, conformance requirements, deployment qualification and remaining live gate.
 - [Layer plan](layers.md): existing audited architecture and sequential L0–L8 requirements. Kept at its original location.
 - [Technology choices](tech_stack.md): selected tools, introduced only when their layer needs them.
 - [Original app flow](docs/appflow.md): unchanged source snapshot from the supplied folder. The layer plan and L0 spec resolve its provisional discovery and validation wording.
@@ -23,7 +24,7 @@ make setup
 make check
 ```
 
-The project selects Python 3.12; Node.js 20+ and pnpm run the independent ethers verifier. `uv.lock` pins dependencies; initial setup may download them. Checks require no external services or private credentials after installation. The Layer 2 gate starts localhost HTTPS listeners. `make check` runs the L0 artifact/signature checks, checker regressions, golden/property/composed tests, exact statement/branch coverage, Ruff and formatting. Reports go to ignored `.scratch/l1-coverage.json`. Use `make check-l2` for the complete L0/L1/L2 gate, including both HTTPS processes and separate L2 branch coverage. Reports are `.scratch/l2-tests.xml` and `.scratch/l2-coverage.json`. `make check` retains the L0/L1-only coverage gate. Use `make test` for all behavior tests (including localhost listeners) and `make format` to format Python files. Running `make` defaults to the full check.
+The project selects Python 3.12.12, matching the qualified URI parser oracle; Node.js 20+ and pnpm run the independent ethers verifier. `uv.lock` pins dependencies; initial setup may download them. Checks require no external services or private credentials after installation. The Layer 2 gate starts localhost HTTPS listeners. `make check` runs the L0 artifact/signature checks, checker regressions, golden/property/composed tests, exact statement/branch coverage, Ruff and formatting. Reports go to ignored `.scratch/l1-coverage.json`. Use `make check-l2` for the complete L0/L1/L2 gate, including both HTTPS processes and separate L2 branch coverage. Reports are `.scratch/l2-tests.xml` and `.scratch/l2-coverage.json`. `make check` retains the L0/L1-only coverage gate. Use `make test` for all behavior tests (including localhost listeners) and `make format` to format Python files. Running `make` defaults to the full check.
 
 The existing market/lifecycle/reputation/delegation fixtures remain reviewed expected data, consumed by the core tests. New L1 regressions and tree scenarios are in [layer-1.json](specs/fixtures/layer-1.json). The [L0 acceptance review](specs/acceptance.md) retains the deployment facts still requiring live verification.
 
@@ -33,14 +34,31 @@ The existing market/lifecycle/reputation/delegation fixtures remain reviewed exp
 make demo-l2
 make check-l2
 # Local tests without TCP listeners:
-uv run --locked pytest -m "not l2socket"
+uv run --locked pytest -m "not l2socket and not l3socket"
 ```
 
 `make demo-l2` creates a fresh ignored `.scratch/layer2-demo.*` directory. The report proves one valid fixture award, acceptance finality, one invocation, immutable correlated artifact, agent restart, rejection of forged/conflicting messages, and a canonical validator-timeout refund. Temporary localhost certificates use real TLS verification; keys and credentials remain in the ignored session directory. The default ports are 8740/8741; pass `--market-port` and `--agent-port` to `scripts/demo_layer2.py` to change them.
 
 A2A completion means an artifact is available. It does not mean validation succeeded or anyone was paid. A durable start claim prevents re-execution after restart; a crash between claiming and saving output is reported as interrupted and may lose work. This is at-most-once invocation, not a promise of exactly-once external side effects.
 
-The [external conformance instructions](specs/layer-2.md#external-conformance-invocation) describe testing another implementation using `--l2-target`. Profile/content and market ports are replaceable; the live registry/Monad adapters remain L3 work.
+The [external conformance instructions](specs/layer-2.md#external-conformance-invocation) describe testing another implementation using `--l2-target`. Profile/content and market ports are replaceable; production observation, transaction reconciliation and finalized MarketPort adapters remain L4 work.
+
+## Layer 3 contracts and funded demo
+
+```sh
+make setup
+make setup-l3
+make check-l3
+make demo-l3
+```
+
+`setup-l3` installs the checksummed Foundry 1.8.0, Solidity 0.8.30, OpenZeppelin 5.4.0 and forge-std 1.9.7 toolchain under ignored `.scratch/layer3/`. It does not change global tools. The build uses Paris bytecode, optimizer 200 runs, via-IR and the explicit MonadTen runtime. This market targets Monad's native code-size limits; it is not an Ethereum deployment build.
+
+`check-l3` runs the L0/L1/L2 gates, exact compiled ABI checks, Solidity golden/adversarial/fuzz/invariant tests, real Python/EVM differential transactions and production-source coverage reporting. Evidence is written to `.scratch/layer3/gate.json`, with detailed reports beside it. Missing pinned tools fail the gate. The original protocol fixtures and ABI remain unchanged; generated wire declarations are checked with `scripts/generate_contract_types.py --check`.
+
+`demo-l3` starts and stops its own isolated Monad Anvil, then runs funded solo, parent/child, timeout/refund and malicious-input scenarios. Its JSON report includes actual transaction hashes, canonical events and post-withdrawal accounting. Amounts are deliberately small native atoms; validator signatures attest fixture bytes, not production correctness. Use `uv run --locked python scripts/demo_layer3.py --scenario solo` to run one scenario. The demo never deploys a fixture identity registry to testnet.
+
+The [testnet driver instructions](docs/layer-3-testnet.md) describe the implemented `--network monad-testnet --report ... --scenario ...` flow. Testnet qualification and funded live scenarios require a verified registry/RPC/build report, controlled identities, funded roles and explicit deployment authorization. They remain a separate live gate. A verified L3 report is not the complete L2 `DeploymentManifest`: reputation registry and feedback publisher qualification depend on L7. The frozen nonpayable ABI also returns empty EVM rejection bytes for nonzero value, while L1 reports `WRONG_VALUE`; exact error-byte parity for that invalid call remains an explicit exception.
 
 ## Core entry points
 
