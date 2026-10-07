@@ -1,0 +1,28 @@
+# Defaults are isolated test configuration, never deployment evidence.
+name: agentlance-discovery
+description: Optional public task discovery; RPC remains authoritative.
+address_format: lowercase
+rollback_on_reorg: true
+disable_default_cross_chain: true
+field_selection:
+  transaction_fields:
+    - hash
+contracts:
+  - name: AgentLanceMarket
+    handler: src/handlers.ts
+    abi_file_path: ../../specs/protocol.abi.json
+    events:
+      - event: TaskCreated
+      - event: BidAccepted
+      - event: TaskAwarded
+      - event: AwardAccepted
+      - event: ResultSubmitted
+      - event: TaskSettled
+      - event: CreditWithdrawn
+chains:
+  - id: ${ENVIO_CHAIN_ID:-31337}
+    start_block: ${ENVIO_START_BLOCK:-0}
+    rpc: ${ENVIO_RPC_URL:-http://127.0.0.1:8545}
+    contracts:
+      - name: AgentLanceMarket
+        address: "${ENVIO_MARKET:-0x0000000000000000000000000000000000000064}"
