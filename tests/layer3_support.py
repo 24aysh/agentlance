@@ -18,6 +18,8 @@ from eth_account import Account
 from eth_account.messages import encode_typed_data
 from eth_utils import keccak
 
+from modules.adapters.chain.codec import WireCodec as ProtocolCodec
+from modules.adapters.chain.codec import abiType, callData
 from modules.agent_client.signing import buildBidPermitTypedData, verifyEoa
 from modules.domain.records import agentKey, taskKey, validateRecord
 from modules.market_core.reputation import snapshotCounters
@@ -31,7 +33,6 @@ from modules.market_core.state import (
     SignatureObservation,
 )
 from modules.market_core.transitions import applyCommand
-from scripts.check_abi import schemaAbiField
 from scripts.layer3_tools import toolPath
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,137 +43,13 @@ def readJson(path):
     return json.loads((ROOT / path).read_text())
 
 
-def abiType(field):
-    if field["type"].startswith("tuple"):
-        return "(" + ",".join(abiType(v) for v in field["components"]) + ")" + field["type"][5:]
-    return field["type"]
-
-
-def zeroAbi(field):
-    kind = field["type"]
-    if kind == "tuple":
-        return tuple(zeroAbi(v) for v in field["components"])
-    if kind.endswith("[]"):
-        return []
-    if kind == "address":
-        return ZERO
-    if kind == "string":
-        return ""
-    if kind.startswith("bytes"):
-        return bytes(int(kind[5:])) if kind != "bytes" else b""
-    return False if kind == "bool" else 0
-
-
-class WireCodec:
+class WireCodec(ProtocolCodec):
     def __init__(self):
-        self.schema = readJson("specs/schemas/protocol.schema.json")
-        self.definitions = self.schema["$defs"]
-        self.catalog = readJson("specs/catalog.json")
-        self.abi = readJson("specs/protocol.abi.json")
-        self.commands = {
-            v["properties"]["command"]["const"]: v["properties"]["input"]
-            for v in self.definitions["Command"]["oneOf"]
-        }
-        self.eventSchemas = {
-            v["properties"]["name"]["const"]: {
-                "type": "object",
-                "properties": {
-                    "schemaVersion": v["properties"]["schemaVersion"],
-                    "policyVersion": v["properties"]["policyVersion"],
-                    **v["properties"]["payload"]["properties"],
-                },
-            }
-            for v in self.definitions["Event"]["oneOf"]
-        }
-        self.enums = {}
-        for name in (
-            "states",
-            "terminalReasons",
-            "verdicts",
-            "counterEffects",
-            "allocationOutcomes",
-        ):
-            values = self.catalog[name]
-            self.enums[frozenset(values)] = values
-
-    def resolve(self, schema):
-        while "$ref" in schema or ("allOf" in schema and "type" not in schema):
-            schema = (
-                self.definitions[schema["$ref"].split("/")[-1]]
-                if "$ref" in schema
-                else schema["allOf"][0]
-            )
-        return schema
-
-    def field(self, schema):
-        return schemaAbiField("", schema, self.definitions)
-
-    def convert(self, schema, value, *, decoding=False):
-        original = schema
-        schema = self.resolve(schema)
-        if "anyOf" in schema:
-            child = schema["anyOf"][0]
-            if decoding:
-                present, contents = value
-                if not present:
-                    assert contents == zeroAbi(self.field(child)), "Dirty absent ABI payload"
-                    return None
-                return self.convert(child, contents, decoding=True)
-            return (
-                (False, zeroAbi(self.field(child)))
-                if value is None
-                else (True, self.convert(child, value))
-            )
-        if schema.get("type") == "object":
-            fields = schema["properties"]
-            if decoding:
-                return {
-                    k: self.convert(s, v, decoding=True)
-                    for (k, s), v in zip(fields.items(), value, strict=True)
-                }
-            return tuple(self.convert(s, value[k]) for k, s in fields.items())
-        if "enum" in schema:
-            mapping = self.enums[frozenset(schema["enum"])]
-            return {v: k for k, v in mapping.items()}[value] if decoding else mapping[value]
-        kind = self.field(original)["type"]
-        if kind.startswith("bytes"):
-            return "0x" + value.hex() if decoding else bytes.fromhex(value[2:])
-        if kind == "address":
-            return value.lower()
-        if kind.startswith(("uint", "int")):
-            return str(value) if decoding and schema.get("type") == "string" else int(value)
-        return value
-
-    def commandData(self, name, data):
-        entry = next(v for v in self.abi if v.get("name") == name)
-        signature = name + "(" + ",".join(abiType(v) for v in entry["inputs"]) + ")"
-        args = self.convert(self.commands[name], data)
-        return (
-            "0x"
-            + (
-                keccak(text=signature)[:4] + encode([abiType(v) for v in entry["inputs"]], args)
-            ).hex()
+        super().__init__(
+            readJson("specs/schemas/protocol.schema.json"),
+            readJson("specs/catalog.json"),
+            readJson("specs/protocol.abi.json"),
         )
-
-    def event(self, log):
-        for entry in self.abi:
-            if entry["type"] != "event":
-                continue
-            signature = entry["name"] + "(" + abiType(entry["inputs"][0]) + ")"
-            if log["topics"][0].lower() != "0x" + keccak(text=signature).hex():
-                continue
-            assert len(log["topics"]) == 1
-            value = decode([abiType(entry["inputs"][0])], bytes.fromhex(log["data"][2:]))[0]
-            data = self.convert(self.eventSchemas[entry["name"]], value, decoding=True)
-            event = {
-                "schemaVersion": data.pop("schemaVersion"),
-                "policyVersion": data.pop("policyVersion"),
-                "name": entry["name"],
-                "payload": data,
-            }
-            validateRecord(event, "Event", self.schema)
-            return event
-        raise AssertionError("Unknown market event")
 
 
 class RpcError(RuntimeError):
@@ -266,12 +143,6 @@ def localNode(workDir):
 def artifact(name, sourceName=None):
     # Foundry's locked build output is generated, never treated as a golden ABI.
     return readJson(f".scratch/layer3/out/{sourceName or name}.sol/{name}.json")
-
-
-def callData(entry, values):
-    types = [abiType(f) for f in entry["inputs"]]
-    signature = entry["name"] + "(" + ",".join(types) + ")"
-    return "0x" + (keccak(text=signature)[:4] + encode(types, values)).hex()
 
 
 class Layer3Rig:
