@@ -29,6 +29,7 @@ def executionKey(ref):
 
 class Journal:
     def __init__(self, path, settings, *, maxContentBytes=64 * 1024 * 1024):
+        self.settings = deepcopy(settings)
         ensure(type(maxContentBytes) is int and maxContentBytes > 0, "Content storage limit")
         self.maxContentBytes = maxContentBytes
         self.lock = open(str(path) + ".lock", "a+b")
@@ -43,7 +44,7 @@ class Journal:
             self.db.execute("PRAGMA synchronous=FULL")
             self.db.execute("PRAGMA foreign_keys=ON")
             version = self.db.execute("PRAGMA user_version").fetchone()[0]
-            ensure(version in (0, 1, 2), "Unknown journal version")
+            ensure(version in (0, 1, 2, 3), "Unknown journal version")
             self.db.executescript("""
                 CREATE TABLE IF NOT EXISTS settings (
                     id INTEGER PRIMARY KEY CHECK(id=1), body BLOB NOT NULL);
@@ -77,7 +78,21 @@ class Journal:
                     key TEXT PRIMARY KEY, body BLOB NOT NULL);
                 CREATE TABLE IF NOT EXISTS notifications (
                     key TEXT PRIMARY KEY, body BLOB NOT NULL);
-                PRAGMA user_version=2;
+                CREATE TABLE IF NOT EXISTS economic_candidates (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS economic_estimates (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS forecast_attempts (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS usage_reports (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS usage_active (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS usage_receipts (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                CREATE TABLE IF NOT EXISTS economic_meta (
+                    key TEXT PRIMARY KEY, body BLOB NOT NULL);
+                PRAGMA user_version=3;
             """)
             with self.db:
                 old = self.db.execute("SELECT body FROM settings WHERE id=1").fetchone()
