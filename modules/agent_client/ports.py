@@ -53,6 +53,34 @@ def checkIdentity(value, schema):
     ensure(value["agentRef"]["chainId"] == value["stamp"]["chainId"], "Identity chain")
 
 
+def checkReputation(value, schema):
+    from modules.market_core.reputation import calculateProbability
+
+    closed(value, "taskRef agentRef taskFamily snapshotBlock counters p stamp")
+    for field, kind in (
+        ("taskRef", "TaskRef"),
+        ("agentRef", "AgentRef"),
+        ("snapshotBlock", "Uint64"),
+        ("counters", "Counters"),
+    ):
+        recordCheck(value[field], kind, schema)
+    checkStamp(value["stamp"], schema)
+    ensure(
+        value["stamp"]["finality"] == "FINALIZED"
+        and value["stamp"]["chainId"] == value["taskRef"]["chainId"] == value["agentRef"]["chainId"]
+        and int(value["snapshotBlock"]) <= int(value["stamp"]["blockNumber"]),
+        "Reputation observation",
+    )
+    ensure(
+        type(value["p"]) is int
+        and value["p"]
+        == calculateProbability(
+            int(value["counters"]["successes"]), int(value["counters"]["failures"])
+        ),
+        "Reputation probability",
+    )
+
+
 def checkTaskView(view, schema):
     closed(
         view,
@@ -116,6 +144,7 @@ class RegistryPort(Protocol):
 
 
 class MarketPort(Protocol):
+    async def readReputation(self, taskRef: dict, agentRef: dict) -> dict: ...
     async def readTask(self, taskRef: dict) -> dict: ...
     async def readBid(self, taskRef: dict, agentRef: dict) -> dict: ...
     async def observeAward(self, executionRef: dict) -> dict: ...
