@@ -1,0 +1,146 @@
+[
+  {
+    "type": "function",
+    "name": "ownerOf",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getAgentWallet",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "tokenURI",
+    "stateMutability": "view",
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "Registered",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint256",
+        "indexed": true
+      },
+      {
+        "name": "agentURI",
+        "type": "string",
+        "indexed": false
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "URIUpdated",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint256",
+        "indexed": true
+      },
+      {
+        "name": "newURI",
+        "type": "string",
+        "indexed": false
+      },
+      {
+        "name": "updatedBy",
+        "type": "address",
+        "indexed": true
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "MetadataSet",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "agentId",
+        "type": "uint256",
+        "indexed": true
+      },
+      {
+        "name": "indexedMetadataKey",
+        "type": "string",
+        "indexed": true
+      },
+      {
+        "name": "metadataKey",
+        "type": "string",
+        "indexed": false
+      },
+      {
+        "name": "metadataValue",
+        "type": "bytes",
+        "indexed": false
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "Transfer",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": true
+      }
+    ]
+  }
+]
