@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentlance:layer-3-verification:1",
+  "title": "Verified L3 deployment evidence (not a DeploymentManifest)",
+  "type": "object",
+  "properties": {
+    "reportVersion": {
+      "const": 1
+    },
+    "layer": {
+      "const": "L3"
+    },
+    "manifestFacts": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/schemaVersion"
+        },
+        "policyVersion": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/policyVersion"
+        },
+        "network": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/network"
+        },
+        "chainId": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/chainId"
+        },
+        "market": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/market"
+        },
+        "marketCodeHash": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/marketCodeHash"
+        },
+        "deploymentBlock": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/deploymentBlock"
+        },
+        "deploymentBlockHash": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/deploymentBlockHash"
+        },
+        "identityRegistry": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/identityRegistry"
+        },
+        "identityCodeHash": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/identityCodeHash"
+        },
+        "identityVersion": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/identityVersion"
+        },
+        "validator": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/validator"
+        },
+        "asset": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/asset"
+        },
+        "rpcUrls": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/rpcUrls"
+        },
+        "confirmation": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/confirmation"
+        },
+        "minimumAcceptanceWindow": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/minimumAcceptanceWindow"
+        },
+        "synthesisSlack": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/synthesisSlack"
+        },
+        "maxDepth": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/maxDepth"
+        },
+        "maxChildren": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/maxChildren"
+        },
+        "profileUri": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/DeploymentManifest/properties/profileUri"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "policyVersion",
+        "network",
+        "chainId",
+        "market",
+        "marketCodeHash",
+        "deploymentBlock",
+        "deploymentBlockHash",
+        "identityRegistry",
+        "identityCodeHash",
+        "identityVersion",
+        "validator",
+        "asset",
+        "rpcUrls",
+        "confirmation",
+        "minimumAcceptanceWindow",
+        "synthesisSlack",
+        "maxDepth",
+        "maxChildren",
+        "profileUri"
+      ],
+      "additionalProperties": false
+    },
+    "genesisHash": {
+      "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+    },
+    "deploymentTxHash": {
+      "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+    },
+    "executionRevision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "sourceCommit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "sourceTreeDigest": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+        },
+        "solcVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "foundryVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "openZeppelinRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "forgeStdRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "evmVersion": {
+          "const": "paris"
+        },
+        "optimizerRuns": {
+          "const": 200
+        },
+        "viaIR": {
+          "const": true
+        },
+        "creationCodeHash": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+        },
+        "storageLayoutDigest": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+        }
+      },
+      "required": [
+        "sourceCommit",
+        "sourceTreeDigest",
+        "solcVersion",
+        "foundryVersion",
+        "openZeppelinRevision",
+        "forgeStdRevision",
+        "evmVersion",
+        "optimizerRuns",
+        "viaIR",
+        "creationCodeHash",
+        "storageLayoutDigest"
+      ],
+      "additionalProperties": false
+    },
+    "identityVerification": {
+      "$ref": "urn:agentlance:protocol:1#/$defs/ContentRef"
+    },
+    "rpcVerification": {
+      "$ref": "urn:agentlance:protocol:1#/$defs/ContentRef"
+    },
+    "validatorVerification": {
+      "$ref": "urn:agentlance:protocol:1#/$defs/ContentRef"
+    },
+    "scenarioEvidence": {
+      "$ref": "urn:agentlance:protocol:1#/$defs/ContentRef"
+    },
+    "pendingManifestFields": {
+      "enum": [
+        [
+          "reputationRegistry",
+          "reputationCodeHash",
+          "reputationVersion",
+          "feedbackPublisher",
+          "publisherCodeHash",
+          "registryVerification"
+        ],
+        []
+      ]
+    }
+  },
+  "required": [
+    "reportVersion",
+    "layer",
+    "manifestFacts",
+    "genesisHash",
+    "deploymentTxHash",
+    "executionRevision",
+    "build",
+    "identityVerification",
+    "rpcVerification",
+    "validatorVerification",
+    "scenarioEvidence",
+    "pendingManifestFields"
+  ],
+  "additionalProperties": false
+}
