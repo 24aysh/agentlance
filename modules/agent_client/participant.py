@@ -2,10 +2,11 @@
 
 import asyncio
 
-from modules.adapters.a2a.profile import ProfileError, checkHint, strictJson
+from modules.adapters.a2a.profile import ProfileError, awardHint, checkHint, strictJson
 from modules.adapters.registry.resolution import resolveProfile, selectInterface
 from modules.adapters.storage.journal import executionKey
 from modules.agent_client.ports import AdapterError, checkTaskView, ensure, recordCheck
+from modules.agent_client.signing import contentDigest
 
 
 def makeCommand(name, **data):
@@ -58,9 +59,12 @@ class Participant:
 
     async def submitIntent(self, scope, command, valueAtoms="0"):
         intent = self.journal.intent(scope, command, valueAtoms, self.signer)
+        result = None
         if intent["attempted"]:
             result = await self.market.readOperation(intent["operationId"])
-        else:
+        if result is None or (
+            result["state"] == "UNKNOWN" and getattr(self.market, "recoverUnknown", False)
+        ):
             intent["attempted"] = True
             self.journal.saveIntent(intent)
             methods = {
@@ -84,6 +88,15 @@ class Participant:
             existing = await self.market.readBid(taskRef, self.agentRef)
             if existing["bid"] is not None:
                 return existing
+            scope = "bid:" + executionKey({"taskRef": taskRef, "awardId": 1})
+            intent = self.journal.findIntent(scope)
+            if intent:
+                ensure(
+                    intent["command"]["input"]["offer"]["bidAtoms"] == bidAtoms,
+                    "Changed bid intent",
+                    "CONFLICT",
+                )
+                return await self.submitIntent(scope, intent["command"])
             view = await self.market.readTask(taskRef)
             checkTaskView(view, self.schema)
             self.journal.observe(view["stamp"])
@@ -118,9 +131,7 @@ class Participant:
             signature = signPermit(permit)
             command = makeCommand("submitBid", offer=offer, permit=permit, signature=signature)
             recordCheck(command, "Command", self.schema)
-            return await self.submitIntent(
-                "bid:" + executionKey({"taskRef": taskRef, "awardId": 1}), command
-            )
+            return await self.submitIntent(scope, command)
 
     async def publishChild(self, parentRef, terms, requestId):
         command = makeCommand("createChildTask", parentRef=parentRef, terms=terms)
@@ -164,13 +175,28 @@ class Participant:
                 if error.kind == "NOT_FOUND":
                     raise ProfileError("PROFILE_AWARD_MISMATCH") from error
                 raise
-            terms = self.checkAward(extension, view)
-            now = int(view["stamp"]["blockTimestamp"])
-            if view["status"] not in {"AWARDED", "RUNNING"} or now >= int(
-                terms["acceptBy" if view["status"] == "AWARDED" else "resultBy"]
-            ):
-                raise ProfileError("PROFILE_EXPIRED", view["status"], view["receipt"])
-            return self.journal.remember(message, extension)
+            return self.admitAward(message, extension, view)
+
+    def admitAward(self, message, extension, view):
+        terms = self.checkAward(extension, view)
+        now = int(view["stamp"]["blockTimestamp"])
+        if view["status"] not in {"AWARDED", "RUNNING"} or now >= int(
+            terms["acceptBy" if view["status"] == "AWARDED" else "resultBy"]
+        ):
+            raise ProfileError("PROFILE_EXPIRED", view["status"], view["receipt"])
+        return self.journal.remember(message, extension)
+
+    async def observeOwnAward(self, ref):
+        async with self.lock:
+            view = await self.market.observeAward(ref)
+            ensure(view["stamp"]["finality"] == "FINALIZED", "Award not finalized", "UNAVAILABLE")
+            message = awardHint(view, "watcher:" + contentDigest(executionKey(ref).encode())[2:])
+            extension = checkHint(message, self.schema)
+            existing = self.journal.get(ref)
+            self.checkAward(extension, view, existing)
+            if existing:
+                return existing
+            return self.admitAward(message, extension, view)
 
     async def advance(self, ref):
         async with self.lock:

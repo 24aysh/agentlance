@@ -80,3 +80,29 @@ def checkHint(message, schema):
     if message.get("contextId") and not message.get("taskId"):
         raise ProfileError("PROFILE_CONFLICT")
     return extension
+
+
+def awardHint(view, messageId):
+    """Build a transport hint from an already observed award, never from task text."""
+    task, bid = view["task"], view["winningBid"]
+    ensure(bid is not None and view["allocation"] is not None, "No observed winner")
+    return {
+        "messageId": messageId,
+        "role": "ROLE_USER",
+        "parts": [{"text": "Observe the canonical AgentLance award."}],
+        "extensions": [URN],
+        "metadata": {
+            URN: {
+                "schemaVersion": 1,
+                "profileVersion": 1,
+                "executionRef": {
+                    "taskRef": task["taskRef"],
+                    "awardId": view["allocation"]["awardId"],
+                },
+                "agentRef": bid["offer"]["agentRef"],
+                "inputDigest": task["terms"]["input"]["digest"],
+                "validationPolicyDigest": task["terms"]["validationPolicy"]["digest"],
+                "result": None,
+            }
+        },
+    }
