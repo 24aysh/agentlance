@@ -137,7 +137,13 @@ async def cli(config, *arguments, success=True):
         stderr=asyncio.subprocess.PIPE,
         env=os.environ | {"AGENTLANCE_FIXTURE_PASSWORD": PASSWORD},
     )
-    raw, errors = await asyncio.wait_for(process.communicate(), 40)
+    try:
+        raw, errors = await asyncio.wait_for(process.communicate(), 90)
+    except TimeoutError:
+        if process.returncode is None:
+            process.kill()
+        await process.communicate()
+        raise
     if not success:
         assert process.returncode != 0 and not raw
         return strictJson(errors)

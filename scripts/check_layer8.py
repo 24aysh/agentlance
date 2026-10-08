@@ -57,6 +57,7 @@ def main():
     try:
         run([sys.executable, "scripts/check_layer7.py"], "lower-layers.log")
         tests = [
+            "apps/test_runtime_logging.py",
             "modules/validation/test_disclosure.py",
             *sorted(
                 str(p.relative_to(ROOT))
