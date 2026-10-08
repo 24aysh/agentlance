@@ -1,0 +1,1328 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentlance:application:1",
+  "$defs": {
+    "Stamp": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "const": "MONAD"
+        },
+        "chainId": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+        },
+        "blockNumber": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint64"
+        },
+        "blockHash": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+        },
+        "blockTimestamp": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint64"
+        },
+        "finality": {
+          "const": "FINALIZED"
+        }
+      },
+      "required": [
+        "source",
+        "chainId",
+        "blockNumber",
+        "blockHash",
+        "blockTimestamp",
+        "finality"
+      ],
+      "additionalProperties": false
+    },
+    "TaskView": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/TaskSpec"
+        },
+        "status": {
+          "enum": [
+            "OPEN",
+            "AWARDED",
+            "RUNNING",
+            "SUBMITTED",
+            "SETTLED"
+          ]
+        },
+        "allocation": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Allocation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "winningBid": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Bid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ownWorkReserveAtoms": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint96"
+        },
+        "childrenCreated": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "activeChildren": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "reservedChildBudgets": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint96"
+        },
+        "committedChildPayouts": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint96"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/ResultCommitment"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/SettlementReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stamp": {
+          "$ref": "#/$defs/Stamp"
+        }
+      },
+      "required": [
+        "task",
+        "status",
+        "allocation",
+        "winningBid",
+        "ownWorkReserveAtoms",
+        "childrenCreated",
+        "activeChildren",
+        "reservedChildBudgets",
+        "committedChildPayouts",
+        "result",
+        "receipt",
+        "stamp"
+      ],
+      "additionalProperties": false
+    },
+    "Auction": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "UNAVAILABLE",
+            "PREVIEW",
+            "MATCH",
+            "CONFLICT"
+          ]
+        },
+        "calculated": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Allocation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "matchesAllocation": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "calculated",
+        "matchesAllocation"
+      ],
+      "additionalProperties": false
+    },
+    "Feedback": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "NOT_APPLICABLE",
+            "PUBLISHED",
+            "PENDING",
+            "UNAVAILABLE"
+          ]
+        },
+        "publication": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "published": {
+                  "type": "boolean"
+                },
+                "feedbackIndex": {
+                  "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+                },
+                "feedback": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "agentRef": {
+                          "$ref": "urn:agentlance:protocol:1#/$defs/AgentRef"
+                        },
+                        "client": {
+                          "$ref": "urn:agentlance:protocol:1#/$defs/Address"
+                        },
+                        "value": {
+                          "enum": [
+                            0,
+                            1
+                          ]
+                        },
+                        "valueDecimals": {
+                          "const": 0
+                        },
+                        "tag1": {
+                          "const": "agentlance-v1"
+                        },
+                        "tag2": {
+                          "const": "structured-output-v1"
+                        },
+                        "isRevoked": {
+                          "const": false
+                        }
+                      },
+                      "required": [
+                        "agentRef",
+                        "client",
+                        "value",
+                        "valueDecimals",
+                        "tag1",
+                        "tag2",
+                        "isRevoked"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "stamp": {
+                  "$ref": "#/$defs/Stamp"
+                }
+              },
+              "required": [
+                "published",
+                "feedbackIndex",
+                "feedback",
+                "stamp"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "publication"
+      ],
+      "additionalProperties": false
+    },
+    "Identity": {
+      "type": "object",
+      "properties": {
+        "agentRef": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/AgentRef"
+        },
+        "owner": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Address"
+        },
+        "verifiedWallet": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Address"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "registrationUri": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uri"
+        },
+        "ownerHasCode": {
+          "type": "boolean"
+        },
+        "stamp": {
+          "$ref": "#/$defs/Stamp"
+        }
+      },
+      "required": [
+        "agentRef",
+        "owner",
+        "verifiedWallet",
+        "registrationUri",
+        "ownerHasCode",
+        "stamp"
+      ],
+      "additionalProperties": false
+    },
+    "Credit": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Address"
+        },
+        "amountAtoms": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+        },
+        "stamp": {
+          "$ref": "#/$defs/Stamp"
+        }
+      },
+      "required": [
+        "owner",
+        "amountAtoms",
+        "stamp"
+      ],
+      "additionalProperties": false
+    },
+    "OperationResult": {
+      "type": "object",
+      "properties": {
+        "operationId": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "state": {
+          "enum": [
+            "UNKNOWN",
+            "PENDING",
+            "APPLIED",
+            "REJECTED"
+          ]
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:agentlance:protocol:1#/$defs/Event"
+          },
+          "maxItems": 100
+        },
+        "stamp": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Stamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "operationId",
+        "state",
+        "error",
+        "events",
+        "stamp"
+      ],
+      "additionalProperties": false
+    },
+    "NativeReceipt": {
+      "type": "object",
+      "properties": {
+        "transactionHash": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+        },
+        "blockHash": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+        },
+        "blockNumber": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]+$"
+        },
+        "status": {
+          "enum": [
+            "0x0",
+            "0x1"
+          ]
+        },
+        "gasUsed": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]+$"
+        }
+      },
+      "required": [
+        "transactionHash",
+        "blockHash",
+        "blockNumber",
+        "status",
+        "gasUsed"
+      ],
+      "additionalProperties": false
+    },
+    "Missing": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "enum": [
+            "history",
+            "freshness",
+            "auction",
+            "feedback",
+            "children",
+            "metadata",
+            "identity",
+            "input",
+            "outputSchema",
+            "validationPolicy",
+            "result",
+            "evidence"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "INCOMPLETE_HISTORY",
+            "INDEX_LAG",
+            "UNAVAILABLE",
+            "CONFLICT",
+            "INVALID_DATA",
+            "UNSUPPORTED",
+            "NOT_FOUND",
+            "FINALITY_CONFLICT"
+          ]
+        }
+      },
+      "required": [
+        "component",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "Envelope": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "kind": {
+          "enum": [
+            "validation",
+            "operation",
+            "task",
+            "bids",
+            "tasks",
+            "tree",
+            "agent",
+            "credit"
+          ]
+        },
+        "networkScope": {
+          "enum": [
+            "LOCAL_FIXTURE",
+            "QUALIFIED_TESTNET"
+          ]
+        },
+        "chainId": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+        },
+        "market": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Address"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/Stamp"
+        },
+        "indexedThrough": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Stamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finalizedHead": {
+          "$ref": "#/$defs/Stamp"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Missing"
+          },
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "data": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "version",
+        "kind",
+        "networkScope",
+        "chainId",
+        "market",
+        "observedAt",
+        "indexedThrough",
+        "finalizedHead",
+        "complete",
+        "missing",
+        "nextCursor",
+        "data"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "validation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/ValidationData"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "operation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/OperationData"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "task"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/TaskData"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "bids"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/BidsData"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "tasks"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/TasksData"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "tree"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/TreeData"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "agent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/AgentData"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "credit"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/CreditData"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CostDisclosure": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "executionRef": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/ExecutionRef"
+        },
+        "agentRef": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/AgentRef"
+        },
+        "operator": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Address"
+        },
+        "exportedAt": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint64"
+        },
+        "trust": {
+          "const": "OPERATOR_REPORTED_UNAUTHENTICATED"
+        },
+        "scope": {
+          "const": "OWN_EXECUTION"
+        },
+        "coverage": {
+          "const": "OWN_EXECUTION_ONLY"
+        },
+        "uncalibrated": {
+          "const": true
+        },
+        "reconciliationKey": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reportId": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reportDigest": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "estimateId": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "estimateDigest": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "forecast": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "meanAtoms": {
+                  "anyOf": [
+                    {
+                      "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "p50Atoms": {
+                  "anyOf": [
+                    {
+                      "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "p80Atoms": {
+                  "anyOf": [
+                    {
+                      "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "p95Atoms": {
+                  "anyOf": [
+                    {
+                      "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "sampleCount": {
+                  "$ref": "urn:agentlance:protocol:1#/$defs/Uint64"
+                },
+                "fallback": {
+                  "enum": [
+                    "MIXTURE",
+                    "HISTORY",
+                    "JEV",
+                    "BOUNDS",
+                    "ABSTAIN"
+                  ]
+                },
+                "tail": {
+                  "enum": [
+                    "BOUNDED",
+                    "UNBOUNDED",
+                    "UNKNOWN"
+                  ]
+                },
+                "unit": {
+                  "$ref": "urn:agentlance:protocol:1#/$defs/MoneyUnit"
+                }
+              },
+              "required": [
+                "meanAtoms",
+                "p50Atoms",
+                "p80Atoms",
+                "p95Atoms",
+                "sampleCount",
+                "fallback",
+                "tail",
+                "unit"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completeness": {
+          "anyOf": [
+            {
+              "enum": [
+                "COMPLETE",
+                "INCOMPLETE",
+                "CENSORED"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "PROVIDER_ATTESTED",
+              "OPERATOR_REPORTED",
+              "INCOMPLETE"
+            ]
+          },
+          "maxItems": 3
+        },
+        "ownReportedExecutionAtoms": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "directChildPaidAtoms": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "savedRateActualAtoms": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Uint256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "wholeAgentProfitAtoms": {
+          "const": null
+        },
+        "systemUtility": {
+          "const": null
+        },
+        "unit": {
+          "const": {
+            "currency": "MON",
+            "decimals": 18
+          }
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "INCOMPLETE_WHOLE_COST_SCOPE",
+              "UNREPORTED_VALIDATOR_COST",
+              "UNREPORTED_GAS_AND_PARTICIPATION_COST",
+              "STALE_RECONCILIATION",
+              "MISSING_RECONCILIATION",
+              "MISSING_USAGE",
+              "INCOMPLETE_USAGE",
+              "MISSING_ESTIMATE",
+              "UNKNOWN_EXECUTION_COST_OR_UNIT",
+              "UNKNOWN_CHILD_PAYMENTS",
+              "MISSING_SAVED_RATE_COMPARISON"
+            ]
+          },
+          "maxItems": 16
+        }
+      },
+      "required": [
+        "version",
+        "executionRef",
+        "agentRef",
+        "operator",
+        "exportedAt",
+        "trust",
+        "scope",
+        "coverage",
+        "uncalibrated",
+        "reconciliationKey",
+        "reportId",
+        "reportDigest",
+        "estimateId",
+        "estimateDigest",
+        "forecast",
+        "completeness",
+        "provenance",
+        "ownReportedExecutionAtoms",
+        "directChildPaidAtoms",
+        "savedRateActualAtoms",
+        "wholeAgentProfitAtoms",
+        "systemUtility",
+        "unit",
+        "missing"
+      ],
+      "additionalProperties": false
+    },
+    "ValidationData": {
+      "type": "object",
+      "properties": {
+        "terms": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/TaskTerms"
+        },
+        "requester": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Address"
+        },
+        "depositAtoms": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Uint96"
+        },
+        "stamp": {
+          "$ref": "#/$defs/Stamp"
+        }
+      },
+      "required": [
+        "terms",
+        "requester",
+        "depositAtoms",
+        "stamp"
+      ],
+      "additionalProperties": false
+    },
+    "OperationData": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "operationId": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OperationResult"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transactionHash": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NativeReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diagnostic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confirmation": {
+          "enum": [
+            "UNSENT",
+            "PENDING",
+            "MINED_UNFINALIZED",
+            "FINALIZED_APPLIED",
+            "REJECTED",
+            "FINALIZED_REVERTED",
+            "UNKNOWN"
+          ]
+        },
+        "taskRef": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/TaskRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stamp": {
+          "$ref": "#/$defs/Stamp"
+        }
+      },
+      "required": [
+        "requestId",
+        "operationId",
+        "result",
+        "transactionHash",
+        "receipt",
+        "diagnostic",
+        "confirmation",
+        "taskRef",
+        "stamp"
+      ],
+      "additionalProperties": false
+    },
+    "TaskData": {
+      "type": "object",
+      "properties": {
+        "view": {
+          "$ref": "#/$defs/TaskView"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:agentlance:protocol:1#/$defs/EventEnvelope"
+          },
+          "maxItems": 100
+        },
+        "auction": {
+          "$ref": "#/$defs/Auction"
+        },
+        "feedback": {
+          "$ref": "#/$defs/Feedback"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "component": {
+                "enum": [
+                  "input",
+                  "outputSchema",
+                  "validationPolicy",
+                  "result",
+                  "evidence"
+                ]
+              },
+              "ref": {
+                "$ref": "urn:agentlance:protocol:1#/$defs/ContentRef"
+              },
+              "status": {
+                "enum": [
+                  "VERIFIED",
+                  "UNAVAILABLE",
+                  "UNSUPPORTED",
+                  "INVALID_DATA",
+                  "NOT_FOUND",
+                  "CONFLICT"
+                ]
+              }
+            },
+            "required": [
+              "component",
+              "ref",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 5
+        },
+        "unit": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/MoneyUnit"
+        }
+      },
+      "required": [
+        "view",
+        "events",
+        "auction",
+        "feedback",
+        "artifacts",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "BidsData": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/TaskSpec"
+        },
+        "bids": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "bid": {
+                "$ref": "urn:agentlance:protocol:1#/$defs/Bid"
+              },
+              "event": {
+                "$ref": "urn:agentlance:protocol:1#/$defs/EventEnvelope"
+              }
+            },
+            "required": [
+              "bid",
+              "event"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100
+        },
+        "auction": {
+          "$ref": "#/$defs/Auction"
+        }
+      },
+      "required": [
+        "task",
+        "bids",
+        "auction"
+      ],
+      "additionalProperties": false
+    },
+    "TasksData": {
+      "type": "object",
+      "properties": {
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:agentlance:protocol:1#/$defs/TaskSpec"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "tasks"
+      ],
+      "additionalProperties": false
+    },
+    "TreeData": {
+      "type": "object",
+      "properties": {
+        "rootRef": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/TaskRef"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TaskView"
+          },
+          "maxItems": 21
+        }
+      },
+      "required": [
+        "rootRef",
+        "nodes"
+      ],
+      "additionalProperties": false
+    },
+    "AgentData": {
+      "type": "object",
+      "properties": {
+        "agentRef": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/AgentRef"
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Identity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "profile": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentlance:protocol:1#/$defs/AgentProfile"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint": {
+          "const": "UNPROBED"
+        },
+        "prior": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "SYNTHETIC_BETA"
+            },
+            "alpha": {
+              "const": 1
+            },
+            "beta": {
+              "const": 1
+            }
+          },
+          "required": [
+            "kind",
+            "alpha",
+            "beta"
+          ],
+          "additionalProperties": false
+        },
+        "taskFamily": {
+          "const": "structured-output-v1"
+        },
+        "counters": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/Counters"
+        },
+        "p": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "frozen": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "task": {
+                  "$ref": "urn:agentlance:protocol:1#/$defs/TaskSpec"
+                },
+                "bid": {
+                  "anyOf": [
+                    {
+                      "$ref": "urn:agentlance:protocol:1#/$defs/Bid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "task",
+                "bid"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "agentRef",
+        "identity",
+        "profile",
+        "endpoint",
+        "prior",
+        "taskFamily",
+        "counters",
+        "p",
+        "frozen"
+      ],
+      "additionalProperties": false
+    },
+    "CreditData": {
+      "type": "object",
+      "properties": {
+        "credit": {
+          "$ref": "#/$defs/Credit"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:agentlance:protocol:1#/$defs/EventEnvelope"
+          },
+          "maxItems": 100
+        },
+        "unit": {
+          "$ref": "urn:agentlance:protocol:1#/$defs/MoneyUnit"
+        }
+      },
+      "required": [
+        "credit",
+        "events",
+        "unit"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

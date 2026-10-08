@@ -202,7 +202,9 @@ class ValidatorHarness:
             self.store,
             self.content,
             self.uploader,
-            DockerExecutor(namespace="l7-test:" + self.env.rig.market),
+            # Separate local chains reuse deterministic addresses; the fixture's
+            # durable directory distinguishes their containers across restarts.
+            DockerExecutor(namespace="l7-test:" + str(self.directory.resolve())),
             Account.from_key(env.rig.keys["validator"]),
             readJson("specs/signing/types.json"),
             (ROOT / ".scratch/layer7/image-id").read_text().strip(),

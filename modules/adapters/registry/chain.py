@@ -91,14 +91,14 @@ class MonadRegistry:
         if self.feedback is not None:
             await self.feedback.verifyDependencies(stamp)
 
-    async def readIdentity(self, agentRef):
+    async def readIdentity(self, agentRef, stamp=None):
         recordCheck(agentRef, "AgentRef", self.schema)
         ensure(
             agentRef["chainId"] == self.chain.facts["chainId"]
             and agentRef["identityRegistry"] == self.chain.facts["identityRegistry"],
             "Registry namespace",
         )
-        stamp = await self.chain.qualify()
+        stamp = stamp or await self.chain.qualify()
         await self.verifyDependencies(stamp)
         values = []
         for name in ("ownerOf", "getAgentWallet", "tokenURI"):

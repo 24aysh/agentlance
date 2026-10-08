@@ -61,13 +61,15 @@ def selectInterface(card):
     ensure(False, "No A2A 1.0 HTTP+JSON interface", "UNSUPPORTED")
 
 
-async def resolveProfile(agentRef, registry, content, schema, chainId, identityRegistry):
+async def resolveProfile(
+    agentRef, registry, content, schema, chainId, identityRegistry, *, identity=None
+):
     recordCheck(agentRef, "AgentRef", schema)
     ensure(
         agentRef["chainId"] == str(chainId) and agentRef["identityRegistry"] == identityRegistry,
         "Registry namespace",
     )
-    snapshot = await registry.readIdentity(agentRef)
+    snapshot = identity if identity is not None else await registry.readIdentity(agentRef)
     checkIdentity(snapshot, schema)
     ensure(snapshot["agentRef"] == agentRef, "Identity binding")
     ensure(snapshot["stamp"]["finality"] == "FINALIZED", "Identity not finalized", "UNAVAILABLE")
