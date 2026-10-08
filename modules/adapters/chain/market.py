@@ -176,6 +176,16 @@ class MonadMarket:
     async def commitResult(self, command, operationId):
         return await self.submit(command, operationId, "submitResult")
 
+    async def allocateTask(self, command, operationId):
+        return await self.submit(command, operationId, "allocateTask")
+
+    async def expireTask(self, command, operationId):
+        return await self.submit(command, operationId, "expireTask")
+
+    async def availableFunds(self):
+        await self.chain.qualify()
+        return quantity(await self.rpc.call("eth_getBalance", self.signer, "pending"))
+
     async def submit(self, command, operationId, name, valueAtoms="0"):
         recordCheck(command, "Command", self.schema)
         recordCheck(valueAtoms, "Uint96", self.schema)
@@ -212,23 +222,38 @@ class MonadMarket:
             ref = (
                 data["offer"]["taskRef"]
                 if name == "submitBid"
-                else data.get("parentRef", data.get("executionRef", {}).get("taskRef"))
+                else data.get(
+                    "taskRef", data.get("parentRef", data.get("executionRef", {}).get("taskRef"))
+                )
             )
             view = await self.readTaskAt(ref, stamp)
             if name == "submitBid":
                 ensure(self.registry is not None, "Registry qualification required", "UNAVAILABLE")
                 await self.registry.verifyDependencies(stamp)
                 self.checkRef(data["offer"]["agentRef"], "AgentRef")
-            deadlineName = {
-                "submitBid": "biddingClose",
-                "acceptAward": "acceptBy",
-                "submitResult": "resultBy",
-                "createChildTask": "resultBy",
-            }[name]
-            op["deadline"] = view["task"]["terms"][deadlineName]
-            if name == "submitBid" and data["permit"] is not None:
-                op["deadline"] = str(min(int(op["deadline"]), int(data["permit"]["expiry"])))
-            ensure(int(stamp["blockTimestamp"]) < int(op["deadline"]), "Action expired", "CONFLICT")
+            terms, now = view["task"]["terms"], int(stamp["blockTimestamp"])
+            if name == "expireTask":
+                from modules.market_core.transitions import CUTOFFS
+
+                ensure(view["status"] in CUTOFFS, "Already terminal", "CONFLICT")
+                ensure(
+                    now >= int(terms[CUTOFFS[view["status"]][0]]), "Expiry premature", "CONFLICT"
+                )
+                op["deadline"] = None  # Expiry has a lower cutoff, never an upper deadline.
+            else:
+                deadlineName = {
+                    "submitBid": "biddingClose",
+                    "acceptAward": "acceptBy",
+                    "submitResult": "resultBy",
+                    "createChildTask": "resultBy",
+                    "allocateTask": "allocationBy",
+                }[name]
+                op["deadline"] = terms[deadlineName]
+                if name == "allocateTask":
+                    ensure(now >= int(terms["biddingClose"]), "Allocation premature", "CONFLICT")
+                if name == "submitBid" and data["permit"] is not None:
+                    op["deadline"] = str(min(int(op["deadline"]), int(data["permit"]["expiry"])))
+                ensure(now < int(op["deadline"]), "Action expired", "CONFLICT")
             ensure(
                 valueAtoms == (data["terms"]["budgetAtoms"] if name == "createChildTask" else "0"),
                 "Native funding mismatch",
@@ -366,7 +391,7 @@ class MonadMarket:
         )
         now = int(self.clock())
         if (
-            int(stamp["blockTimestamp"]) < int(op["deadline"])
+            (op["deadline"] is None or int(stamp["blockTimestamp"]) < int(op["deadline"]))
             and op["attempts"] < self.maxAttempts
             and (op["attempts"] == 0 or now - op["lastAttempt"] >= 2)
         ):
@@ -417,6 +442,25 @@ class MonadMarket:
             for log in receipt["logs"]
             if log["address"].lower() == expected["to"]
         ]
+        commandName = op["command"]["command"]
+        if commandName in {"allocateTask", "expireTask"}:
+            ref = op["command"]["input"]["taskRef"]
+            names = [event["name"] for event in events]
+            allowed = (
+                [["TaskSettled"]]
+                if commandName == "expireTask"
+                else [["TaskAwarded"], ["TaskSettled"]]
+            )
+            ensure(names in allowed, "Progress event mismatch")
+            for event in events:
+                payload = event["payload"]
+                record = payload.get("allocation", payload.get("receipt", payload))
+                ensure(record["taskRef"] == ref, "Progress task binding")
+            await self.readTaskAt(ref, stamp)
+            self.journal.observe(stamp)
+            op["result"] = operationResult(op["operationId"], "APPLIED", events=events, stamp=stamp)
+            self.journal.saveNative(op)
+            return deepcopy(op["result"])
         expectedName = {
             "submitBid": "BidAccepted",
             "acceptAward": "AwardAccepted",

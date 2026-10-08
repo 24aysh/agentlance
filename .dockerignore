@@ -1,0 +1,5 @@
+**
+!apps/
+!apps/reference_agent/
+!apps/reference_agent/Dockerfile
+!apps/reference_agent/container_worker.py

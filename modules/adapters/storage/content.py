@@ -88,6 +88,15 @@ class ContentStore:
 
     async def fetchBytes(self, uri, maximumBytes, expectedDigest=None):
         ensure(isContentUri(uri), "Invalid content URI")
+        if (
+            self.journal is not None
+            and self.artifactOrigin is not None
+            and expectedDigest is not None
+            and uri == self.artifactOrigin + "/artifacts/" + expectedDigest[2:] + ".json"
+        ):
+            raw = self.journal.readContent(expectedDigest)
+            ensure(len(raw) <= maximumBytes, "Content byte limit")
+            return raw
         target = uri
         if uri.startswith("ipfs://"):
             ensure(self.ipfsGateway is not None, "No configured IPFS gateway", "UNSUPPORTED")
@@ -130,3 +139,9 @@ class ContentStore:
         ref = {"uri": self.artifactOrigin + "/artifacts/" + digest[2:] + ".json", "digest": digest}
         self.journal.storeResult(executionRef, ref, raw)
         return ref
+
+    def publishContent(self, raw):
+        ensure(self.journal is not None and self.artifactOrigin is not None, "No content store")
+        ensure(isinstance(raw, bytes) and len(raw) <= 1048576, "Content limit")
+        digest = self.journal.storeContent(raw)
+        return {"uri": self.artifactOrigin + "/artifacts/" + digest[2:] + ".json", "digest": digest}
