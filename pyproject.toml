@@ -15,6 +15,7 @@ dependencies = [
   "eth-utils>=6,<7",
   "eth-keys>=0.8,<0.9",
   "web3==8.0.0",
+  "openai-agents==0.17.4",
 ]
 
 [dependency-groups]
@@ -28,6 +29,8 @@ dev = [
 
 [tool.uv]
 package = false
+# Agents 0.17.4 constructs pre-cache-write Usage objects; 2.54 changed required fields.
+constraint-dependencies = ["openai==2.36.0"]
 
 [tool.ruff]
 target-version = "py312"

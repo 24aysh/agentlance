@@ -60,7 +60,7 @@ def testEconomicsMigrationAndStorageBackpressure(tmp_path):
         journal.close()
     journal = Journal(tmp_path / "state.sqlite", {"mode": "fixture"})
     try:
-        assert journal.db.execute("PRAGMA user_version").fetchone()[0] == 3
+        assert journal.db.execute("PRAGMA user_version").fetchone()[0] == 4
         assert journal.readContent(digest) == b"retained"
         store = EconomicsStore(
             journal, example("AgentRef"), example("TaskSpec")["requester"], maxRows=1

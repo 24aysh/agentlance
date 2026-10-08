@@ -80,6 +80,9 @@ class DiscoveryRuntime:
             row["phase"] not in {"RESULT_RECORDED", "STOPPED", "INTERRUPTED"}
             for row in self.participant.journal.rows()
         )
+        if self.participant.coordinator is not None:
+            await self.participant.coordinator.observeReservations()
+            active = self.capacity - self.participant.coordinator.store.available()
         await deliverObserved(
             self.watcher,
             self.participant,
@@ -98,13 +101,15 @@ class DiscoveryRuntime:
 async def main(config):
     """Live activation requires a complete manifest until the bootstrap decision is resolved."""
     economicConfig = config.get("economics")
+    executionConfig = config.get("execution")
     closed(
         config,
         "manifestPath genesisHash registryVerificationPath rpcUrl database agentRef "
         "executionKeystore ownerKeystore bundleDir artifactOrigin ipfsGateway "
         "maxFinalizedAgeSeconds maxGas maxGasPriceWei bidAtoms capacity filter "
         "broadcast listenHost agentPort certificate tlsKey"
-        + (" economics" if economicConfig is not None else ""),
+        + (" economics" if economicConfig is not None else "")
+        + (" execution" if executionConfig is not None else ""),
     )
     ensure(config["broadcast"] is True, "Explicit broadcast configuration required", "CONFLICT")
     root = Path(__file__).resolve().parents[2]
@@ -152,14 +157,24 @@ async def main(config):
         for name in ("output-schema.json", "policy.json")
     ]
     ensure(policy["supportedDigests"] == digests, "Worker schema/policy mismatch")
-    # This runnable worker deliberately remains the narrow L2 structured transform.
+    # Reference execution supports only the two reviewed structured-copy templates.
     expected = root / "specs/fixtures/layer-2"
-    ensure(
-        digests
-        == [
+    supported = [
+        [
             contentDigest((expected / name).read_bytes())
             for name in ("output-schema.json", "policy.json")
-        ],
+        ]
+    ]
+    if executionConfig is not None:
+        parentFixture = root / "specs/fixtures/layer-6"
+        supported.append(
+            [
+                contentDigest((parentFixture / name).read_bytes())
+                for name in ("output-schema.json", "policy.json")
+            ]
+        )
+    ensure(
+        digests in supported,
         "Reference worker does not implement this template",
         "UNSUPPORTED",
     )
@@ -210,6 +225,13 @@ async def main(config):
         content = ContentStore(
             http, network, journal, config["artifactOrigin"], config["ipfsGateway"]
         )
+        inputCheck = checkFixtureInput
+        if executionConfig is not None:
+            from apps.reference_agent.container_worker import transform
+
+            def inputCheck(raw):
+                transform({"kind": "SOLO", "input": strictJson(raw)})
+
         participant = Participant(
             config["agentRef"],
             account.address.lower(),
@@ -219,7 +241,7 @@ async def main(config):
             journal,
             schema,
             executeFixture,
-            checkFixtureInput,
+            inputCheck,
             tuple(digests),
         )
         signingTypes = strictJson((root / "specs/signing/types.json").read_bytes())
@@ -265,6 +287,37 @@ async def main(config):
                 time.time,
                 predictor,
             )
+        coordinator = None
+        if executionConfig is not None:
+            from modules.adapters.execution.docker import DockerExecutor
+            from modules.adapters.execution.sdk import AgentsExecutor
+            from modules.execution.coordinator import ExecutionCoordinator
+
+            ensure(executionConfig["capacity"] == config["capacity"], "Capacity binding")
+            ensure(
+                [
+                    executionConfig["runtime"]["outputSchemaDigest"],
+                    executionConfig["runtime"]["validationPolicyDigest"],
+                ]
+                == digests,
+                "Execution template binding",
+            )
+            if economics is not None:
+                ensure(
+                    all(
+                        executionConfig[k] == economicConfig[k]
+                        for k in ("runtime", "pricing", "operator")
+                    ),
+                    "Economic execution binding",
+                )
+            docker = DockerExecutor()
+            coordinator = ExecutionCoordinator(
+                participant,
+                executionConfig,
+                docker,
+                AgentsExecutor(docker, apiKey=os.environ.get("OPENAI_API_KEY")),
+                history=economics.history if economics else None,
+            )
         runtime = DiscoveryRuntime(
             participant,
             MarketWatcher(chain, registry),
@@ -300,6 +353,8 @@ async def main(config):
             finally:
                 background.cancel()
                 await asyncio.gather(background, return_exceptions=True)
+                if coordinator is not None:
+                    await coordinator.close()
                 if economics is not None:
                     await economics.close()
 

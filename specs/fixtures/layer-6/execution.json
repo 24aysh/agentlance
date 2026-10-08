@@ -1,0 +1,124 @@
+{
+  "version": "execution-v1",
+  "operator": "0x00000000000000000000000000000000000000c8",
+  "capacity": 2,
+  "runtime": {
+    "version": "deterministic-fixture-v1",
+    "provider": "fixture",
+    "model": "integer-copy-v1",
+    "configDigest": "0xdd5561d3e2edb3ed5914871b86974818d734f4d7016cc2f7063519b498f2b16f",
+    "taskFamily": "structured-output-v1",
+    "outputSchemaDigest": "0x1dd4190640c35e054eda21970d8ba39e369c5f0472af205d1e3b5db687779e4c",
+    "validationPolicyDigest": "0x1dc6a0fc6b3b0b169cbd2109ac43c3b146623b5d9cc351979522b4a2062469dd",
+    "resources": [
+      {
+        "resource": "transform",
+        "quantityUnit": "invocation"
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "normal",
+        "description": "Synthetic bound of eight metered execution invocations",
+        "usage": [
+          {
+            "resource": "transform",
+            "quantityUnit": "invocation",
+            "quantity": {
+              "numerator": "8",
+              "denominator": "1"
+            }
+          }
+        ]
+      },
+      {
+        "id": "other",
+        "description": "Any other outcome, including abort or failure",
+        "usage": null
+      }
+    ],
+    "envelope": {
+      "usage": [
+        {
+          "resource": "transform",
+          "quantityUnit": "invocation",
+          "quantity": {
+            "numerator": "8",
+            "denominator": "1"
+          }
+        }
+      ],
+      "justification": "SYNTHETIC: metered calls, including planning, fallback and synthesis."
+    },
+    "maxHistoryAgeSeconds": 86400,
+    "ttlSeconds": 60,
+    "scenarioVersion": "fixture-joint-v1"
+  },
+  "pricing": {
+    "version": "synthetic-price-v1",
+    "provider": "fixture",
+    "model": "integer-copy-v1",
+    "effectiveAt": "0",
+    "expiresAt": "9223372036854775808",
+    "source": "SYNTHETIC fixture price; not a live quotation",
+    "rates": [
+      {
+        "resource": "transform",
+        "quantityUnit": "invocation",
+        "rate": {
+          "numerator": "10",
+          "denominator": "1"
+        },
+        "unit": {
+          "currency": "MON",
+          "decimals": 18
+        }
+      }
+    ],
+    "fixedFees": [],
+    "conversions": []
+  },
+  "executor": {
+    "kind": "DETERMINISTIC",
+    "image": "sha256:35a232c70c2444e7d6d0f053d24e8c4c7752e57b9ab55da4b1a1f9a3fbcdd9e8",
+    "model": "integer-copy-v1",
+    "promptVersion": "structured-copy-v1"
+  },
+  "limits": {
+    "wallSeconds": 3600,
+    "requestSeconds": 10,
+    "cpuMillis": 500,
+    "memoryBytes": 67108864,
+    "pids": 32,
+    "workspaceBytes": 1048576,
+    "outputBytes": 8192,
+    "logBytes": 8192,
+    "requestBytes": 8192,
+    "modelTurns": 3,
+    "modelCalls": 16,
+    "toolCalls": 8,
+    "maxSteps": 64,
+    "maxChargeAtoms": "1000000",
+    "callChargeAtoms": "20000",
+    "chargeSource": "SYNTHETIC offline resource charge ceiling, not a live quotation",
+    "validUntil": "9223372036854775808",
+    "maxRows": 10000,
+    "maxBytes": 16777216,
+    "readAttempts": 2,
+    "deliveryAttempts": 3,
+    "commitSeconds": 30,
+    "pollSeconds": 2
+  },
+  "delegation": {
+    "enabled": false,
+    "ownWorkReserveAtoms": "0",
+    "maxChildren": 0,
+    "depositAtoms": "2000000000000000000",
+    "gasAtoms": "2000000000000000000",
+    "childBudgetAtoms": "1000000000000000000",
+    "publishSeconds": 10,
+    "synthesisSeconds": 120,
+    "fallback": true,
+    "templates": []
+  }
+}

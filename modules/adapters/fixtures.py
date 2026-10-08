@@ -490,6 +490,14 @@ class FixtureClient:
         ensure(command["command"] == "submitResult", "Command kind")
         return await self.write(command, operationId)
 
+    async def allocateTask(self, command, operationId):
+        ensure(command["command"] == "allocateTask", "Command kind")
+        return await self.write(command, operationId)
+
+    async def expireTask(self, command, operationId):
+        ensure(command["command"] == "expireTask", "Command kind")
+        return await self.write(command, operationId)
+
     async def readOperation(self, operationId):
         value = await self.request("GET", "/fixture/operations/" + operationId, write=True)
         return self.checkOperation(value, operationId)

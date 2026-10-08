@@ -31,6 +31,7 @@ class Participant:
         self.content, self.journal, self.schema = content, journal, schema
         self.execute, self.checkInput, self.supportedDigests = execute, checkInput, supportedDigests
         self.lock = asyncio.Lock()
+        self.coordinator = None
 
     async def supportTask(self, task):
         terms = task["terms"]
@@ -73,6 +74,8 @@ class Participant:
                 "submitResult": self.market.commitResult,
                 "createChildTask": self.market.publishChild,
             }
+            if command["command"] in {"allocateTask", "expireTask"}:
+                methods[command["command"]] = getattr(self.market, command["command"])
             method = methods[command["command"]]
             if command["command"] == "createChildTask":
                 result = await method(command, valueAtoms, intent["operationId"])
@@ -128,6 +131,8 @@ class Participant:
                 "profileDigest": resolved.profile["agentCard"]["digest"],
             }
             permit = offer | {"owner": resolved.registry["owner"], "nonce": nonce, "expiry": expiry}
+            if self.coordinator is not None:
+                await self.coordinator.reserveBid(view["task"], bidAtoms)
             signature = signPermit(permit)
             command = makeCommand("submitBid", offer=offer, permit=permit, signature=signature)
             recordCheck(command, "Command", self.schema)
@@ -184,6 +189,8 @@ class Participant:
             terms["acceptBy" if view["status"] == "AWARDED" else "resultBy"]
         ):
             raise ProfileError("PROFILE_EXPIRED", view["status"], view["receipt"])
+        if self.coordinator is not None:
+            self.coordinator.admit(view)
         return self.journal.remember(message, extension)
 
     async def observeOwnAward(self, ref):
@@ -252,6 +259,9 @@ class Participant:
         card = self.journal.readContent(view["winningBid"]["offer"]["profileDigest"])
         selectInterface(strictJson(card))
         raw = await self.supportTask(view["task"])
+        if self.coordinator is not None:
+            reserve = self.coordinator.admit(view)
+            row = self.journal.update(ref, ownWorkReserveAtoms=reserve)
         if view["status"] == "AWARDED":
             self.journal.update(ref, phase="ACCEPT_PENDING")
             result = await self.submitIntent(
@@ -278,6 +288,9 @@ class Participant:
             or int(fresh["stamp"]["blockTimestamp"]) >= int(terms["resultBy"])
         ):
             return
+        if self.coordinator is not None:
+            self.coordinator.startExecution(ref, raw)
+            return
         self.journal.update(ref, phase="READY")
         if self.journal.claim(ref):
             try:
@@ -290,5 +303,8 @@ class Participant:
                 )
 
     async def tick(self):
+        # Saved results must progress even if local execution analytics have backpressure.
         for row in self.journal.rows():
             await self.advance(row["extension"]["executionRef"])
+        if self.coordinator is not None:
+            await self.coordinator.tick()
