@@ -35,7 +35,10 @@ def checkMappings(data, pytestReport, forgeReport):
             fullName = suiteName.rsplit(":", 1)[-1] + "." + name
             if result["status"] != "Success":
                 raise ValueError(f"Unpassed required L3 Forge case: {fullName}")
-            forgeIds.append(fullName)
+            # The L7 gate owns this separate contract's requirement mapping. Failures
+            # still fail this inherited run; all original L3 mappings remain mandatory.
+            if suiteName.rsplit(":", 1)[-1] != "FeedbackPublisherTest":
+                forgeIds.append(fullName)
     if not pytestIds or not forgeIds:
         raise ValueError("Empty L3 acceptance report")
     for names in (pytestIds, forgeIds):

@@ -16,6 +16,7 @@ class MonadRegistry:
     def __init__(self, chain, abi, verification):
         self.chain, self.rpc, self.schema = chain, chain.rpc, chain.schema
         self.verification = verification
+        self.feedback = None
         ensure(
             verification["sourceRevision"] == REFERENCE_REVISION,
             "Unsupported registry revision",
@@ -87,6 +88,8 @@ class MonadRegistry:
             )
             ensure(raw == item["value"], "Registry implementation/admin changed", "UNAVAILABLE")
         await self.chain.checkCanonical(stamp)
+        if self.feedback is not None:
+            await self.feedback.verifyDependencies(stamp)
 
     async def readIdentity(self, agentRef):
         recordCheck(agentRef, "AgentRef", self.schema)

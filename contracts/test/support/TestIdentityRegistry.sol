@@ -34,6 +34,11 @@ contract TestIdentityRegistry {
         return owners[agentId];
     }
 
+    function isAuthorizedOrOwner(address spender, uint256 agentId) external view returns (bool) {
+        require(!unavailable && owners[agentId] != address(0));
+        return owners[agentId] == spender;
+    }
+
     function getAgentWallet(uint256 agentId) external view returns (address) {
         require(!unavailable && owners[agentId] != address(0));
         return wallets[agentId];
