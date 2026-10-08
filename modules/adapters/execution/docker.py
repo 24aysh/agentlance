@@ -122,6 +122,11 @@ class DockerExecutor:
             "--workdir=/scratch",
             profile["executor"]["image"],
         ]
+        if "cpuSeconds" in limits:
+            ensure(
+                type(limits["cpuSeconds"]) is int and 1 <= limits["cpuSeconds"] <= 5, "CPU budget"
+            )
+            args[-1:-1] = ["--ulimit=cpu={0}:{0}".format(limits["cpuSeconds"])]
         code, _, diagnostic = await command(args)
         ensure(
             code == 0,
