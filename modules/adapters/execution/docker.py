@@ -27,8 +27,11 @@ async def command(args, *, raw=None, timeout=10, maximum=65536):
 
     async def send():
         try:
-            process.stdin.write(raw or b"")
-            await process.stdin.drain()
+            # Read-only CLI commands may exit without reading stdin. Draining an
+            # empty write races their exit and can raise ConnectionResetError.
+            if raw:
+                process.stdin.write(raw)
+                await process.stdin.drain()
         finally:
             process.stdin.close()
 
