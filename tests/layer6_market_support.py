@@ -98,7 +98,7 @@ def settleFixture(env, task, view, verdict="PASS"):
     env.command("settleVerdict", {"record": record})
 
 
-async def runDelegation(rpc, directory, failure=None, validatorFactory=None):
+async def runDelegation(rpc, directory, failure=None, validatorFactory=None, requester=None):
     env = Layer4Rig(rpc, directory)
     worker = DiscoveredWorker(env)
     public = directory / "public"
@@ -250,13 +250,22 @@ async def runDelegation(rpc, directory, failure=None, validatorFactory=None):
                     "preference": preference,
                 }
                 processes.append(await WorkerProcess().open(workerConfig, directory, agentId))
-        task = worker.create(budget=5 * 10**18, denominator=10**21, delegation=True)
+        task = (
+            await requester.create(
+                env, worker, budget=5 * 10**18, denominator=10**21, delegation=True
+            )
+            if requester
+            else worker.create(budget=5 * 10**18, denominator=10**21, delegation=True)
+        )
         await worker.runtime.tick()
         await drainEconomics(economics)
         for intent in env.journal.nativeOperations():
             await env.applied(await env.market.readOperation(intent["operationId"]))
         env.rig.advance(int(task["terms"]["biddingClose"]))
-        env.command("allocateTask", {"taskRef": task["taskRef"]})
+        if requester:
+            await requester.allocate(env, task)
+        else:
+            env.command("allocateTask", {"taskRef": task["taskRef"]})
         ref = {"taskRef": task["taskRef"], "awardId": 1}
         for _ in range(12):
             env.rig.advance(env.rig.now() + 2)
@@ -397,7 +406,9 @@ async def runDelegation(rpc, directory, failure=None, validatorFactory=None):
             validation = await validator.settle(task)
             await worker.runtime.tick()
             reconciliation = worker.runtime.reconciler.readReconciliation(ref)
+        application = await requester.inspect(env, task, validator) if requester else None
         return {
+            "application": application,
             "validation": validation,
             "reconciliation": reconciliation,
             "reconciliationVersions": [
