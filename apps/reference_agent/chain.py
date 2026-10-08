@@ -83,7 +83,7 @@ class DiscoveryRuntime:
         except AdapterError as error:
             if error.kind == "FINALITY_CONFLICT":
                 raise
-            LOG.warning("Registry observation unavailable: %s", error.kind)
+            LOG.warning("event=registry_observation_paused error_kind=%s", error.kind)
         active = sum(
             row["phase"] not in {"RESULT_RECORDED", "STOPPED", "INTERRUPTED"}
             for row in self.participant.journal.rows()
@@ -364,12 +364,13 @@ async def main(config):
                 try:
                     await runtime.tick()
                 except AdapterError as error:
-                    LOG.warning("Observation paused: %s", error.kind)
+                    LOG.warning("event=agent_observation_paused error_kind=%s", error.kind)
                     if error.kind in {"FINALITY_CONFLICT", "INVALID_DATA"}:
                         failures.append(error)
                         server.should_exit = True
                         return
                 except Exception as error:
+                    LOG.error("event=agent_observation_halted error_type=%s", type(error).__name__)
                     failures.append(error)
                     server.should_exit = True
                     return
@@ -400,6 +401,16 @@ async def main(config):
                 timeout_graceful_shutdown=1,
             )
         )
+        LOG.info(
+            "event=agent_starting chain_id=%s market=%s agent_id=%s sender=%s "
+            "economics=%s execution=%s",
+            facts["chainId"],
+            facts["market"],
+            config["agentRef"]["agentId"],
+            account.address.lower(),
+            economics is not None,
+            coordinator is not None,
+        )
         await server.serve()
         if failures:
             raise RuntimeError("Chain observation halted") from failures[0]
@@ -407,3 +418,4 @@ async def main(config):
         await http.aclose()
         await transport.close()
         journal.close()
+        LOG.info("event=agent_stopped")

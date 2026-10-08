@@ -11,6 +11,7 @@ from eth_account import Account
 from eth_account.messages import encode_typed_data
 
 from apps.reference_agent.worker import checkFixtureInput, executeFixture
+from apps.runtime_logging import configureLogging
 from modules.adapters.a2a.profile import strictJson
 from modules.adapters.a2a.server import agentApp
 from modules.adapters.fixtures import FixtureClient, controlLoop
@@ -152,6 +153,7 @@ if __name__ == "__main__":
     if args.mode == "monad":
         from apps.reference_agent.chain import main as chainMain
 
+        configureLogging()
         asyncio.run(chainMain(strictJson(Path(args.config).read_bytes())))
     else:
         asyncio.run(main(strictJson(Path(args.config).read_bytes())))
