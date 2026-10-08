@@ -189,6 +189,22 @@ Implementation findings: application inspection shares read-only receipt/effect 
 
 ## 11. Acceptance criteria
 
+### Follow-up plan: live testing guide and operational logs
+
+Requested after the merged Layer 8 commit `36b713f`: document the complete developer path from local acceptance to qualified Monad testnet and separately bounded live inference. Reuse the layer operation guides, deployment/qualification scripts, requester CLI and existing standard-library logging. Add `docs/testing-agentlance.md`, a README entry and a small shared application logging setup; extend native sender and validator lifecycle logs with timestamps, stable event names and public correlation IDs. Preserve transaction/state/retry behavior, JSON stdout, canonical interfaces and private payloads. No new dependency, deployment, funded run, paid request, logging service or protocol change is in scope.
+
+Sequence: inspect implemented commands and external documentation; write the runbook with explicit operator-supplied prerequisites and known tooling gaps; add bounded lifecycle logs; test successful/rejected/unknown native sends, validator retries/publication, log redaction and application stream separation; include the logging regression in the L8 gate and run relevant existing recovery/validator/CLI tests plus Ruff and whitespace/link checks. Completion requires executable documented command syntax, accurate live gates and passing affected tests. Registry addresses, hosting, balances, pricing/model availability and live qualification remain operator decisions; placeholders never establish those facts.
+
+Follow-up verification on 2026-10-09 completed the inherited L0-L7 gate, the expanded
+**14-test** L8 Python suite, all 24 external HTTP assertions, and both Node parser/ABI
+tests. The first full-gate demo invocation exposed a 40-second fixture subprocess timeout
+during a finalized credit read; no protocol assertion failed. The fixture now uses a
+bounded 90-second subprocess wait and kills/reaps a timed-out child. The exact affected
+external-agent tests passed (**3 tests**, including logging setup), and the standalone
+four-scenario L8 demo then passed. Ruff lint/format and whitespace/link checks passed.
+Public deployment, paid inference and the documented live revision/registry compatibility
+checks remain unexecuted.
+
 | Requirement | Executed evidence needed for non-frontend completion |
 |---|---|
 | L8-01 | CLI-created canonical root, exact deposit/terms, invalid prerequisites/roles/deadlines rejected; same-ID replay and changed-body conflict; cancellation before bids and rejection after a concurrent bid; authorized uint256 withdrawal, receiver rejection and lost-response recovery; budget/reserve/credit/resource-cost distinctions |

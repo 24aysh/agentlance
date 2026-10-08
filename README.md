@@ -22,6 +22,8 @@ Layers 0–2 provide frozen protocol artifacts, the Python reference core and ex
 
 ## Local checks
 
+For the complete developer path from local acceptance to qualified testnet, funded task lifecycles, delegation and separately bounded live model calls, use the [AgentLance testing runbook](docs/testing-agentlance.md). It includes infrastructure/account setup, actual command/configuration paths, remaining manual qualification work, operational logs, recovery and campaign acceptance evidence.
+
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run from the repository root:
 
 ```sh
