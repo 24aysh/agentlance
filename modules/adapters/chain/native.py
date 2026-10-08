@@ -1,6 +1,7 @@
 """Existing MarketPort over finalized contract reads and durable native intents."""
 
 import asyncio
+import logging
 import time
 from copy import deepcopy
 
@@ -9,6 +10,8 @@ from eth_utils import to_checksum_address
 from modules.adapters.chain.rpc import RpcError, quantity
 from modules.agent_client.ports import AdapterError, ensure
 from modules.agent_client.signing import contentDigest
+
+LOG = logging.getLogger(__name__)
 
 
 def operationResult(operationId, state="UNKNOWN", error=None, events=(), stamp=None):
@@ -60,6 +63,7 @@ class NativeSender:
     async def submit(self, destination, body, operationId):
         ensure(isinstance(operationId, str) and 0 < len(operationId) <= 128, "Operation ID")
         ensure(self.account is not None, "No configured signer", "UNAVAILABLE")
+        commandName = body["command"]["command"] if "command" in body else "publishFeedback"
         async with self.lock:
             op = self.journal.nativeOperation(operationId)
             if op:
@@ -106,6 +110,12 @@ class NativeSender:
                 if code:
                     op["result"] = operationResult(operationId, "REJECTED", code, stamp=stamp)
                     self.journal.saveNative(op)
+                    LOG.warning(
+                        "event=native_rejected operation_id=%s command=%s error_code=%s",
+                        operationId,
+                        commandName,
+                        code,
+                    )
                     return op["result"]
                 raise
             await self.chain.checkCanonical(stamp)
@@ -154,6 +164,13 @@ class NativeSender:
                 transactionHash="0x" + bytes(signed.hash).hex(),
             )
             self.journal.saveNative(op)
+            LOG.info(
+                "event=native_prepared operation_id=%s command=%s tx_hash=%s nonce=%s",
+                operationId,
+                commandName,
+                op["transactionHash"],
+                nonce,
+            )
             return await self.reconcile(op)
 
     async def readOperation(self, operationId):
@@ -218,6 +235,12 @@ class NativeSender:
             op["attempts"] += 1
             op["lastAttempt"] = now
             self.journal.saveNative(op)
+            LOG.info(
+                "event=native_broadcast operation_id=%s tx_hash=%s attempt=%s",
+                op["operationId"],
+                txHash,
+                op["attempts"],
+            )
             try:
                 actual = await self.rpc.call("eth_sendRawTransaction", op["raw"])
                 ensure(actual.lower() == txHash, "Broadcast returned wrong hash")
@@ -225,6 +248,13 @@ class NativeSender:
             except AdapterError as error:
                 if error.kind != "UNAVAILABLE":
                     raise
+                LOG.warning(
+                    "event=native_send_unknown operation_id=%s tx_hash=%s attempt=%s error_kind=%s",
+                    op["operationId"],
+                    txHash,
+                    op["attempts"],
+                    error.kind,
+                )
         return operationResult(op["operationId"])
 
     async def verifyReceipt(self, op, stamp):
@@ -261,6 +291,20 @@ class NativeSender:
             op["diagnostic"] = "Finalized failed transaction; revert bytes unavailable"
             op["result"] = operationResult(op["operationId"], stamp=stamp)
             self.journal.saveNative(op)
+            LOG.warning(
+                "event=native_finalized_reverted operation_id=%s tx_hash=%s block=%s",
+                op["operationId"],
+                op["transactionHash"],
+                stamp["blockNumber"],
+            )
             raise AdapterError("INVALID_DATA", op["diagnostic"])
         ensure(quantity(receipt["status"]) == 1, "Unknown receipt status")
-        return await self.destination(op).finishNative(op, stamp)
+        result = await self.destination(op).finishNative(op, stamp)
+        LOG.info(
+            "event=native_finalized operation_id=%s tx_hash=%s block=%s state=%s",
+            op["operationId"],
+            op["transactionHash"],
+            stamp["blockNumber"],
+            result["state"],
+        )
+        return result

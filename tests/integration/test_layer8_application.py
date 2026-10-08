@@ -271,7 +271,9 @@ def testRequesterValidationAndAuctionPagination(tmp_path):
         asyncio.run(run(rpc))
 
 
-def testRequesterLostSendAndWithdrawalBoundaries(tmp_path):
+def testRequesterLostSendAndWithdrawalBoundaries(tmp_path, caplog):
+    caplog.set_level("INFO", logger="modules.adapters.chain.native")
+
     async def run(rpc):
         env = Layer4Rig(rpc, tmp_path)
         receiver = env.rig.deploy("RevertingReceiver", sourceName="HostileActors")
@@ -284,7 +286,7 @@ def testRequesterLostSendAndWithdrawalBoundaries(tmp_path):
             async def loseSend(method, *args):
                 value = await original(method, *args)
                 if method == "eth_sendRawTransaction":
-                    raise AdapterError("UNAVAILABLE", "Injected lost response after broadcast")
+                    raise AdapterError("UNAVAILABLE", "PRIVATE_RPC_SECRET after broadcast")
                 return value
 
             env.transport.call = loseSend
@@ -331,6 +333,20 @@ def testRequesterLostSendAndWithdrawalBoundaries(tmp_path):
             assert (await inspector.readCredit(env.rig.actors["requester"]))["data"]["credit"][
                 "amountAtoms"
             ] == "0"
+            messages = "\n".join(
+                r.getMessage() for r in caplog.records if r.name == "modules.adapters.chain.native"
+            )
+            for event in (
+                "native_prepared",
+                "native_send_unknown",
+                "native_rejected",
+                "native_finalized",
+            ):
+                assert "event=" + event in messages
+            assert recovered["transactionHash"] in messages and "PRIVATE_RPC_SECRET" not in messages
+            for operation in app.journal.nativeOperations():
+                if operation["raw"]:
+                    assert operation["raw"] not in messages
         finally:
             app.journal.close()
             await worker.http.aclose()
