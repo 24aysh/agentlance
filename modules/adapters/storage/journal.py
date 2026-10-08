@@ -44,7 +44,7 @@ class Journal:
             self.db.execute("PRAGMA synchronous=FULL")
             self.db.execute("PRAGMA foreign_keys=ON")
             version = self.db.execute("PRAGMA user_version").fetchone()[0]
-            ensure(version in (0, 1, 2, 3), "Unknown journal version")
+            ensure(version in (0, 1, 2, 3, 4), "Unknown journal version")
             self.db.executescript("""
                 CREATE TABLE IF NOT EXISTS settings (
                     id INTEGER PRIMARY KEY CHECK(id=1), body BLOB NOT NULL);
@@ -92,7 +92,10 @@ class Journal:
                     key TEXT PRIMARY KEY, body BLOB NOT NULL);
                 CREATE TABLE IF NOT EXISTS economic_meta (
                     key TEXT PRIMARY KEY, body BLOB NOT NULL);
-                PRAGMA user_version=3;
+                CREATE TABLE IF NOT EXISTS execution_records (
+                    kind TEXT NOT NULL, key TEXT NOT NULL, body BLOB NOT NULL,
+                    PRIMARY KEY(kind,key));
+                PRAGMA user_version=4;
             """)
             with self.db:
                 old = self.db.execute("SELECT body FROM settings WHERE id=1").fetchone()
@@ -105,7 +108,13 @@ class Journal:
                 else:
                     self.db.execute("INSERT INTO settings VALUES (1,?)", (jsonBytes(settings),))
             for row in self.rows():
-                if row["phase"] == "STARTED":
+                if (
+                    row["phase"] == "STARTED"
+                    and not self.db.execute(
+                        "SELECT 1 FROM execution_records WHERE kind='run' AND key=?",
+                        (executionKey(row["extension"]["executionRef"]),),
+                    ).fetchone()
+                ):
                     self.update(
                         row["extension"]["executionRef"],
                         phase="INTERRUPTED",
