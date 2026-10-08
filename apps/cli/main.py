@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from apps.reference_agent.chain import readKeystore
+from apps.runtime_logging import configureLogging
 from modules.adapters.a2a.profile import jsonBytes, strictJson
 from modules.adapters.chain.codec import WireCodec
 from modules.adapters.chain.market import MonadMarket
@@ -301,6 +302,7 @@ async def run(args):
 
 
 def main():
+    configureLogging()
     try:
         args = arguments()
         result = asyncio.run(run(args))
