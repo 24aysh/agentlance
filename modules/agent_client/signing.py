@@ -94,3 +94,33 @@ async def verifyBidPermit(
         permit["owner"], typedDigest(typed), signature, registrySnapshot["stamp"], gasLimit=50000
     )
     return verifyContractReturn(result)
+
+
+def buildValidationVerdictTypedData(record, configuredDomain, types):
+    ref, agent = record["executionRef"]["taskRef"], record["agentRef"]
+    ensure(
+        ref["chainId"] == agent["chainId"] == str(configuredDomain["chainId"])
+        and ref["market"] == configuredDomain["verifyingContract"]
+        and configuredDomain["name"] == "AgentLance"
+        and configuredDomain["version"] == "1",
+        "Verdict domain",
+    )
+    ensure(record["verdict"] in {"FAIL", "PASS"}, "Verdict enum")
+    fields = {
+        k: record[k]
+        for k in ("resultDigest", "validationPolicyDigest", "validator", "nonce", "expiry")
+    }
+    fields.update(
+        taskId=ref["taskId"],
+        identityRegistry=agent["identityRegistry"],
+        agentId=agent["agentId"],
+        awardId=record["executionRef"]["awardId"],
+        verdict={"FAIL": 0, "PASS": 1}[record["verdict"]],
+        evidenceDigest=record["evidence"]["digest"],
+    )
+    return {
+        "types": {name: deepcopy(types[name]) for name in ("EIP712Domain", "ValidationVerdict")},
+        "primaryType": "ValidationVerdict",
+        "domain": deepcopy(configuredDomain),
+        "message": fields,
+    }
