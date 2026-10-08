@@ -58,3 +58,10 @@ check-l7:
 
 demo-l7:
 	uv run --locked python scripts/demo_layer7.py
+
+.PHONY: check-l8 demo-l8
+check-l8:
+	uv run --locked python scripts/check_layer8.py
+
+demo-l8:
+	uv run --locked python scripts/demo_layer8.py
