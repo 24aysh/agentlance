@@ -8,6 +8,7 @@ import sqlite3
 from pathlib import Path
 
 from apps.reference_agent.chain import readKeystore
+from apps.runtime_logging import configureLogging
 from modules.adapters.a2a.profile import jsonBytes, strictJson
 from modules.adapters.chain.codec import WireCodec
 from modules.adapters.chain.market import MonadMarket
@@ -148,13 +149,20 @@ async def run(config, retry=None):
             )
             return
         await docker.preflight(runtime.profile)
+        LOG.info(
+            "event=validator_started chain_id=%s market=%s sender=%s concurrency=%s",
+            facts["chainId"],
+            facts["market"],
+            market.signer,
+            config["concurrency"],
+        )
         while True:
             try:
                 await runtime.tick()
             except AdapterError as error:
                 if error.kind in {"FINALITY_CONFLICT", "INVALID_DATA", "CONFLICT"}:
                     raise
-                LOG.warning("Validator observation paused: %s", error.kind)
+                LOG.warning("event=validator_observation_paused error_kind=%s", error.kind)
             await asyncio.sleep(2)
     finally:
         if runtime:
@@ -164,6 +172,7 @@ async def run(config, retry=None):
         await http.aclose()
         await rpc.close()
         journal.close()
+        LOG.info("event=validator_stopped")
 
 
 def inspect(config, taskId=None, digest=None):
@@ -215,7 +224,7 @@ def main():
 
         sys.stdout.buffer.write(inspect(config, args.outcome, args.content))
     else:
-        logging.basicConfig(level=logging.INFO)
+        configureLogging()
         retry = (
             ("export", args.retry_export)
             if args.retry_export
