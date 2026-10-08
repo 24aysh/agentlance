@@ -126,8 +126,8 @@ class MonadMarket:
         recordCheck(executionRef, "ExecutionRef", self.schema)
         return await self.readTask(executionRef["taskRef"])
 
-    async def readOptional(self, name, kind, refs):
-        stamp = await self.chain.qualify()
+    async def readOptional(self, name, kind, refs, stamp=None):
+        stamp = stamp or await self.chain.qualify()
         values = [self.checkRef(ref, refKind) for ref, refKind in refs]
         try:
             wire = (await self.chain.read(name, values, stamp))[0]
@@ -146,10 +146,25 @@ class MonadMarket:
                 ensure(result["offer"]["agentRef"] == refs[1][0], "Bid identity binding")
         return {"bid" if kind == "Bid" else "receipt": result, "stamp": stamp}
 
-    async def readBid(self, taskRef, agentRef):
+    async def readBid(self, taskRef, agentRef, stamp=None):
         return await self.readOptional(
-            "readBid", "Bid", [(taskRef, "TaskRef"), (agentRef, "AgentRef")]
+            "readBid", "Bid", [(taskRef, "TaskRef"), (agentRef, "AgentRef")], stamp
         )
+
+    async def readCredit(self, owner, stamp=None):
+        recordCheck(owner, "Address", self.schema)
+        stamp = stamp or await self.chain.qualify()
+        amount = (await self.chain.read("readCredit", [owner], stamp))[0]
+        return {"owner": owner, "amountAtoms": str(amount), "stamp": stamp}
+
+    async def createTask(self, command, valueAtoms, operationId):
+        return await self.submit(command, operationId, "createTask", valueAtoms)
+
+    async def cancelTask(self, command, operationId):
+        return await self.submit(command, operationId, "cancelTask")
+
+    async def withdrawCredit(self, command, operationId):
+        return await self.submit(command, operationId, "withdrawCredit")
 
     async def readSettlement(self, taskRef):
         return await self.readOptional(
@@ -201,6 +216,24 @@ class MonadMarket:
         command, valueAtoms = body["command"], body["valueAtoms"]
         name, op = command["command"], {}
         data = command["input"]
+        if name in {"createTask", "withdrawCredit"}:
+            deadline = data["terms"]["biddingClose"] if name == "createTask" else None
+            ensure(
+                valueAtoms == (data["terms"]["budgetAtoms"] if name == "createTask" else "0"),
+                "Native funding mismatch",
+            )
+            ensure(
+                deadline is None or int(stamp["blockTimestamp"]) < int(deadline),
+                "Action expired",
+                "CONFLICT",
+            )
+            return {
+                "from": self.signer,
+                "to": self.chain.facts["market"],
+                "data": self.nativeData(body),
+                "value": hex(int(valueAtoms)),
+                "gas": hex(self.maxGas),
+            }, deadline
         ref = (
             data["offer"]["taskRef"]
             if name == "submitBid"
@@ -234,6 +267,7 @@ class MonadMarket:
                 "createChildTask": "resultBy",
                 "allocateTask": "allocationBy",
                 "settleVerdict": "validationBy",
+                "cancelTask": "biddingClose",
             }[name]
             op["deadline"] = terms[deadlineName]
             if name == "allocateTask":
@@ -256,6 +290,14 @@ class MonadMarket:
         }, op["deadline"]
 
     async def finishNative(self, op, stamp):
+        result = await self.verifyNative(op, stamp)
+        self.journal.observe(stamp)
+        op["result"] = result
+        self.journal.saveNative(op)
+        return deepcopy(result)
+
+    async def verifyNative(self, op, stamp):
+        """Verify command-specific effects without changing the operation journal."""
         receipt, expected = op["receipt"], op["transaction"]
         events = [
             self.codec.event(log)
@@ -263,7 +305,16 @@ class MonadMarket:
             if log["address"].lower() == expected["to"]
         ]
         commandName = op["command"]["command"]
-        if commandName in {"allocateTask", "expireTask", "settleVerdict"}:
+        if commandName == "withdrawCredit":
+            data = op["command"]["input"]
+            ensure(
+                len(events) == 1 and events[0]["name"] == "CreditWithdrawn",
+                "Withdrawal event mismatch",
+            )
+            ensure(events[0]["payload"] == {"owner": op["signer"], **data}, "Withdrawal binding")
+            await self.readCredit(op["signer"], stamp)
+            return operationResult(op["operationId"], "APPLIED", events=events, stamp=stamp)
+        if commandName in {"allocateTask", "expireTask", "settleVerdict", "cancelTask"}:
             data = op["command"]["input"]
             ref = (
                 data["record"]["executionRef"]["taskRef"]
@@ -273,7 +324,7 @@ class MonadMarket:
             names = [event["name"] for event in events]
             allowed = (
                 [["TaskSettled"]]
-                if commandName in {"expireTask", "settleVerdict"}
+                if commandName in {"expireTask", "settleVerdict", "cancelTask"}
                 else [["TaskAwarded"], ["TaskSettled"]]
             )
             ensure(names in allowed, "Progress event mismatch")
@@ -286,15 +337,21 @@ class MonadMarket:
                     events[0]["payload"]["receipt"]["validation"] == data["record"],
                     "Verdict event binding",
                 )
-            await self.readTaskAt(ref, stamp)
-            self.journal.observe(stamp)
-            op["result"] = operationResult(op["operationId"], "APPLIED", events=events, stamp=stamp)
-            self.journal.saveNative(op)
-            return deepcopy(op["result"])
+            if commandName == "cancelTask":
+                ensure(
+                    events[0]["payload"]["receipt"]["reason"] == "CANCELLED", "Cancellation binding"
+                )
+            view = await self.readTaskAt(ref, stamp)
+            if events[0]["name"] == "TaskSettled":
+                ensure(
+                    view["receipt"] == events[0]["payload"]["receipt"], "Canonical receipt binding"
+                )
+            return operationResult(op["operationId"], "APPLIED", events=events, stamp=stamp)
         expectedName = {
             "submitBid": "BidAccepted",
             "acceptAward": "AwardAccepted",
             "createChildTask": "TaskCreated",
+            "createTask": "TaskCreated",
             "submitResult": "ResultSubmitted",
         }[op["command"]["command"]]
         ensure(len(events) == 1 and events[0]["name"] == expectedName, "Command event mismatch")
@@ -305,19 +362,24 @@ class MonadMarket:
             ref = data["offer"]["taskRef"]
         elif expectedName == "TaskCreated":
             ensure(
-                payload["task"]["parentRef"] == data["parentRef"]
+                payload["task"]["parentRef"] == data.get("parentRef")
                 and payload["task"]["terms"] == data["terms"],
-                "Child event mismatch",
+                "Creation event mismatch",
             )
             ref = payload["task"]["taskRef"]
+            ensure(payload["task"]["requester"] == op["signer"], "Requester binding")
+            if commandName == "createTask":
+                ensure(
+                    payload["task"]["rootRef"] == ref and payload["task"]["depth"] == 0,
+                    "Root ancestry binding",
+                )
         else:
             record = payload if expectedName == "AwardAccepted" else payload["result"]
             ensure(record["executionRef"] == data["executionRef"], "Execution event mismatch")
             field = "ownWorkReserveAtoms" if expectedName == "AwardAccepted" else "artifact"
             ensure(record[field] == data[field], "Committed payload mismatch")
             ref = data["executionRef"]["taskRef"]
-        await self.readTaskAt(ref, stamp)
-        self.journal.observe(stamp)
-        op["result"] = operationResult(op["operationId"], "APPLIED", events=events, stamp=stamp)
-        self.journal.saveNative(op)
-        return deepcopy(op["result"])
+        view = await self.readTaskAt(ref, stamp)
+        if expectedName == "TaskCreated":
+            ensure(view["task"] == payload["task"], "Canonical creation binding")
+        return operationResult(op["operationId"], "APPLIED", events=events, stamp=stamp)

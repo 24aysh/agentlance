@@ -163,6 +163,31 @@ def evidenceBinding(task, result):
     }
 
 
+def validatePrerequisites(terms, inputBytes, shapeBytes, policyBytes):
+    for name, raw, maximum in zip(
+        ("input", "outputSchema", "validationPolicy"),
+        (inputBytes, shapeBytes, policyBytes),
+        (1048576, 65536, 65536),
+        strict=True,
+    ):
+        require(type(raw) is bytes and len(raw) <= maximum, "TRANSPORT_LIMIT")
+        require(digestBytes(raw) == terms[name]["digest"], "CONTENT_DIGEST")
+    inputValue, shape, policy = map(parseArtifact, (inputBytes, shapeBytes, policyBytes))
+    checkStructure(inputValue)
+    checkStructure(shape, 64)
+    checkStructure(policy)
+    validateRecord(shape, "OutputShape", SCHEMA)
+    validateRecord(policy, "ValidationPolicy", SCHEMA)
+    checkShape(shape)
+    require(policy["outputSchemaDigest"] == terms["outputSchema"]["digest"], "POLICY_BINDING")
+    for predicate in policy["predicates"]:
+        pointerTokens(predicate["outputPointer"])
+        if predicate["op"] == "equalsInput":
+            pointerTokens(predicate["inputPointer"])
+
+    return inputValue, shape, policy
+
+
 def evaluateArtifact(task, result, inputBytes, shapeBytes, policyBytes, resultBytes):
     """Return canonical evidence; invalid prerequisites raise, never return FAIL."""
     validateRecord(task, "TaskSpec", SCHEMA)
@@ -188,18 +213,9 @@ def evaluateArtifact(task, result, inputBytes, shapeBytes, policyBytes, resultBy
         and len(resultBytes) <= 2097152,
         "TRANSPORT_LIMIT",
     )
-    inputValue, shape, policy = map(parseArtifact, (inputBytes, shapeBytes, policyBytes))
-    checkStructure(inputValue)
-    checkStructure(shape, 64)
-    checkStructure(policy)
-    validateRecord(shape, "OutputShape", SCHEMA)
-    validateRecord(policy, "ValidationPolicy", SCHEMA)
-    checkShape(shape)
-    require(policy["outputSchemaDigest"] == binding["outputSchemaDigest"], "POLICY_BINDING")
-    for predicate in policy["predicates"]:
-        pointerTokens(predicate["outputPointer"])
-        if predicate["op"] == "equalsInput":
-            pointerTokens(predicate["inputPointer"])
+    inputValue, shape, policy = validatePrerequisites(
+        task["terms"], inputBytes, shapeBytes, policyBytes
+    )
 
     def finish(reason, index=None):
         return binding | {

@@ -227,7 +227,8 @@ class NativeSender:
                     raise
         return operationResult(op["operationId"])
 
-    async def finish(self, op, stamp):
+    async def verifyReceipt(self, op, stamp):
+        """Read-only binding check shared by recovery and application inspection."""
         receipt = op["receipt"]
         actual = await self.rpc.call("eth_getTransactionByHash", op["transactionHash"])
         ensure(isinstance(actual, dict), "Finalized transaction unavailable", "UNAVAILABLE")
@@ -250,6 +251,11 @@ class NativeSender:
             ),
             "Receipt log binding",
         )
+        ensure(quantity(receipt["status"]) in {0, 1}, "Unknown receipt status")
+
+    async def finish(self, op, stamp):
+        await self.verifyReceipt(op, stamp)
+        receipt = op["receipt"]
         if quantity(receipt["status"]) == 0:
             # Standard JSON-RPC receipts do not contain authenticated revert bytes.
             op["diagnostic"] = "Finalized failed transaction; revert bytes unavailable"
