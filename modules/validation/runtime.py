@@ -2,6 +2,7 @@
 
 import asyncio
 import base64
+import logging
 import time
 from copy import deepcopy
 from secrets import randbits
@@ -14,6 +15,8 @@ from modules.agent_client.signing import buildValidationVerdictTypedData, conten
 from modules.economics.records import recordDigest
 from modules.validation.evaluator import evidenceBinding, evidenceBytes
 from modules.validation.observer import OutcomeObserver
+
+LOG = logging.getLogger(__name__)
 
 
 def evaluatorProfile(image):
@@ -137,9 +140,19 @@ class ValidatorRuntime:
                 "retryGrants": 0,
             },
         )
+        LOG.info("event=validation_admitted task_id=%s job_id=%s", task["taskRef"]["taskId"], key)
 
     def saveJob(self, key, job, **changes):
-        return self.store.save("job", key, job | changes)
+        saved = self.store.save("job", key, job | changes)
+        if saved["stage"] != job["stage"]:
+            LOG.info(
+                "event=validation_stage task_id=%s job_id=%s previous=%s stage=%s",
+                job["view"]["task"]["taskRef"]["taskId"],
+                key,
+                job["stage"],
+                saved["stage"],
+            )
+        return saved
 
     def attempt(self, key, job, name):
         attempts = job["attempts"].copy()
@@ -320,6 +333,12 @@ class ValidatorRuntime:
                     job["operationId"],
                 )
         except (AdapterError, TimeoutError) as error:
+            LOG.warning(
+                "event=validation_attempt_failed task_id=%s job_id=%s error_kind=%s",
+                ref["taskId"],
+                key,
+                error.kind if isinstance(error, AdapterError) else "TIMEOUT",
+            )
             if isinstance(error, AdapterError) and error.kind == "FINALITY_CONFLICT":
                 raise
             current = self.store.get("job", key)
@@ -348,6 +367,12 @@ class ValidatorRuntime:
                     key,
                     job | {"state": "PUBLISHED", "publication": publication, "diagnostic": None},
                 )
+                LOG.info(
+                    "event=feedback_published task_id=%s operation_id=%s feedback_index=%s",
+                    job["taskRef"]["taskId"],
+                    job["operationId"],
+                    publication["feedbackIndex"],
+                )
                 return
             if job["attempts"] >= self.maxAttempts + job["retryGrants"]:
                 return
@@ -371,6 +396,13 @@ class ValidatorRuntime:
                 )
             await self.publisher.publish(job["taskRef"], job["operationId"])
         except AdapterError as error:
+            LOG.warning(
+                "event=feedback_attempt_failed task_id=%s operation_id=%s attempt=%s error_kind=%s",
+                job["taskRef"]["taskId"],
+                job["operationId"],
+                job["attempts"],
+                error.kind,
+            )
             if error.kind == "FINALITY_CONFLICT":
                 raise
             self.store.save(

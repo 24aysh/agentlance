@@ -10,7 +10,9 @@ from tests.layer7_support import ValidatorHarness, localKubo, submit
 
 
 @pytest.mark.parametrize("answer,reason", [(7, "SUCCESS"), (8, "VALIDATION_FAILED")])
-def testProductionValidatorKuboSettlementAndExport(tmp_path, answer, reason):
+def testProductionValidatorKuboSettlementAndExport(tmp_path, answer, reason, caplog):
+    caplog.set_level("INFO", logger="modules.validation.runtime")
+
     async def run(rpc, kubo):
         env = Layer4Rig(rpc, tmp_path)
         worker = DiscoveredWorker(env)
@@ -37,6 +39,13 @@ def testProductionValidatorKuboSettlementAndExport(tmp_path, answer, reason):
             assert (await validator.publisher.readPublication(task["taskRef"]))[
                 "feedbackIndex"
             ] == "1"
+            messages = "\n".join(
+                r.getMessage() for r in caplog.records if r.name == "modules.validation.runtime"
+            )
+            for event in ("validation_admitted", "validation_stage", "feedback_published"):
+                assert "event=" + event in messages
+            assert "task_id=" + task["taskRef"]["taskId"] in messages
+            assert original["signature"] not in messages and evidence["uri"] not in messages
         finally:
             await validator.close()
             await worker.http.aclose()
