@@ -50,6 +50,14 @@ class DiscoveryRuntime:
         if bidAtoms is not None:
             recordCheck(bidAtoms, "Uint96", watcher.schema)
         self.economics = economics
+        self.reconciler = None
+        if economics is not None:
+            from modules.adapters.storage.validation import ValidationStore
+            from modules.validation.reconciliation import Reconciler
+
+            self.reconciler = Reconciler(
+                economics.history, watcher, ValidationStore(participant.journal)
+            )
         self.participant, self.watcher, self.policy = participant, watcher, policy
         self.capacity, self.bidAtoms, self.signPermit = capacity, bidAtoms, signPermit
 
@@ -96,6 +104,14 @@ class DiscoveryRuntime:
         await self.participant.tick()
         if self.economics is not None:
             await self.economics.tick()
+            if self.reconciler is None:
+                from modules.adapters.storage.validation import ValidationStore
+                from modules.validation.reconciliation import Reconciler
+
+                self.reconciler = Reconciler(
+                    self.economics.history, self.watcher, ValidationStore(self.participant.journal)
+                )
+            await self.reconciler.tick()
 
 
 async def main(config):
@@ -219,6 +235,20 @@ async def main(config):
             registry,
             maxGas=config["maxGas"],
             maxGasPriceWei=int(config["maxGasPriceWei"]),
+        )
+        from modules.adapters.registry.feedback import FeedbackAdapter
+
+        feedbackEvidence = strictJson(rawEvidence)["feedbackVerification"]
+        ensure(
+            feedbackEvidence["reputationRegistry"] == facts["reputationRegistry"],
+            "Feedback manifest binding",
+        )
+        registry.feedback = FeedbackAdapter(
+            market,
+            facts["feedbackPublisher"],
+            strictJson((root / "specs/feedback-publisher.abi.json").read_bytes()),
+            strictJson((root / "specs/registry.reputation.abi.json").read_bytes()),
+            feedbackEvidence,
         )
         await registry.verifyDependencies(await chain.qualify())
         journal.storeContent(cardBytes)
