@@ -15,6 +15,9 @@ class ExternalTarget:
         self.config = {"agentOrigin": descriptor["agentOrigin"]}
         policy = NetworkPolicy(descriptor.get("fixtureOrigins", []))
         self.http = createHttpClient(policy, descriptor.get("caFile"))
+        # Each assertion owns an asyncio.run loop; do not retain a TLS connection
+        # for the fixture finalizer's different loop.
+        self.http.headers["Connection"] = "close"
         self.content = ContentStore(self.http, policy)
         self.schema = json.loads(Path("specs/schemas/protocol.schema.json").read_text())
 
