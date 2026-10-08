@@ -98,7 +98,7 @@ def settleFixture(env, task, view, verdict="PASS"):
     env.command("settleVerdict", {"record": record})
 
 
-async def runDelegation(rpc, directory, failure=None):
+async def runDelegation(rpc, directory, failure=None, validatorFactory=None):
     env = Layer4Rig(rpc, directory)
     worker = DiscoveredWorker(env)
     public = directory / "public"
@@ -160,6 +160,7 @@ async def runDelegation(rpc, directory, failure=None):
     coordinator.history = economics.history
     worker.runtime.economics = economics
     worker.runtime.bidAtoms = None
+    validator = await validatorFactory(env, public) if validatorFactory else None
     processes = []
     snapshots = []
     crashes = 0
@@ -311,7 +312,10 @@ async def runDelegation(rpc, directory, failure=None):
                     break
             assert all(v["status"] == "SUBMITTED" for v in views), views
             for child, view in zip(children, views, strict=True):
-                settleFixture(env, child, view)
+                if validator:
+                    await validator.settle(child)
+                else:
+                    settleFixture(env, child, view)
         elif failure in {"failed", "validator-timeout", "unavailable", "parent-failure"}:
             for child in children:
                 childRef = {"taskRef": child["taskRef"], "awardId": 1}
@@ -348,6 +352,8 @@ async def runDelegation(rpc, directory, failure=None):
             elif failure == "parent-failure":
                 env.rig.advance(int(task["terms"]["resultBy"]))
                 env.command("expireTask", {"taskRef": task["taskRef"]})
+                await env.watcher.scanMarket()
+                await worker.runtime.reconciler.tick()
         for _ in range(12):
             env.rig.advance(env.rig.now() + 2)
             env.finalize()
@@ -381,7 +387,22 @@ async def runDelegation(rpc, directory, failure=None):
         if processes:
             assert sum(bool(s["steps"]) for s in snapshots) > 0
             assert len({r["winner"]["agentId"] for r in receipts}) == 2
+        validation = None
+        reconciliation = None
+        if failure == "parent-failure":
+            await env.watcher.scanMarket()
+            await worker.runtime.reconciler.tick()
+            reconciliation = worker.runtime.reconciler.readReconciliation(ref)
+        if validator:
+            validation = await validator.settle(task)
+            await worker.runtime.tick()
+            reconciliation = worker.runtime.reconciler.readReconciliation(ref)
         return {
+            "validation": validation,
+            "reconciliation": reconciliation,
+            "reconciliationVersions": [
+                row for _, row in worker.runtime.reconciler.store.rows("reconciliation")
+            ],
             "scope": "local EVM + isolated content/model; not live qualification",
             "failure": failure,
             "result": view["result"],
@@ -395,6 +416,8 @@ async def runDelegation(rpc, directory, failure=None):
             "usage": coordinator.store.get("outbox", executionKey(ref)),
         }
     finally:
+        if validator:
+            await validator.close()
         for process in processes:
             await process.close()
         await coordinator.close()
@@ -403,7 +426,7 @@ async def runDelegation(rpc, directory, failure=None):
         await env.close()
 
 
-async def runSolo(rpc, directory):
+async def runSolo(rpc, directory, validatorFactory=None):
     env = Layer4Rig(rpc, directory)
     worker = DiscoveredWorker(env)
     coordinator, model = composeExecution(worker.participant, env.rig.now, sdk=True)
@@ -420,6 +443,20 @@ async def runSolo(rpc, directory):
     coordinator.history = economics.history
     worker.runtime.economics = economics
     worker.runtime.bidAtoms = None
+    validator = None
+    if validatorFactory:
+        public = directory / "public"
+        public.mkdir()
+        for path, raw in worker.blobs.items():
+            (public / contentDigest(("https://agent.example" + path).encode())).write_bytes(raw)
+        worker.participant.content = PublicContent(
+            worker.http,
+            worker.participant.content.policy,
+            env.journal,
+            "https://agent.example",
+            directory=public,
+        )
+        validator = await validatorFactory(env, public)
     try:
         task = worker.create(budget=5 * 10**18, denominator=10**21)
         await worker.runtime.tick()
@@ -444,8 +481,17 @@ async def runSolo(rpc, directory):
         evaluation = economics.history.evaluateForecasts([ref])
         assert evaluation["missing"] == 0 and evaluation["excluded"] == 0
         view = await env.market.readTask(task["taskRef"])
-        settleFixture(env, task, view)
+        validation = None
+        reconciliation = None
+        if validator:
+            validation = await validator.settle(task)
+            await worker.runtime.tick()
+            reconciliation = worker.runtime.reconciler.readReconciliation(ref)
+        else:
+            settleFixture(env, task, view)
         return {
+            "validation": validation,
+            "reconciliation": reconciliation,
             "executionRef": ref,
             "modelCalls": model.calls,
             "result": view["result"],
@@ -454,6 +500,8 @@ async def runSolo(rpc, directory):
             "scope": "isolated model, real SDK/Docker/local EVM",
         }
     finally:
+        if validator:
+            await validator.close()
         await coordinator.close()
         await economics.close()
         await worker.http.aclose()

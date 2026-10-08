@@ -15,7 +15,9 @@ def hostileImage(tmp_path_factory):
     source = """import json, os, subprocess, sys, time
 r=json.load(sys.stdin)
 k=r["kind"]
-if k=="hang": time.sleep(30)
+if k=="cpu":
+    while True: pass
+elif k=="hang": time.sleep(30)
 elif k=="memory":
     x=[]
     while True: x.append(bytearray(1024*1024))

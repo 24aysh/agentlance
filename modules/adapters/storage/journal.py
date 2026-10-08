@@ -44,7 +44,7 @@ class Journal:
             self.db.execute("PRAGMA synchronous=FULL")
             self.db.execute("PRAGMA foreign_keys=ON")
             version = self.db.execute("PRAGMA user_version").fetchone()[0]
-            ensure(version in (0, 1, 2, 3, 4), "Unknown journal version")
+            ensure(version in (0, 1, 2, 3, 4, 5), "Unknown journal version")
             self.db.executescript("""
                 CREATE TABLE IF NOT EXISTS settings (
                     id INTEGER PRIMARY KEY CHECK(id=1), body BLOB NOT NULL);
@@ -95,7 +95,10 @@ class Journal:
                 CREATE TABLE IF NOT EXISTS execution_records (
                     kind TEXT NOT NULL, key TEXT NOT NULL, body BLOB NOT NULL,
                     PRIMARY KEY(kind,key));
-                PRAGMA user_version=4;
+                CREATE TABLE IF NOT EXISTS validation_records (
+                    kind TEXT NOT NULL, key TEXT NOT NULL, body BLOB NOT NULL,
+                    PRIMARY KEY(kind,key));
+                PRAGMA user_version=5;
             """)
             with self.db:
                 old = self.db.execute("SELECT body FROM settings WHERE id=1").fetchone()

@@ -1,0 +1,15 @@
+{
+  "libraries": {
+    "erc-8004-contracts": {
+      "revision": "b9e466c250744a7e06b13dff9d3c2844ed64f825",
+      "url": "https://codeload.github.com/erc-8004/erc-8004-contracts/tar.gz/b9e466c250744a7e06b13dff9d3c2844ed64f825",
+      "sha256": "1209a54f46e8c0f7732be70220996257cbad7a1299e484bea45cec8eac96fdc3"
+    },
+    "openzeppelin-contracts-upgradeable": {
+      "version": "5.4.0",
+      "url": "https://codeload.github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/tar.gz/refs/tags/v5.4.0",
+      "sha256": "a689a717d06cb6c1579db42ed8d762a80d50950228b390d05fe7513f433c4199"
+    }
+  },
+  "kuboImage": "ipfs/kubo:v0.43.1@sha256:b293923d66e490e70ced64df42ea7a6cf7eac2740e3fb29101df18070fa7be48"
+}

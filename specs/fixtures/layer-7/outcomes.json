@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "cases": [
+    {"reason":"SUCCESS","counterEffect":"SUCCESS","value":1},
+    {"reason":"VALIDATION_FAILED","counterEffect":"FAILURE","value":0},
+    {"reason":"NO_SHOW","counterEffect":"FAILURE","value":0},
+    {"reason":"EXECUTION_TIMEOUT","counterEffect":"FAILURE","value":0},
+    {"reason":"VALIDATOR_TIMEOUT","counterEffect":"NONE","value":null},
+    {"reason":"UNALLOCATED","counterEffect":"NONE","value":null},
+    {"reason":"ALLOCATION_EXPIRED","counterEffect":"NONE","value":null},
+    {"reason":"CANCELLED","counterEffect":"NONE","value":null}
+  ]
+}
