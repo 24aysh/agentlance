@@ -73,6 +73,8 @@ class EconomicRuntime:
         self.store.enqueueCandidate(task, stamp, recordDigest(self.config))
 
     def availableCapacity(self):
+        if self.participant.coordinator is not None:
+            return self.participant.coordinator.store.available()
         active = sum(
             row["phase"] not in {"RESULT_RECORDED", "STOPPED", "INTERRUPTED"}
             for row in self.participant.journal.rows()
